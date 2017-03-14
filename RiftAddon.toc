@@ -1,0 +1,37 @@
+Identifier  =  "FishItUp"
+Name        =  { English = "FishItUp" }
+NameShort   =  "FishItUp"
+Version     =  "0.24.28"
+Description =  { English = "FishItUp! use /fiu to show or hide fishing window" }
+Author      =  "marcob@marcob.org"
+Website     =  "http://www.fu.bar/"
+Email       =  "marcob@marcob.org"
+Environment =  "4.0"
+
+RunOnStartup = {
+   "_fiu_init.lua",
+   "_fiu_utils.lua",
+   "_fiu_history.lua",
+   "_fiu_gui_Info3.lua",
+   "_fiu_gui_Loot.lua",
+   "_fiu_gui_Totals.lua",
+   "_fiu_gui_Button.lua",
+   "FishItUp.lua"
+}
+
+Embed = {
+  LibDraggable = true,
+}
+
+Dependencies = {
+  LibDraggable = {"required", "before"},
+}
+
+SavedVariables = {
+   guilog            =  'character',
+   waterlog          =  'character',
+   itemCache         =  'character',
+   zoneids           =  'character',
+   lastZoneLootObjs  =  'character',
+   zoneTotalCnts     =  'character'
+}

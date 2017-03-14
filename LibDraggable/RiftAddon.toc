@@ -1,0 +1,28 @@
+Identifier = "LibDraggable"
+
+Version = "0.5-130712-20:34:32"
+
+Email = "riftaddons@seebs.net"
+
+Dependencies = {
+	printf = { "required", "before" },
+}
+Embed = { printf = true }
+
+Name = {
+  English = "LibDraggable",
+  French = "LibDraggable",
+  German = "LibDraggable",
+}
+NameShort = "LibDraggable"
+
+Description = {
+  English = "A library for making windows draggable"
+}
+
+RunOnStartup = {
+  "LibDraggable.lua"
+}
+
+Environment = { "2.3" }
+
