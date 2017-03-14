@@ -226,11 +226,10 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          table.insert(cD.sLTfullObjs,  lootFrame )
          table.insert(cD.sLTcntsObjs,  lootCnt )
          table.insert(cD.sLTprcntObjs, prcntCnt )
-         local rarity = Inspect.Item.Detail(lootOBJ).rarity
-         if rarity == nil then rarity = "common" end
-         table.insert(cD.sLTrarity,    cD.getItemNumericRarity(rarity))
-         local objname = Inspect.Item.Detail(lootOBJ).name
-         print(string.format("0 - Stocking Rarity name[%s] rarity[%s] rarity#[%s]", objname, rarity, cD.sLTrarity[#cD.sLTrarity]))
+--          local rarity = Inspect.Item.Detail(lootOBJ).rarity
+--          if rarity == nil then rarity = "common" end
+         table.insert(cD.sLTrarity,    cD.getItemNumericRarity(itemRarity))
+--          print(string.format("0 - Stocking Rarity name[%s] rarity[%s] rarity#[%s]", itemName, rarity, cD.sLTrarity[#cD.sLTrarity]))
 
 
          cD.updatePercents(cD.get_totals())

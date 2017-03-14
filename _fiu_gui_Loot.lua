@@ -366,7 +366,7 @@ function cD.sortLootTable(parent)
       local idx      =  nil
       -- find the frame with the lowest bottom Y position
       for idx in pairs(cD.sLTfullObjs) do if highestX < cD.sLTfullObjs[idx]:GetBottom() then highestX = cD.sLTfullObjs[idx]:GetBottom() end end
-      cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *2))
+      cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *3))
 
 
    end
