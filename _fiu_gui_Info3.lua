@@ -89,7 +89,7 @@ function cD.createInfoWindow()
 
    -- WINDOW Title
    local zone, subZone, zoneID =  cD.getZoneInfos()
-   local totalsText    =  "      0"
+   local totalsText    =   string.format("%5d", 0)
 
    local titleBar =  createTitleBar(infoWindow)
 
@@ -256,8 +256,8 @@ function cD.createInfoWindow()
             dayOBJ:SetPoint("TOPLEFT", labelDayOBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, dayOBJ )
 
-   headerFrame:SetHeight(((cD.round(labelDayOBJ:GetBottom() - headerFrame:GetTop())) /2) + cD.borders.bottom*2)
-   infoWindow:SetHeight(((infoWindow:GetTop() + headerFrame:GetHeight() )/2) + cD.borders.bottom*4)
+   headerFrame:SetHeight(((cD.round(labelDayOBJ:GetBottom() - headerFrame:GetTop())) /2.5) + cD.borders.bottom*2)
+   infoWindow:SetHeight(((infoWindow:GetTop() + headerFrame:GetHeight() )/2.5) + cD.borders.bottom*2)
 
    -- Enable Dragging
    Library.LibDraggable.draggify(infoWindow, cD.updateGuiCoordinates)
@@ -272,7 +272,7 @@ function  cD.resetInfoWindow()
    --
 --    totalsCnt:SetFont(cD.addon, "fonts/unispace.ttf")
 --    totalsCnt:SetFontSize(tFONTSIZE)
-   cD.sLThdrs[3]:SetText("0")
+   cD.sLThdrs[3]:SetText(string.format("%5d", 0))
    cD.sLThdrs[4]:SetText(string.format("%5d", cD.today.casts))
    cD.sLThdrs[5]:SetText("--:--")
    cD.sLThdrs[6]:SetText("--:--")

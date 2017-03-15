@@ -53,7 +53,7 @@ function cD.createTotalsWindow()
       -- TITLE BAR TITLE
       local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleTotalsFrame)
       titleFIU:SetFontSize(tFONTSIZE)
-      titleFIU:SetText("FishItUp!")
+      titleFIU:SetText("FIU! Lifetime Totals")
       titleFIU:SetFont(cD.addon, "fonts/unispace.ttf")
       titleFIU:SetLayer(3)
       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 1)
@@ -144,8 +144,6 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
 
    -- Zone Name
    znOBJ     =  UI.CreateFrame("Text", "Totals_" ..zoneName, totalsFrame)
---    znOBJ:SetFontSize(cD.text.base_font_size -2 )
---    znOBJ:SetHeight(cD.text.base_font_size)
    local zn = string.sub(zoneName, 1, tMAXSTRINGSIZE)
    znOBJ:SetWidth(150)
    znOBJ:SetLayer(3)
@@ -169,6 +167,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
       parentOBJ   =  totalsCnt
       table.insert(totOBJs, totalsCnt)
    end
+
+   totalsFrame:SetHeight(znOBJ:GetHeight() + 1)
 
    return totalsFrame, znOBJ, totOBJs
 end

@@ -418,10 +418,15 @@ function cD.categoryIcon(categoryName, objID, desc)
    local retval   =  nil
    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
    if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"
-   elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "Minion_I36.dds"
+   elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"
+   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "icon_menu_quest.png.dds"
+--    elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "Minion_I36.dds"
+   elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"
+--    ""
    end
   return retval
 end
+
 
 
 function cD.addToZoneID()

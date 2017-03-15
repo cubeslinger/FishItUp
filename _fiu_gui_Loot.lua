@@ -135,15 +135,15 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
       if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
-      typeIcon:SetWidth(cD.text.base_font_size)
-      typeIcon:SetHeight(cD.text.base_font_size)
+      typeIcon:SetWidth(cD.text.base_font_size + 4)
+      typeIcon:SetHeight(cD.text.base_font_size + 4)
       typeIcon:SetPoint("CENTER",    typeIconFrame, "CENTER")
       typeIcon:SetLayer(3)
 
       -- setup Loot Item's Icon Frame
       lootIconFrame = UI.CreateFrame("Texture", "Loot_Icon_Frame" .. itemName, lootFrame)
-      lootIconFrame:SetHeight(cD.text.base_font_size)
-      lootIconFrame:SetWidth(cD.text.base_font_size)
+      lootIconFrame:SetHeight(cD.text.base_font_size - 1)
+      lootIconFrame:SetWidth(cD.text.base_font_size - 1)
       lootIconFrame:SetLayer(2)
       lootIconFrame:SetBackgroundColor(0, 0, 0, .5)
       lootIconFrame:SetPoint("TOPLEFT",   typeIconFrame, "TOPRIGHT", cD.borders.left, 0)
@@ -151,8 +151,11 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- setup Loot Item's Icon
       lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. itemName, lootIconFrame)
       lootIcon:SetTexture("Rift", itemIcon)
-      lootIcon:SetWidth(cD.text.base_font_size - 1)
+--       lootIcon:SetWidth(cD.text.base_font_size - 1)
+--       lootIcon:SetHeight(cD.text.base_font_size - 1)
+      lootIcon:SetWidth(cD.text.base_font_size)
       lootIcon:SetHeight(cD.text.base_font_size - 1)
+
       lootIcon:SetPoint("CENTER",    lootIconFrame, "CENTER")
       lootIcon:SetLayer(3)
 
