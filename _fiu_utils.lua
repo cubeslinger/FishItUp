@@ -290,7 +290,7 @@ function cD.gotLoot(h, eventTable)
             -- that we need to ignore
             --
             if itemName ~= cD.poleTBL.name then
-               cD.updateLootTable(itemOBJ)
+               cD.updateLootTable(itemOBJ, 1, false)
                print(string.format("cD.updateLootTable added [%s]", Inspect.Item.Detail(itemOBJ).name))
 
                --
@@ -477,3 +477,18 @@ end
    [C]: in function 'SetText'
    FishItUp/_fiu_utils.lua:351: in function <FishItUp/_fiu_utils.lua:307>
     ]]--
+
+    
+    
+    
+    
+    
+--[[
+Error: FishItUp/_fiu_history.lua:72: attempt to index a nil value
+    In FishItUp / gotLoot, event Event.Item.Slot
+stack traceback:
+	[C]: in function '__index'
+	FishItUp/_fiu_history.lua:72: in function 'updateHistory'
+	FishItUp/_fiu_utils.lua:266: in function 'updateLootTable'
+	FishItUp/_fiu_utils.lua:293: in function <FishItUp/_fiu_utils.lua:279>
+   ]]--
