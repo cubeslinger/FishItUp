@@ -152,7 +152,24 @@ function cD.createButtonWindow()
             --
             -- Begin waiting for loot events and External Interrupting Events
             --
+            -- Event.Item.Update(updates)
+            -- Parameter	Type	      Datatype	   Description
+            -- ------------------------------------------------------------------------------------------------------
+            -- updates	   parameter	variant	   Table of changes.
+            --                                     Key   :  is the slot identifier, value is an item ID,
+            --                                     false :  if the slot is now empty, or the string
+            --                                     "nil" :  if the slot no longer exists.
+            --
             Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
+            --
+            -- Event.Item.Slot(updates)
+            -- Parameter	Type	      Datatype	   Description
+            -- ------------------------------------------------------------------------------------------------------
+            -- updates	   parameter	variant	   Table of changes.
+            --                                     Key   :  is the slot identifier, value is an item ID,
+            --                                     false :  if the slot is now empty, or the string
+            --                                     "nil" :  if the slot no longer exists.
+            --
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
             Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent, "Player in Combat")
             Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")

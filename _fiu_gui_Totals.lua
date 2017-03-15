@@ -45,43 +45,36 @@ function cD.createTotalsWindow()
    local titleTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
    titleTotalsFrame:SetPoint("TOPLEFT",     totalsWindow, "TOPLEFT",     cD.borders.left,    cD.borders.top)
    titleTotalsFrame:SetPoint("TOPRIGHT",    totalsWindow, "TOPRIGHT",    - cD.borders.right, cD.borders.top)
---    titleTotalsFrame:SetPoint("BOTTOMLEFT",  totalsWindow, "BOTTOMLEFT",  cD.borders.left,    - cD.borders.bottom)
---    titleTotalsFrame:SetPoint("BOTTOMRIGHT", totalsWindow, "BOTTOMRIGHT", - cD.borders.right, - cD.borders.bottom)
    titleTotalsFrame:SetBackgroundColor(.1, .1, .1, .7)
    titleTotalsFrame:SetLayer(1)
    titleTotalsFrame:SetHeight(tFONTSIZE + 4)
    cD.sTOFrames[TITLEBARTOTALSFRAME]  =   titleTotalsFrame
 
-   -- TITLE BAR TITLE
-   local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleTotalsFrame)
---    titleFIU:SetFontSize(cD.text.base_font_size -2 )
-   titleFIU:SetFontSize(tFONTSIZE)
---    titleFIU:SetHeight(cD.text.base_font_size)
-   titleFIU:SetText("FishItUp!")
-   titleFIU:SetFont(cD.addon, "fonts/unispace.ttf")
-   titleFIU:SetLayer(3)
---    titleFIU:SetFontColor(txtColors[idx].r, txtColors[idx].g, txtColors[idx].b)
-   titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 1)
-   cD.sTOFrames[TITLEBARTCONTENTFRAME]  =   titleFIU
+      -- TITLE BAR TITLE
+      local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleTotalsFrame)
+      titleFIU:SetFontSize(tFONTSIZE)
+      titleFIU:SetText("FishItUp!")
+      titleFIU:SetFont(cD.addon, "fonts/unispace.ttf")
+      titleFIU:SetLayer(3)
+      titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 1)
+      cD.sTOFrames[TITLEBARTCONTENTFRAME]  =   titleFIU
 
-   -- TITLE BAR Widgets: setup Icon Frame
-   titleIcon1  =  UI.CreateFrame("Texture", "Title_Icon_1_Frame", cD.sTOFrames[TITLEBARTOTALSFRAME])
---    titleIcon1:SetHeight(cD.text.base_font_size)
---    titleIcon1:SetWidth(cD.text.base_font_size)
-   titleIcon1:SetWidth(tFONTSIZE)
-   titleIcon1:SetHeight(tFONTSIZE)
-   titleIcon1:SetLayer(2)
-   titleIcon1:SetBackgroundColor(0, 0, 0, .5)
-   titleIcon1:SetPoint("TOPRIGHT",   cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPRIGHT", -cD.borders.right, 0)
+      -- TITLE BAR Widgets: setup Icon Frame
+      titleIcon1  =  UI.CreateFrame("Texture", "Title_Icon_1_Frame", cD.sTOFrames[TITLEBARTOTALSFRAME])
+      titleIcon1:SetWidth(tFONTSIZE)
+      titleIcon1:SetHeight(tFONTSIZE)
+      titleIcon1:SetLayer(2)
+      titleIcon1:SetBackgroundColor(0, 0, 0, .5)
+      titleIcon1:SetPoint("TOPRIGHT",   cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPRIGHT", -cD.borders.right, 0)
 
-   -- TITLE BAR Widgets: setup Icon
-   lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", titleIcon1)
-   lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
-   lootIcon:SetWidth(tFONTSIZE)
-   lootIcon:SetHeight(tFONTSIZE)
-   lootIcon:SetPoint("CENTER",    titleIcon1, "CENTER")
-   lootIcon:SetLayer(3)
-   lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end , "Iconize Totals Pressed" )
+      -- TITLE BAR Widgets: setup Icon
+      lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", titleIcon1)
+      lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
+      lootIcon:SetWidth(tFONTSIZE)
+      lootIcon:SetHeight(tFONTSIZE)
+      lootIcon:SetPoint("CENTER",    titleIcon1, "CENTER")
+      lootIcon:SetLayer(3)
+      lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end , "Iconize Totals Pressed" )
 
    -- EXTERNAL TOTALS CONTAINER FRAME
    local externaTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
@@ -93,25 +86,20 @@ function cD.createTotalsWindow()
    externaTotalsFrame:SetLayer(1)
    cD.sTOFrames[EXTERNALTOTALSFRAME]  =   externaTotalsFrame
 
-   -- MASK FRAME
-   local maskFrame = UI.CreateFrame("Mask", "Totals_Mask_Frame", cD.sTOFrames[EXTERNALTOTALSFRAME])
-   maskFrame:SetAllPoints(cD.sTOFrames[EXTERNALTOTALSFRAME])
-   cD.sTOFrames[TOTALSMASKFRAME]  = maskFrame
-   --    maskFrame:SetBackgroundColor(1, 0, 0, .3)
+      -- MASK FRAME
+      local maskFrame = UI.CreateFrame("Mask", "Totals_Mask_Frame", cD.sTOFrames[EXTERNALTOTALSFRAME])
+      maskFrame:SetAllPoints(cD.sTOFrames[EXTERNALTOTALSFRAME])
+      cD.sTOFrames[TOTALSMASKFRAME]  = maskFrame
+      --    maskFrame:SetBackgroundColor(1, 0, 0, .3)
 
-   -- TOTALS CONTAINER FRAME
-   local totalsFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sTOFrames[TOTALSMASKFRAME])
-   totalsFrame:SetAllPoints(cD.sTOFrames[TOTALSMASKFRAME])
-   totalsFrame:SetLayer(1)
-   cD.sTOFrames[TOTALSFRAME]  =   totalsFrame
-
---    totalsWindow:SetHeight( cD.borders.top + cD.sTOFrames[TOTALSFRAME]:GetHeight() + cD.borders.bottom)
+      -- TOTALS CONTAINER FRAME
+      local totalsFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sTOFrames[TOTALSMASKFRAME])
+      totalsFrame:SetAllPoints(cD.sTOFrames[TOTALSMASKFRAME])
+      totalsFrame:SetLayer(1)
+      cD.sTOFrames[TOTALSFRAME]  =   totalsFrame
 
    -- Enable Dragging
    Library.LibDraggable.draggify(totalsWindow, cD.updateGuiCoordinates)
-
-
---    totalsWindow:SetVisible(false)
 
    return totalsWindow
 
@@ -119,7 +107,7 @@ end
 
 
 function cD.createTotalsLine(parent, zoneName, zoneTotals)
-   
+
    if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
 
    local totalsFrame =  nil
@@ -164,7 +152,6 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    znOBJ:SetFontSize(tFONTSIZE)
    znOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
    znOBJ:SetText(zn)
---    znOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
    znOBJ:SetPoint("TOPLEFT",   totalsFrame, "TOPLEFT", cD.borders.left, 2)
 
    local parentOBJ   =  znOBJ
@@ -172,7 +159,6 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    for idx, _ in pairs(zoneTotals) do
       -- setup Totals Item's Counter
       local totalsCnt  =  UI.CreateFrame("Text", "Totals_Cnt_" .. idx, totalsFrame)
---       totalsCnt:SetFontSize(cD.text.base_font_size -2 )
       totalsCnt:SetFont(cD.addon, "fonts/unispace.ttf")
       totalsCnt:SetFontSize(tFONTSIZE)
 
@@ -190,7 +176,6 @@ end
 function cD.initTotalsWindow()
 
    local zn, tbl     =  nil, {}
---    local parentOBJ   =  cD.window.totalsObj
    local parentOBJ   =  cD.sTOFrames[TOTALSFRAME]
 
    for zn, tbl in pairs(cD.zoneTotalCnts) do
@@ -198,35 +183,18 @@ function cD.initTotalsWindow()
       local znName   =  Inspect.Zone.Detail(zn).name
       local znID     =  Inspect.Zone.Detail(zn).id
       local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(parentOBJ, znName, tbl)
---       local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(parentOBJ, znName, cD.sTOFrames[TOTALSFRAME])
-
---       local x, y = nil, nil
---       for x, y in pairs(totOBJs) do
---          print(string.format("Returning totOBJs: x=[%s] y=[%s]", x, y))
---       end
 
       table.insert(cD.sTOzoneIDs,   zn)
       table.insert(cD.sTOFrame,     totalsFrame)
       table.insert(cD.sTOznObjs,    znOBJ)
---       table.insert(cD.sTOcntObjs,   { [znID] = totOBJs})
---       table.insert(cD.sTOcntObjs[znID] = totOBJs)
       cD.sTOcntObjs[znID] = totOBJs
-
---       local x, y = nil, nil
---       print(string.format("Returned cD.sTOcntObjs[%s] [%s]:", znID, cD.sTOcntObjs[znID]))
---       for x, y in pairs(cD.sTOcntObjs[znID]) do
---          print(string.format("Returning cD.sTOcntObjs[%s]: x=[%s] y=[%s]", znID, x, y))
---       end
 
       parentOBJ   =  totalsFrame
    end
 
---    cD.window.totalsObj:SetHeight( top + cD.sTOznObjs[table.getn(cD.sTOznObjs)]:GetBottom() + cD.borders.bottom)
    local H = cD.sTOFrames[TITLEBARTOTALSFRAME]:GetBottom() + cD.borders.bottom
    if cD.sTOznObjs ~= nil and next(cD.sTOznObjs) then H = cD.sTOznObjs[table.getn(cD.sTOznObjs)]:GetBottom() end
    cD.window.totalsObj:SetHeight((H - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
-
---    totalsWindow:SetHeight( cD.borders.top + cD.sTOFrames[TOTALSFRAME]:GetHeight() + cD.borders.bottom)
 
    return
 end

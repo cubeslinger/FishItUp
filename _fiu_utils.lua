@@ -281,6 +281,12 @@ function cD.gotLoot(h, eventTable)
    local itemOBJ  =  nil
    local slot     =  nil
 
+   -- debug
+   for k,v in pairs(eventTable) do
+      print(string.format("cD.gotLoot slot=%s : itemID=%s", k, Utility.Serialize.Inline(v)))
+   end
+
+
    if eventTable ~= nil then
       for slot, itemOBJ in pairs(eventTable) do
          if itemOBJ ~= nil and itemOBJ ~= false then
@@ -291,7 +297,7 @@ function cD.gotLoot(h, eventTable)
             --
             if itemName ~= cD.poleTBL.name then
                cD.updateLootTable(itemOBJ, 1, false)
-               print(string.format("cD.updateLootTable added [%s]", Inspect.Item.Detail(itemOBJ).name))
+--                print(string.format("cD.updateLootTable added [%s]", Inspect.Item.Detail(itemOBJ).name))
 
                --
                -- we will wait 1 more second (cD.time2Wait=1) Event.Item.Update and
@@ -478,11 +484,11 @@ end
    FishItUp/_fiu_utils.lua:351: in function <FishItUp/_fiu_utils.lua:307>
     ]]--
 
-    
-    
-    
-    
-    
+
+
+
+
+
 --[[
 Error: FishItUp/_fiu_history.lua:72: attempt to index a nil value
     In FishItUp / gotLoot, event Event.Item.Slot

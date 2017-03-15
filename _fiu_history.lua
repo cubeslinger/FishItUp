@@ -100,9 +100,9 @@ function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)
    --
    if newZone  then
       local parent = cD.sTOFrame[table.getn(cD.sTOFrame)]
-      print(string.format("0 - parent is [%s]", parent))
+--       print(string.format("0 - parent is [%s]", parent))
       if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
-      print(string.format("1 - parent is [%s]", parent))
+--       print(string.format("1 - parent is [%s]", parent))
       local totalsFrame, znOBJ, totOBJs= cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, cD.zoneTotalCnts[zoneID])
 
       table.insert(cD.sTOzoneIDs,   zoneID)

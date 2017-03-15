@@ -371,7 +371,7 @@ function cD.sortLootTable(parent)
 
    end
 
-   print(string.format("Cleared [%s] re-assigned [%s]", cntPre, cntPost))
+--    print(string.format("Cleared [%s] re-assigned [%s]", cntPre, cntPost))
 
    return
 end
