@@ -9,7 +9,8 @@
 --
 
 local addon, cD = ...
-local LOOTFRAME =  3
+local LOOTFRAME         =  3
+local POLECASTBUTTON    =  5
 
 function cD.getZoneInfos()
    local zoneText       =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).name
@@ -91,6 +92,7 @@ function cD.waitingForTheSun()
          cD.waitingForTheSunRunning =  false
          -- hide timer on pole cast Button
          cD.poleTimer:SetVisible(false)
+         cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
       end
    end
 
@@ -368,7 +370,7 @@ function cD.fishTimer()
          if cD.time.hour > 0 then txt = cD.time.hour .. ":" .. txt end
          cD.sLThdrs[6]:SetText(txt)
          -- pole castTimer
-         local s = string.format("%2d", secs)
+         local s = string.format("%02d", secs)
          cD.poleTimer:SetText(s)
       end
    end

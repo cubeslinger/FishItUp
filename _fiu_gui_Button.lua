@@ -33,7 +33,6 @@ local function getPole()
    return
 end
 
-
 function cD.loadLastSession()
    local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
 
@@ -115,67 +114,79 @@ function cD.createButtonWindow()
    -- assign "use" to Pole object to button action
    if (cD.poleTBL)   then
       if next(cD.poleTBL) ~= nil then
-         useString = "use"
-         poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, useString .. " " .. cD.poleTBL.name)
+         poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
 
          function poleCastButton.Event:LeftClick()
-            --
-            -- stop eventually still running loot event monitor
-            --
-            cD.detachLootWatchers()
-            --
-            -- hide timer on castButton
-            --
-            cD.poleTimer:SetVisible(false)
-            --
-            -- refresh Zone Headers
-            --
-            local zone, subzone = cD.getZoneInfos()
-            --
-            -- if we changed zone, w try to reloa last stored
-            -- session values or rest the loot window
-            --
-            if cD.sLThdrs[1]:GetText() ~= zone     then
-               cD.sLThdrs[1]:SetText(zone)
-               cD.resetLootWindow()
-               cD.loadLastSession()
+            local currentMacro   =  poleCastButton:EventMacroGet(Event.UI.Input.Mouse.Left.Click)
+            print(string.format("CurrentMacro [%s]", currentMacro))
+            if currentMacro ~= "stopcasting" then
+
+               -- change button Action to "/stopcasting"
+               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "stopcasting")
+
+               --
+               -- stop eventually still running loot event monitor
+               --
+               cD.detachLootWatchers()
+               --
+               -- hide timer on castButton
+               --
+               cD.poleTimer:SetVisible(false)
+               --
+               -- refresh Zone Headers
+               --
+               local zone, subzone = cD.getZoneInfos()
+               --
+               -- if we changed zone, w try to reloa last stored
+               -- session values or rest the loot window
+               --
+               if cD.sLThdrs[1]:GetText() ~= zone     then
+                  cD.sLThdrs[1]:SetText(zone)
+                  cD.resetLootWindow()
+                  cD.loadLastSession()
+               end
+               if cD.sLThdrs[2]:GetText() ~= subzone  then  cD.sLThdrs[2]:SetText(subzone)   end
+
+               -- casts Total
+               cD.today.casts =  cD.today.casts + 1
+               cD.sLThdrs[4]:SetText(string.format("%5d", cD.today.casts))
+
+               -- show timer on castButton
+               cD.poleTimer:SetVisible(true)
+
+               -- change action associated with cast button: now it will "/stopcasting"
+               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "stopcasting")
+
+               --
+               -- Begin waiting for loot events and External Interrupting Events
+               --
+               -- Event.Item.Update(updates)
+               -- Parameter	Type	      Datatype	   Description
+               -- ------------------------------------------------------------------------------------------------------
+               -- updates	   parameter	variant	   Table of changes.
+               --                                     Key   :  is the slot identifier, value is an item ID,
+               --                                     false :  if the slot is now empty, or the string
+               --                                     "nil" :  if the slot no longer exists.
+               --
+               Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
+               --
+               -- Event.Item.Slot(updates)
+               -- Parameter	Type	      Datatype	   Description
+               -- ------------------------------------------------------------------------------------------------------
+               -- updates	   parameter	variant	   Table of changes.
+               --                                     Key   :  is the slot identifier, value is an item ID,
+               --                                     false :  if the slot is now empty, or the string
+               --                                     "nil" :  if the slot no longer exists.
+               --
+               Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
+               Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent, "Player in Combat")
+               Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
+
+               cD.timeRStart  =  nil
+               Command.Event.Attach(Event.System.Update.Begin,       cD.fishTimer,        "Player is Fishing")
+            else
+               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
             end
-            if cD.sLThdrs[2]:GetText() ~= subzone  then  cD.sLThdrs[2]:SetText(subzone)   end
-
-            -- casts Total
-            cD.today.casts =  cD.today.casts + 1
-            cD.sLThdrs[4]:SetText(string.format("%5d", cD.today.casts))
-
-            -- show timer on castButton
-            cD.poleTimer:SetVisible(true)
-
-            --
-            -- Begin waiting for loot events and External Interrupting Events
-            --
-            -- Event.Item.Update(updates)
-            -- Parameter	Type	      Datatype	   Description
-            -- ------------------------------------------------------------------------------------------------------
-            -- updates	   parameter	variant	   Table of changes.
-            --                                     Key   :  is the slot identifier, value is an item ID,
-            --                                     false :  if the slot is now empty, or the string
-            --                                     "nil" :  if the slot no longer exists.
-            --
-            Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
-            --
-            -- Event.Item.Slot(updates)
-            -- Parameter	Type	      Datatype	   Description
-            -- ------------------------------------------------------------------------------------------------------
-            -- updates	   parameter	variant	   Table of changes.
-            --                                     Key   :  is the slot identifier, value is an item ID,
-            --                                     false :  if the slot is now empty, or the string
-            --                                     "nil" :  if the slot no longer exists.
-            --
-            Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
-            Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent, "Player in Combat")
-            Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
-
-            cD.timeRStart  =  nil
-            Command.Event.Attach(Event.System.Update.Begin,       cD.fishTimer,        "Player is Fishing")
          end
       end
    end
