@@ -214,6 +214,21 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))
          cD.updatePercents(cD.get_totals())
 --          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
+
+         -- animation
+--          local aplha = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetAlpha()
+--          cD.sLTtextObjs[idx]:SetAlpha(0.0)
+-- --          cD.sLTtextObjs[idx]:FadeIn(5)
+--          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:FadeOut()
+--          cD.sLTtextObjs[idx]:AnimateBackgroundColor(4, "smoothstep", 1, 1, 1, 1)
+         local r, g, b, a = cD.sLTtextObjs[idx]:GetFontColor()
+         cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 0, b, 0,
+               function() cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 1, b, 1,
+                  function() cD.sLTtextObjs[idx]:SetFontColor(r, g, b, a) end)
+               end
+         )
+
+
       else
          --
          -- NEW - we create
@@ -236,16 +251,16 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
---          --
---          -- Resize container window, since now we sort the loottable we
---          -- can't trust anymore the last in the array to really be the
---          -- last frame, with the lowest X
---          --
---          local lowestX   =  0
---          local idx      =  nil
---          -- find the frame with the lowest bottom Y position
---          for idx in pairs(cD.sLTfullObjs) do if lowestX < cD.sLTfullObjs[idx]:GetBottom() then lowest = cD.sLTfullObjs[idx]:GetBottom() end end
---          cD.window.lootObj:SetHeight((lowest - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *2))
+         -- animation
+--          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetAlpha(0.0)
+--          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:FadeOut()
+--          local oldcolor = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetBackgroundColor()
+         local r, g, b, a = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetFontColor()
+         cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, g, b, 0,
+               function() cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 0, b, 1,
+                  function() cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetFontColor(r, 1, b, a) end)
+               end
+         )
 
          retval	=	true
       end
@@ -281,11 +296,10 @@ function cD.gotLoot(h, eventTable)
    local itemOBJ  =  nil
    local slot     =  nil
 
-   -- debug
-   for k,v in pairs(eventTable) do
-      print(string.format("cD.gotLoot slot=%s : itemID=%s", k, Utility.Serialize.Inline(v)))
-   end
-
+--    -- debug
+--    for k,v in pairs(eventTable) do
+--       print(string.format("cD.gotLoot slot=%s : itemID=%s", k, Utility.Serialize.Inline(v)))
+--    end
 
    if eventTable ~= nil then
       for slot, itemOBJ in pairs(eventTable) do
@@ -417,12 +431,10 @@ end
 function cD.categoryIcon(categoryName, objID, desc)
    local retval   =  nil
    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"
-   elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"
-   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "icon_menu_quest.png.dds"
---    elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "Minion_I36.dds"
-   elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"
---    ""
+   if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"                          -- artifact icon
+   elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"                 -- exclamation point
+   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "Minion_1153.dds"                         -- little key
+   elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
    end
   return retval
 end
@@ -468,38 +480,3 @@ function searchArrayByValue(table, value2search)
 
    return retval
 end
-
-
-
---[[
-    Error: Incorrect function usage.
-   Parameters: (Text: FishItUp.Button_poleCastTimer.0x2929e878), 1
-   Parameter types: Text, number
-   Function documentation:
-   Sets the current text for this element.
-   Text:SetText(text)   -- string
-   Text:SetText(text, html)   -- string, boolean
-   Parameters:
-   html:	Enables HTML mode. In HTML mode, a limited number of formatting tags are available: <u>, <font color="#rrggbb">, and <a lua="print('This is a lua script.')">.
-   text:	The new text for the element.
-   In FishItUp / Player is Fishing, event Event.System.Update.Begin
-   stack traceback:
-   [C]: ?
-   [C]: in function 'SetText'
-   FishItUp/_fiu_utils.lua:351: in function <FishItUp/_fiu_utils.lua:307>
-    ]]--
-
-
-
-
-
-
---[[
-Error: FishItUp/_fiu_history.lua:72: attempt to index a nil value
-    In FishItUp / gotLoot, event Event.Item.Slot
-stack traceback:
-	[C]: in function '__index'
-	FishItUp/_fiu_history.lua:72: in function 'updateHistory'
-	FishItUp/_fiu_utils.lua:266: in function 'updateLootTable'
-	FishItUp/_fiu_utils.lua:293: in function <FishItUp/_fiu_utils.lua:279>
-   ]]--

@@ -1,7 +1,7 @@
 Identifier  =  "FishItUp"
 Name        =  { English = "FishItUp" }
 NameShort   =  "FishItUp"
-Version     =  "0.24.28"
+Version     =  "0.24.29"
 Description =  { English = "FishItUp! use /fiu to show or hide fishing window" }
 Author      =  "marcob@marcob.org"
 Website     =  "http://www.fu.bar/"
@@ -21,10 +21,12 @@ RunOnStartup = {
 
 Embed = {
   LibDraggable = true,
+  LibAnimate   = true
 }
 
 Dependencies = {
   LibDraggable = {"required", "before"},
+  LibAnimate   = {"required", "before"}
 }
 
 SavedVariables = {
