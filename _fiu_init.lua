@@ -187,7 +187,16 @@ function cD.fiuLoadVariables(_, addonName)
             cD.zoneIDs     =  zoneids
          end
       end
-      if itemCache         ~= nil then
+
+      --
+      -- code to handle migration of
+      -- itemCache to itemCacheGlobal
+      --
+      if itemCacheGlobal   ~=   nil then
+         if next(itemCacheGlobal)   ~= nil then
+            cD.itemCache    = itemCacheGlobal
+         end
+      elseif   itemCache   ~= nil then
          if next(itemCache)~= nil then
             cD.itemCache    = itemCache
          end
@@ -212,6 +221,7 @@ function cD.fiuSaveVariables(_, addonName)
 
       waterlog          =  cD.history
       itemCache         =  cD.itemCache
+      itemCacheGlobal   =  cD.itemCache
       zoneids           =  cD.zoneIDs
       --
       lastZoneLootObjs  =  cD.lastZoneLootObjs
