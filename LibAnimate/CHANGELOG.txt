@@ -1,0 +1,8 @@
+1.0.5
+
+FEATURES:
+CHANGES:
+FIXES:
+* Fixed error in Frame:AnimateBackgroundColor()
+* Fixed error in Frame:AnimateFontColor()
+ISSUES:

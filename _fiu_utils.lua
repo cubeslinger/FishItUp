@@ -216,11 +216,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 --          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
          -- animation
---          local aplha = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetAlpha()
---          cD.sLTtextObjs[idx]:SetAlpha(0.0)
--- --          cD.sLTtextObjs[idx]:FadeIn(5)
---          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:FadeOut()
---          cD.sLTtextObjs[idx]:AnimateBackgroundColor(4, "smoothstep", 1, 1, 1, 1)
          local r, g, b, a = cD.sLTtextObjs[idx]:GetFontColor()
          cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 0, b, 0,
                function() cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 1, b, 1,
@@ -252,9 +247,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
          -- animation
---          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetAlpha(0.0)
---          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:FadeOut()
---          local oldcolor = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetBackgroundColor()
          local r, g, b, a = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetFontColor()
          cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, g, b, 0,
                function() cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 0, b, 1,

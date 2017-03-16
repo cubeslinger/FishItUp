@@ -1,0 +1,37 @@
+Identifier = "LibAnimate"
+Name = "LibAnimate"
+NameShort = "LibAnimate"
+Description = "An animation framework for Addon authors."
+
+Author = "Imhothar"
+Website = "http://rift.curseforge.com/addons/libanimate/"
+Email = "imhothar@freenet.de"
+
+Version = "1.0.7"
+Environment = "2.2"
+
+--@no-lib-strip@
+Embed = {
+	["LibString"] = true,
+}
+--@end-no-lib-strip@
+
+Dependencies = {
+	LibString = { "required", "before" },
+}
+
+RunOnStartup = {
+	"Animation.lua",
+	"Interpolation.lua",
+	"Template.lua",
+
+	"AnimateNative.lua",
+	"NativeExtensions.lua",
+
+	"Public.lua",
+	"ApiBrowser.lua",
+}
+-- X-Curse-Packaged-Version: 1.0.7
+-- X-Curse-Project-Name: LibAnimate
+-- X-Curse-Project-ID: libanimate
+-- X-Curse-Repository-ID: rift/libanimate/mainline
