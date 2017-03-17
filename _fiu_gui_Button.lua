@@ -35,6 +35,7 @@ end
 
 function cD.loadLastSession()
    local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
+   local retval   =  false
 
    -- load lootIDs Array
    local zID, t = nil, nil
@@ -54,13 +55,14 @@ function cD.loadLastSession()
                --
                if cD.junkOBJ == nil and itemCache[iID].rarity == "sellable" then cD.junkOBJ = iID end
                cD.updateLootTable(iID, cnt, true)
+               retval = true
             end
 
          end
       end
    end
 
-   return
+   return retval
 end
 
 
@@ -149,7 +151,7 @@ function cD.createButtonWindow()
 
                -- casts Total
                cD.today.casts =  cD.today.casts + 1
-               cD.sLThdrs[4]:SetText(string.format("%5d", cD.today.casts))
+               cD.sLThdrs[3]:SetText(string.format("%5d", cD.today.casts))
 
                -- show timer on castButton
                cD.poleTimer:SetVisible(true)

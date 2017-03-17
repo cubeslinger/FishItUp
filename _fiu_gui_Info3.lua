@@ -152,7 +152,7 @@ function cD.createInfoWindow()
 --             labelCastsOBJ:SetPoint("TOPLEFT", labelOBJ, "BOTTOMLEFT", 0, cD.borders.top/2)
             labelCastsOBJ:SetPoint("TOPLEFT", container2, "BOTTOMLEFT", cD.borders.left, (cD.borders.top*3))
 
-            -- HEADER   -- CASTS Header [idx=4]
+            -- HEADER   -- CASTS Header [idx=3]
             local castsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals", headerFrame)
             local objColor  =  cD.rarityColor("common") -- green
             castsOBJ:SetText(string.format("%5d", cD.today.casts))
@@ -163,7 +163,7 @@ function cD.createInfoWindow()
             castsOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, castsOBJ )
 
-            -- HEADER   -- SEPARATOR Header [idx=3]
+            -- HEADER   -- SEPARATOR Header
             local sepOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator", headerFrame)
             local objColor  =  cD.rarityColor("common") -- green
             sepOBJ:SetText("/")
@@ -172,10 +172,9 @@ function cD.createInfoWindow()
             sepOBJ:SetLayer(1)
             sepOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
             sepOBJ:SetPoint("TOPLEFT", castsOBJ, "TOPRIGHT", cD.borders.right, 0)
---             table.insert(cD.sLThdrs, lineOBJ )
 
 
-            -- HEADER   -- TOTALS Header [idx=3]
+            -- HEADER   -- TOTALS Header [idx=4]
             local lineOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_totals", headerFrame)
             local objColor  =  cD.rarityColor("common") -- green
             lineOBJ:SetText(totalsText)
@@ -183,7 +182,6 @@ function cD.createInfoWindow()
             lineOBJ:SetFontSize(cD.text.base_font_size)
             lineOBJ:SetLayer(1)
             lineOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-   --          lineOBJ:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", - cD.borders.right, (cD.borders.top*3))
             lineOBJ:SetPoint("TOPLEFT", sepOBJ, "TOPRIGHT", cD.borders.right, 0)
             table.insert(cD.sLThdrs, lineOBJ )
 
@@ -207,11 +205,10 @@ function cD.createInfoWindow()
             timerOBJ:SetFontSize(cD.text.base_font_size)
             timerOBJ:SetLayer(1)
             timerOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         --    timerOBJ:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", cD.borders.left, lineOBJ_1:GetHeight() + lineOBJ_2:GetHeight() + lineOBJ:GetHeight() + castsOBJ:GetHeight())
             timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, timerOBJ )
 
-            -- HEADER   -- SEPARATOR Header [idx=3]
+            -- HEADER   -- SEPARATOR Header
             local sep1OBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator_1", headerFrame)
             local objColor  =  cD.rarityColor("common") -- green
             sep1OBJ:SetText("/")
@@ -219,10 +216,7 @@ function cD.createInfoWindow()
             sep1OBJ:SetFontSize(cD.text.base_font_size)
             sep1OBJ:SetLayer(1)
             sep1OBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-            --          lineOBJ:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", - cD.borders.right, (cD.borders.top*3))
             sep1OBJ:SetPoint("TOPLEFT", timerOBJ, "TOPRIGHT")
---             table.insert(cD.sLThdrs, lineOBJ )
-
 
             -- HEADER   -- DAY TIMER Header [idx=6]
             local dayOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_day_timer", headerFrame)
@@ -235,10 +229,6 @@ function cD.createInfoWindow()
             dayOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
             dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, dayOBJ )
-
-
---    headerFrame:SetHeight(((cD.round(dayOBJ:GetBottom() - headerFrame:GetTop())) /2.5) + cD.borders.bottom*2)
---    infoWindow:SetHeight(((infoWindow:GetTop() + headerFrame:GetHeight() )/2.5) + cD.borders.bottom*2)
 
    headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
    infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 5 )

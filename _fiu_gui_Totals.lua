@@ -15,7 +15,7 @@ local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 
 local tFONTSIZE               =  11
-local tWINWIDTH               =  455
+local tWINWIDTH               =  405
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 

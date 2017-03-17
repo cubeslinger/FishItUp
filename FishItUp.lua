@@ -105,13 +105,13 @@ local function doThings(params)
 
 
    if cD.window.infoObj    == nil then cD.window.infoObj    =  cD.createInfoWindow()   cD.window.infoObj:SetVisible(true)    end
-   if cD.window.lootObj    == nil then cD.window.lootObj    =  cD.createLootWindow()   cD.loadLastSession()    cD.window.lootObj:SetVisible(true)    end
+   if cD.window.lootObj    == nil then cD.window.lootObj    =  cD.createLootWindow()   if cD.loadLastSession() then cD.window.lootObj:SetVisible(true) else cD.window.lootObj:SetVisible(false) end  end
    if cD.window.buttonObj  == nil then cD.window.buttonObj  =  cD.createButtonWindow() cD.window.buttonObj:SetVisible(true)  end
 
    if cD.window.totalsObj  == nil then
       cD.window.totalsObj  =  cD.createTotalsWindow()
       cD.initTotalsWindow()
-      cD.window.totalsObj:SetVisible(true)
+      cD.window.totalsObj:SetVisible(false)
    end
 
    return

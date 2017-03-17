@@ -141,27 +141,32 @@ function cD.gotCastBar(_, info)
 
 end
 
-local function resetObjColor(obj, c)
+local function resetObjColor(idx, c)
+   local obj = cD.sLTtextObjs[idx]
    obj:SetFontColor(c.r, c.g, c.b, c.a)
    return
 end
 
-local function animB(obj, c)
-   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, resetObjColor(obj, c) )
+local function animB(idx, c)
+   local obj = cD.sLTtextObjs[idx]
+   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, resetObjColor(idx, c) )
    return
 end
 
-local function animA(obj,c )
-   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, animB(obj, c))
+local function animA(idx, c )
+   local obj = cD.sLTtextObjs[idx]
+   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, animB(idx, c))
    return
 end
 
 
-local function runFontColorAnimation(obj)
-   -- animation
+local function runFontColorAnimation(idx)
+   local obj = cD.sLTtextObjs[idx]
+   -- save original color
    local c = {}
+
    c.r, c.g, c.b, c.a = obj:GetFontColor()
-   obj:AnimateFontColor(2, "smoothstep", c.r, 1, c.b, c.a, animA(obj, c))
+   obj:AnimateFontColor(2, "smoothstep", c.r, 1, c.b, c.a, animA(idx, c))
    return
 end
 
@@ -226,6 +231,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          end
       end
 
+      -- is it already in lootTable?
       for key, val in pairs(cD.sLTids) do
          if val == itemID then
             idx = key
@@ -241,16 +247,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.updatePercents(cD.get_totals())
 --          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
-         -- animation
---          local r, g, b, a = cD.sLTtextObjs[idx]:GetFontColor()
---          cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 0, b, 0,
---                function() cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 1, b, 1,
---                   function() cD.sLTtextObjs[idx]:SetFontColor(r, g, b, a) end)
---                end
---          )
-         local obj = cD.sLTtextObjs[idx]
-         runFontColorAnimation(obj)
-
+--          runFontColorAnimation(idx)
 
       else
          --
@@ -274,17 +271,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
-         -- animation
-         local r, g, b, a = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetFontColor()
-         cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 1, b, a,
-               function()
-                  cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 0, b, a,
-                     function()
-                        cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetFontColor(r, g, b, a)
-                     end
-                     )
-               end
-               )
+--          runFontColorAnimation(table.getn(cD.sLTtextObjs))
 
          retval	=	true
       end
@@ -310,6 +297,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
    else
       print("ERROR in updateLootTable, lootOBJ.id is nil")
    end
+
+   if not cD.window.lootObj:GetVisible() then cD.window.lootObj:SetVisible(true) end
 
    return retval
 end
