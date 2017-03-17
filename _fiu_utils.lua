@@ -265,7 +265,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       local totN  =  cD.get_totals()
 --       local totS  =  string.format("Totals : %5d", totN)
       local totS  =  string.format("%5d", totN)
-      cD.sLThdrs[3]:SetText(totS)
+      cD.sLThdrs[4]:SetText(totS)
       cD.timeRStart  =  nil
       --
       -- Adjust Waterlog Totals

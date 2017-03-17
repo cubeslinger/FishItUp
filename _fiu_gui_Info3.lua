@@ -83,13 +83,14 @@ function cD.createInfoWindow()
       infoWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cD.window.infoX or 0, cD.window.infoY or 0)
    end
 
-   infoWindow:SetWidth(tWIDTH)
+--    infoWindow:SetWidth(tWIDTH)
+   infoWindow:SetWidth(cD.window.width)
    infoWindow:SetLayer(-1)
    infoWindow:SetBackgroundColor(0, 0, 0, .5)
 
    -- WINDOW Title
    local zone, subZone, zoneID =  cD.getZoneInfos()
-   local totalsText    =   string.format("%5d", 0)
+   local totalsText    =   string.format("%d", 0)
 
    local titleBar =  createTitleBar(infoWindow)
 
@@ -106,7 +107,7 @@ function cD.createInfoWindow()
          -- HEADER   -- ZONE NAME CONTAINER Header
          local container1  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_zone_container", headerFrame)
          container1:SetLayer(1)
-         container1:SetPoint("TOPLEFT",  headerFrame, "TOPLEFT",  cD.borders.left,  cD.borders.top*2)
+         container1:SetPoint("TOPLEFT",  headerFrame, "TOPLEFT",  0,  cD.borders.top*2)
          container1:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", 0,  cD.borders.top*2)
 
             -- HEADER   -- ZONE NAME Header [idx=1]
@@ -139,60 +140,16 @@ function cD.createInfoWindow()
             table.insert(cD.sLThdrs, lineOBJ_1 )
 
 
-         -- HEADER   -- LABEL -- ZONE MIN SKILL Header
-         local labelMinSkillOBJ  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_zoneminskill_label", headerFrame)
-         local objColor  =  cD.rarityColor("quest") -- green
-         labelMinSkillOBJ:SetText("Skill  :")
-         labelMinSkillOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-         labelMinSkillOBJ:SetFontSize(tFONTSIZE)
-         labelMinSkillOBJ:SetLayer(1)
-         labelMinSkillOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         labelMinSkillOBJ:SetPoint("TOPLEFT", container2, "BOTTOMLEFT", cD.borders.left, (cD.borders.top*3))
-
-            -- HEADER   -- ZONE MIN SKILL Header
-            local lineMinSkillOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_zoneminskill", headerFrame)
-            local objColor  =  cD.rarityColor("common") -- green
-            lineMinSkillOBJ:SetText(string.format("%5s", cD.getZoneMinSkill(zoneID)))
-            lineMinSkillOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-            lineMinSkillOBJ:SetFontSize(tFONTSIZE)
-            lineMinSkillOBJ:SetLayer(1)
-            lineMinSkillOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-            lineMinSkillOBJ:SetPoint("TOPLEFT", labelMinSkillOBJ, "TOPRIGHT", cD.borders.left, 0)
-         --    table.insert(cD.sLThdrs, lineOBJ )
-
-
-         -- HEADER   -- LABEL -- TOTALS Header
-         local labelOBJ  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_totals_label", headerFrame)
-         local objColor  =  cD.rarityColor("quest") -- green
-         labelOBJ:SetText("Totals :")
-         labelOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-         labelOBJ:SetFontSize(tFONTSIZE)
-         labelOBJ:SetLayer(1)
-         labelOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         labelOBJ:SetPoint("TOPLEFT", labelMinSkillOBJ, "BOTTOMLEFT", 0, cD.borders.top/2)
-
-            -- HEADER   -- TOTALS Header [idx=3]
-            local lineOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_totals", headerFrame)
-            local objColor  =  cD.rarityColor("common") -- green
-            lineOBJ:SetText(totalsText)
-            lineOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-            lineOBJ:SetFontSize(tFONTSIZE)
-            lineOBJ:SetLayer(1)
-            lineOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-            lineOBJ:SetPoint("TOPLEFT", labelOBJ, "TOPRIGHT", cD.borders.left, 0)
-            table.insert(cD.sLThdrs, lineOBJ )
-
-
-
-         -- HEADER   -- LABEL -- CASTS Header
-         local labelCastsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals_label", headerFrame)
-         local objColor  =  cD.rarityColor("quest") -- green
-         labelCastsOBJ:SetText("Casts  :")
-         labelCastsOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-         labelCastsOBJ:SetFontSize(tFONTSIZE)
-         labelCastsOBJ:SetLayer(1)
-         labelCastsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         labelCastsOBJ:SetPoint("TOPLEFT", labelOBJ, "BOTTOMLEFT", 0, cD.borders.top/2)
+            -- HEADER   -- LABEL -- CASTS Header
+            local labelCastsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals_label", headerFrame)
+            local objColor  =  cD.rarityColor("quest") -- green
+            labelCastsOBJ:SetText("Casts/Catches:")
+            labelCastsOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+            labelCastsOBJ:SetFontSize(tFONTSIZE)
+            labelCastsOBJ:SetLayer(1)
+            labelCastsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+--             labelCastsOBJ:SetPoint("TOPLEFT", labelOBJ, "BOTTOMLEFT", 0, cD.borders.top/2)
+            labelCastsOBJ:SetPoint("TOPLEFT", container2, "BOTTOMLEFT", cD.borders.left, (cD.borders.top*3))
 
             -- HEADER   -- CASTS Header [idx=4]
             local castsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals", headerFrame)
@@ -202,16 +159,39 @@ function cD.createInfoWindow()
             castsOBJ:SetFontSize(tFONTSIZE)
             castsOBJ:SetLayer(1)
             castsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         --    castsOBJ:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", - cD.borders.right, lineOBJ_1:GetHeight() + lineOBJ_2:GetHeight())
-         --    castsOBJ:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", cD.borders.left, lineOBJ_1:GetHeight() + lineOBJ_2:GetHeight() + lineOBJ_2:GetHeight())
             castsOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, castsOBJ )
+
+            -- HEADER   -- SEPARATOR Header [idx=3]
+            local sepOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator", headerFrame)
+            local objColor  =  cD.rarityColor("common") -- green
+            sepOBJ:SetText("/")
+            sepOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+            sepOBJ:SetFontSize(tFONTSIZE)
+            sepOBJ:SetLayer(1)
+            sepOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+            sepOBJ:SetPoint("TOPLEFT", castsOBJ, "TOPRIGHT", cD.borders.right, 0)
+--             table.insert(cD.sLThdrs, lineOBJ )
+
+
+            -- HEADER   -- TOTALS Header [idx=3]
+            local lineOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_totals", headerFrame)
+            local objColor  =  cD.rarityColor("common") -- green
+            lineOBJ:SetText(totalsText)
+            lineOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+            lineOBJ:SetFontSize(tFONTSIZE)
+            lineOBJ:SetLayer(1)
+            lineOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+   --          lineOBJ:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", - cD.borders.right, (cD.borders.top*3))
+            lineOBJ:SetPoint("TOPLEFT", sepOBJ, "TOPRIGHT", cD.borders.right, 0)
+            table.insert(cD.sLThdrs, lineOBJ )
+
 
          -- HEADER -- LABEL  -- CAST TIMER Header
          local labelTimerOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_session_timer", headerFrame)
          local objColor  =  cD.rarityColor("quest") -- green
 
-         labelTimerOBJ:SetText("Timer  :")
+         labelTimerOBJ:SetText("Time/Session :")
          labelTimerOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
          labelTimerOBJ:SetFontSize(tFONTSIZE)
          labelTimerOBJ:SetLayer(1)
@@ -228,36 +208,41 @@ function cD.createInfoWindow()
             timerOBJ:SetLayer(1)
             timerOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
          --    timerOBJ:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", cD.borders.left, lineOBJ_1:GetHeight() + lineOBJ_2:GetHeight() + lineOBJ:GetHeight() + castsOBJ:GetHeight())
-         timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT", cD.borders.left, 0)
+            timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT", cD.borders.left, 0)
             table.insert(cD.sLThdrs, timerOBJ )
 
-
-
-         -- HEADER -- LABEL  -- DAY TIMER Header [idx=6]
-         local labelDayOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_day_timer_label", headerFrame)
-         local objColor  =  cD.rarityColor("quest") -- green
-
-         labelDayOBJ:SetText("Session:")
-         labelDayOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-         labelDayOBJ:SetFontSize(tFONTSIZE)
-         labelDayOBJ:SetLayer(1)
-         labelDayOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         labelDayOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "BOTTOMLEFT", 0, cD.borders.top/2)
-
-            -- HEADER   -- DAY TIMER Header [idx=6]
-            local dayOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_day_timer", headerFrame)
+            -- HEADER   -- SEPARATOR Header [idx=3]
+            local sep1OBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator_1", headerFrame)
             local objColor  =  cD.rarityColor("common") -- green
-            dayOBJ:SetText("--:--")
-            dayOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-            dayOBJ:SetFontSize(tFONTSIZE)
-            dayOBJ:SetHeight(tFONTSIZE)
-            dayOBJ:SetLayer(1)
-            dayOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-            dayOBJ:SetPoint("TOPLEFT", labelDayOBJ, "TOPRIGHT", cD.borders.left, 0)
-            table.insert(cD.sLThdrs, dayOBJ )
+            sep1OBJ:SetText("/")
+            sep1OBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+            sep1OBJ:SetFontSize(tFONTSIZE)
+            sep1OBJ:SetLayer(1)
+            sep1OBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+            --          lineOBJ:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", - cD.borders.right, (cD.borders.top*3))
+            sep1OBJ:SetPoint("TOPLEFT", timerOBJ, "TOPRIGHT")
+--             table.insert(cD.sLThdrs, lineOBJ )
 
-   headerFrame:SetHeight(((cD.round(labelDayOBJ:GetBottom() - headerFrame:GetTop())) /2.5) + cD.borders.bottom*2)
-   infoWindow:SetHeight(((infoWindow:GetTop() + headerFrame:GetHeight() )/2.5) + cD.borders.bottom*2)
+
+         -- HEADER   -- DAY TIMER Header [idx=6]
+         local dayOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_day_timer", headerFrame)
+         local objColor  =  cD.rarityColor("common") -- green
+         dayOBJ:SetText("--:--")
+         dayOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+         dayOBJ:SetFontSize(tFONTSIZE)
+         dayOBJ:SetHeight(tFONTSIZE)
+         dayOBJ:SetLayer(1)
+         dayOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+         dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.left, 0)
+         table.insert(cD.sLThdrs, dayOBJ )
+
+
+--    headerFrame:SetHeight(((cD.round(dayOBJ:GetBottom() - headerFrame:GetTop())) /2.5) + cD.borders.bottom*2)
+--    infoWindow:SetHeight(((infoWindow:GetTop() + headerFrame:GetHeight() )/2.5) + cD.borders.bottom*2)
+
+   headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom * 2 )
+   infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 2 )
+
 
    -- Enable Dragging
    Library.LibDraggable.draggify(infoWindow, cD.updateGuiCoordinates)
@@ -272,8 +257,9 @@ function  cD.resetInfoWindow()
    --
 --    totalsCnt:SetFont(cD.addon, "fonts/unispace.ttf")
 --    totalsCnt:SetFontSize(tFONTSIZE)
-   cD.sLThdrs[3]:SetText(string.format("%5d", 0))
-   cD.sLThdrs[4]:SetText(string.format("%5d", cD.today.casts))
+
+   cD.sLThdrs[3]:SetText(string.format("%5d", cD.today.casts))
+   cD.sLThdrs[4]:SetText(string.format("%5d", 0))
    cD.sLThdrs[5]:SetText("--:--")
    cD.sLThdrs[6]:SetText("--:--")
    local zone, subzone = cD.getZoneInfos()
