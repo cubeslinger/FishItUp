@@ -132,8 +132,10 @@ function cD.createInfoWindow()
 --             graphSep:SetHeight(titleFIU:GetHeight())
             graphSep:SetHeight(cD.text.base_font_size/2)
             graphSep:SetLayer(1)
-            graphSep:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.right,   cD.borders.top *3)
-            graphSep:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", - cD.borders.right, cD.borders.top *3)
+--             graphSep:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.right,   cD.borders.top *3)
+--             graphSep:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", - cD.borders.right, cD.borders.top *3)
+            graphSep:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  - cD.borders.left,   cD.borders.top *4)
+            graphSep:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", cD.borders.right, cD.borders.top *4)
 
 
             -- HEADER   -- LABEL -- CASTS Header
@@ -145,7 +147,7 @@ function cD.createInfoWindow()
             labelCastsOBJ:SetLayer(1)
             labelCastsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
 --             labelCastsOBJ:SetPoint("TOPLEFT", container2, "BOTTOMLEFT", cD.borders.left, (cD.borders.top*3))
-            labelCastsOBJ:SetPoint("TOPLEFT", graphSep, "BOTTOMLEFT", cD.borders.left, (cD.borders.top))
+            labelCastsOBJ:SetPoint("TOPLEFT", graphSep, "BOTTOMLEFT", cD.borders.left *5, (cD.borders.top))
 
             -- HEADER   -- CASTS Header [idx=3]
             local castsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals", headerFrame)
