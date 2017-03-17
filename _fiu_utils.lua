@@ -443,7 +443,7 @@ end
 
 function cD.categoryIcon(categoryName, objID, desc)
    local retval   =  nil
-   if desc ~= nil then print(string.format("DESC [%s]", desc)) end
+--    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
    if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"                          -- artifact icon
    elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"                 -- exclamation point
    elseif   string.find( categoryName, "dimension") ~= nil then   retval = "Minion_1153.dds"                         -- little key

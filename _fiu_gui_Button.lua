@@ -120,7 +120,7 @@ function cD.createButtonWindow()
 
          function poleCastButton.Event:LeftClick()
             local currentMacro   =  poleCastButton:EventMacroGet(Event.UI.Input.Mouse.Left.Click)
-            print(string.format("CurrentMacro [%s]", currentMacro))
+--             print(string.format("CurrentMacro [%s]", currentMacro))
             if currentMacro ~= "stopcasting" then
 
                -- change button Action to "/stopcasting"

@@ -76,6 +76,8 @@ function cD.createTotalsWindow()
       lootIcon:SetLayer(3)
       lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end , "Iconize Totals Pressed" )
 
+--    titleTotalsFrame:SetHeight(tFONTSIZE)
+
    -- EXTERNAL TOTALS CONTAINER FRAME
    local externaTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
    externaTotalsFrame:SetPoint("TOPLEFT",     cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMLEFT",  cD.borders.left,    cD.borders.top)

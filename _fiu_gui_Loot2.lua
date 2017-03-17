@@ -53,7 +53,6 @@ function cD.createLootWindow()
    local maskFrame = UI.CreateFrame("Mask", "Loot_Mask_Frame", cD.sLTFrames[EXTERNALLOOTFRAME])
    maskFrame:SetAllPoints(cD.sLTFrames[EXTERNALLOOTFRAME])
    cD.sLTFrames[MASKFRAME]  = maskFrame
-   --    maskFrame:SetBackgroundColor(1, 0, 0, .3)
 
    -- LOOT CONTAINER FRAME
    local lootFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sLTFrames[MASKFRAME])
@@ -302,6 +301,10 @@ function  cD.resetLootWindow()
    --
    local zn = Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
    cD.lastZoneLootObjs[zn] = nil
+   --
+   -- list is empty, so nothing to show
+   --
+   cD.lootObj:SetVisible(false)
 
    return
 end
