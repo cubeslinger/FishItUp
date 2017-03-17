@@ -58,7 +58,7 @@ end
 
 function cD.createInfoWindow()
 
-   --Global context (parent frame-thing).
+   -- Global context (parent frame-thing).
    local infoWindow  =  UI.CreateFrame("Frame", "Info", UI.CreateContext("Info_context"))
 
    if cD.window.infoX == nil or cD.window.infoY == nil then
@@ -225,8 +225,13 @@ function cD.createInfoWindow()
             dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.right, 0)
             table.insert(cD.sLThdrs, dayOBJ )
 
-   headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
-   infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 10 )
+--    headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
+--    infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 10 )
+   
+      cD.sLTFrames[HEADERFRAME]:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
+      infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 10 )
+   
+
 
 
    -- Enable Dragging

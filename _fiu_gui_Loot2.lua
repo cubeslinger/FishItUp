@@ -304,7 +304,7 @@ function  cD.resetLootWindow()
    --
    -- list is empty, so nothing to show
    --
-   cD.lootObj:SetVisible(false)
+   cD.window.lootObj:SetVisible(false)
 
    return
 end
@@ -375,8 +375,6 @@ function cD.sortLootTable(parent)
       -- find the frame with the lowest bottom Y position
       for idx in pairs(cD.sLTfullObjs) do if highestX < cD.sLTfullObjs[idx]:GetBottom() then highestX = cD.sLTfullObjs[idx]:GetBottom() end end
       cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *3))
-
-
    end
 
 --    print(string.format("Cleared [%s] re-assigned [%s]", cntPre, cntPost))
