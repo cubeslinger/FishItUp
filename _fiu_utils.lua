@@ -141,6 +141,30 @@ function cD.gotCastBar(_, info)
 
 end
 
+local function resetObjColor(obj, c)
+   obj:SetFontColor(c.r, c.g, c.b, c.a)
+   return
+end
+
+local function animB(obj, c)
+   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, resetObjColor(obj, c) )
+   return
+end
+
+local function animA(obj,c )
+   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, animB(obj, c))
+   return
+end
+
+
+local function runFontColorAnimation(obj)
+   -- animation
+   local c = {}
+   c.r, c.g, c.b, c.a = obj:GetFontColor()
+   obj:AnimateFontColor(2, "smoothstep", c.r, 1, c.b, c.a, animA(obj, c))
+   return
+end
+
 
 function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
@@ -218,12 +242,14 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 --          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
          -- animation
-         local r, g, b, a = cD.sLTtextObjs[idx]:GetFontColor()
-         cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 0, b, 0,
-               function() cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 1, b, 1,
-                  function() cD.sLTtextObjs[idx]:SetFontColor(r, g, b, a) end)
-               end
-         )
+--          local r, g, b, a = cD.sLTtextObjs[idx]:GetFontColor()
+--          cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 0, b, 0,
+--                function() cD.sLTtextObjs[idx]:AnimateFontColor(2, "smoothstep", r, 1, b, 1,
+--                   function() cD.sLTtextObjs[idx]:SetFontColor(r, g, b, a) end)
+--                end
+--          )
+         local obj = cD.sLTtextObjs[idx]
+         runFontColorAnimation(obj)
 
 
       else
@@ -250,11 +276,15 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
          -- animation
          local r, g, b, a = cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:GetFontColor()
-         cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, g, b, 0,
-               function() cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 0, b, 1,
-                  function() cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetFontColor(r, 1, b, a) end)
+         cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 1, b, a,
+               function()
+                  cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:AnimateFontColor(2, "smoothstep", r, 0, b, a,
+                     function()
+                        cD.sLTtextObjs[table.getn(cD.sLTtextObjs)]:SetFontColor(r, g, b, a)
+                     end
+                     )
                end
-         )
+               )
 
          retval	=	true
       end
