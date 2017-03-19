@@ -1,7 +1,7 @@
 Identifier  =  "FishItUp"
 Name        =  { English = "FishItUp" }
 NameShort   =  "FishItUp"
-Version     =  "0.24.31"
+Version     =  "0.24.32"
 Description =  { English = "FishItUp! use /fiu to show or hide fishing window" }
 Author      =  "marcob@marcob.org"
 Website     =  "http://www.fu.bar/"

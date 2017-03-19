@@ -102,7 +102,7 @@ function cD.createButtonWindow()
 
    local tFONTSIZE        =   11
    local poleCastTimerOBJ =   UI.CreateFrame("Text", buttonFrame:GetName().."_poleCastTimer", buttonFrame)
-   poleCastTimerOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+   poleCastTimerOBJ:SetFont(cD.addon, cD.text.base_font_name)
    poleCastTimerOBJ:SetFontSize(tFONTSIZE+7)
    poleCastTimerOBJ:SetText("00")
    poleCastTimerOBJ:SetLayer(1)

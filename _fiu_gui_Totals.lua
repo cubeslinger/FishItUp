@@ -14,7 +14,7 @@ local EXTERNALTOTALSFRAME     =  3
 local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 
-local tFONTSIZE               =  11
+-- local cD.text.base_font_size               =  11
 local tWINWIDTH               =  405
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
@@ -47,22 +47,22 @@ function cD.createTotalsWindow()
    titleTotalsFrame:SetPoint("TOPRIGHT",    totalsWindow, "TOPRIGHT",    - cD.borders.right, cD.borders.top)
    titleTotalsFrame:SetBackgroundColor(.1, .1, .1, .7)
    titleTotalsFrame:SetLayer(1)
-   titleTotalsFrame:SetHeight(tFONTSIZE + 4)
+   titleTotalsFrame:SetHeight(cD.text.base_font_size + 4)
    cD.sTOFrames[TITLEBARTOTALSFRAME]  =   titleTotalsFrame
 
       -- TITLE BAR TITLE
       local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleTotalsFrame)
-      titleFIU:SetFontSize(tFONTSIZE)
+      titleFIU:SetFontSize(cD.text.base_font_size)
       titleFIU:SetText("FIU! Lifetime Totals")
-      titleFIU:SetFont(cD.addon, "fonts/unispace.ttf")
+      titleFIU:SetFont(cD.addon, cD.text.base_font_name)
       titleFIU:SetLayer(3)
       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 1)
       cD.sTOFrames[TITLEBARTCONTENTFRAME]  =   titleFIU
 
       -- TITLE BAR Widgets: setup Icon Frame
       titleIcon1  =  UI.CreateFrame("Texture", "Title_Icon_1_Frame", cD.sTOFrames[TITLEBARTOTALSFRAME])
-      titleIcon1:SetWidth(tFONTSIZE)
-      titleIcon1:SetHeight(tFONTSIZE)
+      titleIcon1:SetWidth(cD.text.base_font_size)
+      titleIcon1:SetHeight(cD.text.base_font_size)
       titleIcon1:SetLayer(2)
       titleIcon1:SetBackgroundColor(0, 0, 0, .5)
       titleIcon1:SetPoint("TOPRIGHT",   cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPRIGHT", -cD.borders.right, 0)
@@ -70,13 +70,13 @@ function cD.createTotalsWindow()
       -- TITLE BAR Widgets: setup Icon
       lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", titleIcon1)
       lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
-      lootIcon:SetWidth(tFONTSIZE)
-      lootIcon:SetHeight(tFONTSIZE)
+      lootIcon:SetWidth(cD.text.base_font_size)
+      lootIcon:SetHeight(cD.text.base_font_size)
       lootIcon:SetPoint("CENTER",    titleIcon1, "CENTER")
       lootIcon:SetLayer(3)
       lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end , "Iconize Totals Pressed" )
 
---    titleTotalsFrame:SetHeight(tFONTSIZE)
+--    titleTotalsFrame:SetHeight(cD.text.base_font_size)
 
    -- EXTERNAL TOTALS CONTAINER FRAME
    local externaTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
@@ -149,8 +149,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    local zn = string.sub(zoneName, 1, tMAXSTRINGSIZE)
    znOBJ:SetWidth(150)
    znOBJ:SetLayer(3)
-   znOBJ:SetFontSize(tFONTSIZE)
-   znOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+   znOBJ:SetFontSize(cD.text.base_font_size)
+   znOBJ:SetFont(cD.addon, cD.text.base_font_name)
    znOBJ:SetText(zn)
    znOBJ:SetPoint("TOPLEFT",   totalsFrame, "TOPLEFT", cD.borders.left, 2)
 
@@ -159,8 +159,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    for idx, _ in pairs(zoneTotals) do
       -- setup Totals Item's Counter
       local totalsCnt  =  UI.CreateFrame("Text", "Totals_Cnt_" .. idx, totalsFrame)
-      totalsCnt:SetFont(cD.addon, "fonts/unispace.ttf")
-      totalsCnt:SetFontSize(tFONTSIZE)
+      totalsCnt:SetFont(cD.addon, cD.text.base_font_name)
+      totalsCnt:SetFontSize(cD.text.base_font_size)
 
       totalsCnt:SetText(string.format("%3d", zoneTotals[idx]))
       totalsCnt:SetLayer(3)

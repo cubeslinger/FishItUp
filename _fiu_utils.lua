@@ -331,7 +331,7 @@ function cD.gotLoot(h, eventTable)
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
                --
                if not cD.waitingForTheSunRunning then
-                  Command.Event.Attach(Event.System.Update.Begin, waitingForTheSun, "Event.System.Update.Begin")
+                  Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
                   cD.waitingForTheSunRunning =  true
                end
             end
@@ -446,7 +446,7 @@ function cD.categoryIcon(categoryName, objID, desc)
 --    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
    if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"                          -- artifact icon
    elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"                 -- exclamation point
-   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "Minion_1153.dds"                         -- little key
+   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "Minion_I153.dds"                         -- little key
    elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
    end
   return retval
@@ -493,3 +493,23 @@ function searchArrayByValue(table, value2search)
 
    return retval
 end
+
+--[[
+Error: Incorrect function usage.
+  Parameters: (table: 2fb09128), nil, "Event.System.Update.Begin"
+  Parameter types: eventGlobal, nil, string
+Function documentation:
+	Attaches an event handler to an event.
+		Command.Event.Attach(event, handler, label)   -- eventGlobal, function, string
+		Command.Event.Attach(event, handler, label, priority)   -- eventGlobal, function, string, number
+Parameters:
+		event:	A global event handle, usually pulled out of the "Event." hierarchy.
+		handler:	A global event handler function. This will be called when the event fires. The first parameter will be the standard global event handle, any other parameters will follow that.
+		label:	Human-readable label used to identify the handler in error reports, performance reports, and for later detaching.
+		priority:	Priority of the event handler. Higher numbers trigger first.
+    In FishItUp / gotLoot, event Event.Item.Slot
+stack traceback:
+	[C]: ?
+	[C]: in function 'Attach'
+	FishItUp/_fiu_utils.lua:334: in function <FishItUp/_fiu_utils.lua:307>
+    ]]--

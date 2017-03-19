@@ -130,14 +130,14 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       typeIconFrame:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 0)
 
       --
-      -- Actually we draw Icons for just 2 itemtypes: Exchangeabel Fishes and Artifacts.
+      -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
       --
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
-      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
+      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) else typeIcon:SetTexture("Rift", "") end
       typeIcon:SetWidth(cD.text.base_font_size + 4)
       typeIcon:SetHeight(cD.text.base_font_size + 4)
       typeIcon:SetPoint("CENTER",    typeIconFrame, "CENTER")
@@ -162,7 +162,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Counter
       lootCnt  =  UI.CreateFrame("Text", "Loot_Cnt_" .. itemName, lootFrame)
-      lootCnt:SetFont(cD.addon, "fonts/unispace.ttf")
+      lootCnt:SetFont(cD.addon, cD.text.base_font_name)
       lootCnt:SetFontSize(cD.text.base_font_size )
       lootCnt:SetText(string.format("%3d", txtCnt))
       lootCnt:SetLayer(3)
@@ -179,7 +179,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       local objColor =  cD.rarityColor(objRarity)
       local lootText =  itemName
-      textOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
+      textOBJ:SetFont(cD.addon, cD.text.base_font_name)
       lootText =  string.sub(lootText, 1, 20)
       textOBJ:SetFontSize(cD.text.base_font_size )
       textOBJ:SetHeight(cD.text.base_font_size)
@@ -193,8 +193,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Percentage counter
       prcntCnt  =  UI.CreateFrame("Text", "Percent_" .. itemName, lootFrame)
-      textOBJ:SetFont(cD.addon, "fonts/unispace.ttf")
-      prcntCnt:SetFontSize(cD.text.base_font_size )
+      prcntCnt:SetFont(cD.addon, cD.text.base_font_name)
+      prcntCnt:SetFontSize(cD.text.base_font_size -2)
       prcntCnt:SetText(string.format("(%2d", 0).."%)")
       prcntCnt:SetLayer(3)
       prcntCnt:SetPoint("TOPLEFT",  textOBJ,    "TOPRIGHT", cD.borders.left, 0)

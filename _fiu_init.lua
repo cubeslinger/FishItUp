@@ -126,8 +126,9 @@ local function _init()
    cD.poleTimer   =  nil
 
    cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
---    cD.text        =  {  base_font_size=16 }
-   cD.text        =  {  base_font_size=11 }
+   cD.text        =  {  base_font_size=14,
+                        base_font_name="fonts/MonospaceTypewriter.ttf"
+                     }
    cD.timeStart   =  nil
    cD.time2Wait   =  .5             -- wait .2 more second
    cD.waitingForTheSunRunning =  false
@@ -202,6 +203,8 @@ function cD.fiuLoadVariables(_, addonName)
          end
       end
    end
+   
+   if cD.text.base_font_name ~= nil then cD.text.base_font_name = "fonts/MonospaceTypewriter.ttf" end
 
    return
 end
