@@ -137,7 +137,12 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
-      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) else typeIcon:SetTexture("Rift", "") end
+      if  categoryIcon ~= nil then
+         typeIcon:SetTexture("Rift", categoryIcon)
+         typeIcon:SetVisible(true)
+      else
+         typeIcon:SetVisible(false)
+      end
       typeIcon:SetWidth(cD.text.base_font_size + 4)
       typeIcon:SetHeight(cD.text.base_font_size + 4)
       typeIcon:SetPoint("CENTER",    typeIconFrame, "CENTER")

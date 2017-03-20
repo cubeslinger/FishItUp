@@ -187,6 +187,11 @@ function cD.createButtonWindow()
                cD.timeRStart  =  nil
                Command.Event.Attach(Event.System.Update.Begin,       cD.fishTimer,        "Player is Fishing")
             else
+               --
+               -- stop eventually still running loot event monitor
+               --
+               cD.detachLootWatchers()
+               cD.poleTimer:SetVisible(false)
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
             end
          end
