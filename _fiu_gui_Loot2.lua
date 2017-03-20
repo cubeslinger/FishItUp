@@ -122,6 +122,9 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
          lootFrame:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
       end
 
+      --
+      -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
+      --
       -- setup Loot Item's Type Icon Frame
       typeIconFrame = UI.CreateFrame("Texture", "Type_Icon_Frame" .. itemName, lootFrame)
       typeIconFrame:SetHeight(cD.text.base_font_size)
@@ -129,9 +132,6 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       typeIconFrame:SetLayer(2)
       typeIconFrame:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 0)
 
-      --
-      -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
-      --
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
 
@@ -304,7 +304,7 @@ function  cD.resetLootWindow()
    --
    -- list is empty, so nothing to show
    --
-   cD.window.lootObj:SetVisible(false)
+   if cD.window.lootObj ~= nil then cD.window.lootObj:SetVisible(false) end
 
    return
 end
