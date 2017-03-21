@@ -89,6 +89,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
 
    if fromHistory == nil then fromHistory = false end
+
    if fromHistory == true then
       itemID      =  cD.itemCache[lootOBJ].id
       itemName    =  cD.itemCache[lootOBJ].name
@@ -137,12 +138,14 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
-      if  categoryIcon ~= nil then
-         typeIcon:SetTexture("Rift", categoryIcon)
-         typeIcon:SetVisible(true)
-      else
-         typeIcon:SetVisible(false)
-      end
+--       if  categoryIcon ~= nil then
+--          typeIcon:SetTexture("Rift", categoryIcon)
+--          typeIcon:SetVisible(true)
+--       else
+--          typeIcon:SetVisible(false)
+--       end
+      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
+
       typeIcon:SetWidth(cD.text.base_font_size + 4)
       typeIcon:SetHeight(cD.text.base_font_size + 4)
       typeIcon:SetPoint("CENTER",    typeIconFrame, "CENTER")
@@ -218,6 +221,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       table.insert(cD.Stock, tmp)
    else
+      print(string.format("REUSING old frame from STOCK: name[%s] cat[%s]", itemCat, Inspect.Item.Detail(lootOBJ).name))
       --
       -- We recycle an old set of object, so we need just
       -- to put in new values
@@ -236,7 +240,11 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
-      if  categoryIcon ~= nil then  typeIcon:SetTexture("Rift", categoryIcon) end
+      if  categoryIcon ~= nil then
+         typeIcon:SetTexture("Rift", categoryIcon)
+      else
+         typeIcon:SetTexture("Rift", "")
+      end
 
       -- setup Loot Item's Icon
       lootIcon:SetTexture("Rift", Inspect.Item.Detail(lootOBJ).icon)
@@ -247,7 +255,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       -- setup Loot Item's Text Color based on Loot Item Rarity
       --
-            local objRarity   =  Inspect.Item.Detail(lootOBJ).rarity
+      local objRarity   =  Inspect.Item.Detail(lootOBJ).rarity
       local objColor    =  cD.rarityColor(objRarity)
       local lootText    =  Inspect.Item.Detail(lootOBJ).name
 
@@ -263,9 +271,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       prcntCnt:SetText(string.format("(%2d)", 0).."%")
 
       --
-            -- finally we set the whole container Frame visible
+      -- finally we set the whole container Frame visible but
+      -- only in infoWindow is visible too.
       --
-            lootFrame:SetVisible(true)
+      if cD.window.infoObj:GetVisible() == true then lootFrame:SetVisible(true) end
 
    end
 
