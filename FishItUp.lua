@@ -74,63 +74,27 @@ local function doThings(params)
 --    print(string.format("cD.window.lootObj    [%s]", cD.window.lootObj))
 --    print(string.format("cD.window.buttonObj  [%s]", cD.window.buttonObj))
 
---    if cD.window.infoObj    ~= nil  then
---       if cD.window.infoObj:GetVisible()   == true then
---          cD.window.infoObj:SetVisible(false)
---       else
---          cD.window.infoObj:SetVisible(true)
---       end
---    end
---    if cD.window.lootObj    ~= nil  then
---       if cD.window.lootObj:GetVisible() == true then
---          cD.window.lootObj:SetVisible(false)
---       else
---          cD.window.lootObj:SetVisible(true)
---       end
---    end
---    if cD.window.buttonObj  ~= nil  then
---       if cD.window.buttonObj:GetVisible() == true then
---          cD.window.buttonObj:SetVisible(false)
---       else
---          cD.window.buttonObj:SetVisible(true)
---       end
---    end
---    if cD.window.totalsObj  ~= nil  then
---       if cD.window.totalsObj:GetVisible() == true then
---          cD.window.totalsObj:SetVisible(false)
---       else
---          cD.window.totalsObj:SetVisible(true)
---       end
---    end
-
    -- Create Display/Hide infoWindow
-   if cD.window.infoObj    == nil then cD.window.infoObj    =  cD.createInfoWindow()
+   if cD.window.infoObj    == nil then
+      cD.window.infoObj    =  cD.createInfoWindow()
       cD.window.infoObj:SetVisible(true)
+   else
+      cD.window.infoObj:SetVisible(not cD.window.infoObj:GetVisible())
    end
 
    -- Create/Display lootWindow
    if cD.window.lootObj    == nil then
       cD.window.lootObj    =  cD.createLootWindow()
-      if cD.loadLastSession() then
-         if cD.window.infoObj:GetVisible() == true then
-            cD.window.lootObj:SetVisible(true)
-         else
-            cD.window.lootObj:SetVisible(false)
-         end
-      else
-         cD.window.lootObj:SetVisible(false)
-      end
+      cD.loadLastSession()
    end
+   cD.window.lootObj:SetVisible(cD.window.infoObj:GetVisible())
 
    -- Create/Display buttonWindow
    if cD.window.buttonObj  == nil then
       cD.window.buttonObj  =  cD.createButtonWindow()
-      if cD.window.infoObj:GetVisible() == true then
-         cD.window.buttonObj:SetVisible(true)
-      else
-         cD.window.buttonObj:SetVisible(false)
-      end
    end
+   cD.window.buttonObj:SetVisible(cD.window.infoObj:GetVisible())
+
    -- Create/Display totalsWindow
    if cD.window.totalsObj  == nil then
       cD.window.totalsObj  =  cD.createTotalsWindow()
