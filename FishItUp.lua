@@ -83,11 +83,17 @@ local function doThings(params)
    end
 
    -- Create/Display lootWindow
+   local filled = false
    if cD.window.lootObj    == nil then
       cD.window.lootObj    =  cD.createLootWindow()
-      cD.loadLastSession()
+      filled = cD.loadLastSession()
    end
-   cD.window.lootObj:SetVisible(cD.window.infoObj:GetVisible())
+   if filled then
+      cD.window.lootObj:SetVisible(cD.window.infoObj:GetVisible())
+   else
+      cD.window.lootObj:SetVisible(false)
+   end
+
 
    -- Create/Display buttonWindow
    if cD.window.buttonObj  == nil then

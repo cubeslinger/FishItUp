@@ -19,6 +19,16 @@ local tWINWIDTH               =  405
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
+local function reverseTable(t)
+   local reversedTable = {}
+   local itemCount = #t
+   for k, v in ipairs(t) do
+      reversedTable[itemCount + 1 - k] = v
+   end
+   return reversedTable
+end
+
+
 function cD.createTotalsWindow()
 
    cD.sTOFrames   =  {}

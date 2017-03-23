@@ -203,7 +203,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       prcntCnt  =  UI.CreateFrame("Text", "Percent_" .. itemName, lootFrame)
       prcntCnt:SetFont(cD.addon, cD.text.base_font_name)
       prcntCnt:SetFontSize(cD.text.base_font_size -2)
-      prcntCnt:SetText(string.format("(%2d", 0).."%)")
+--       prcntCnt:SetText(string.format("(%2d", 0).."%)")
+      prcntCnt:SetText(string.format("(%d", 0).."%)")
       prcntCnt:SetLayer(3)
       prcntCnt:SetPoint("TOPLEFT",  textOBJ,    "TOPRIGHT", cD.borders.left, 0)
 
@@ -222,7 +223,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       table.insert(cD.Stock, tmp)
    else
-      print(string.format("REUSING old frame from STOCK: name[%s] cat[%s]", itemCat, Inspect.Item.Detail(lootOBJ).name))
+--       print(string.format("REUSING old frame from STOCK: name[%s] cat[%s]", itemCat, Inspect.Item.Detail(lootOBJ).name))
       --
       -- We recycle an old set of object, so we need just
       -- to put in new values
@@ -269,7 +270,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
 
       -- setup Loot Item's Percentage counter
-      prcntCnt:SetText(string.format("(%2d)", 0).."%")
+--       prcntCnt:SetText(string.format("(%2d)", 0).."%")
+      prcntCnt:SetText(string.format("(%d", 0).."%)")
 
       --
       -- finally we set the whole container Frame visible but

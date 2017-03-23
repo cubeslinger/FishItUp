@@ -36,7 +36,8 @@ function cD.updatePercents(totals)
 
    for key,val in pairs(cD.sLTcnts) do
       cD.sLTprcnts[key] = val * 100 / totals
-      cD.sLTprcntObjs[key]:SetText(string.format("(%2d", cD.sLTprcnts[key]).."%)")
+--       cD.sLTprcntObjs[key]:SetText(string.format("(%2d", cD.sLTprcnts[key]).."%)")
+      cD.sLTprcntObjs[key]:SetText(string.format("(%d", cD.sLTprcnts[key]).."%)")
    end
 
    return(totals)
