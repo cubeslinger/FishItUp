@@ -208,16 +208,17 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       prcntCnt:SetPoint("TOPLEFT",  textOBJ,    "TOPRIGHT", cD.borders.left, 0)
 
       local tmp   =  {}
-      tmp         =  {  inUse           =  true,
-         lootFrame       =  lootFrame,
-         typeIconFrame   =  typeIconFrame,
-         typeIcon        =  typeIcon,
-         lootIconFrame   =  lootIconFrame,
-         lootIcon        =  lootIcon,
-         lootCnt         =  lootCnt,
-         textOBJ         =  textOBJ,
-         prcntCnt        =  prcntCnt
-      }
+      tmp         =  {
+                     inUse           =  true,
+                     lootFrame       =  lootFrame,
+                     typeIconFrame   =  typeIconFrame,
+                     typeIcon        =  typeIcon,
+                     lootIconFrame   =  lootIconFrame,
+                     lootIcon        =  lootIcon,
+                     lootCnt         =  lootCnt,
+                     textOBJ         =  textOBJ,
+                     prcntCnt        =  prcntCnt
+                     }
 
       table.insert(cD.Stock, tmp)
    else
@@ -240,12 +241,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
+--       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
       if  categoryIcon ~= nil then
          typeIcon:SetTexture("Rift", categoryIcon)
-         typeIcon:SetLayer(3)
-      else
-         typeIcon:SetTexture("Rift", "")
-         typeIcon:SetLayer(0)
+         typeIcon:SetVisible(true)
       end
 
       -- setup Loot Item's Icon
@@ -305,8 +304,7 @@ function  cD.resetLootWindow()
    local idx, tbl = nil, {}
    for idx, tbl in pairs(cD.Stock) do
       tbl.inUse = false
---       tbl.lootFrame:SetVisible(false)
-      tbl.typeIcon:SetLayer(0)
+      tbl.lootFrame:SetVisible(false)
    end
    --
    --
@@ -333,7 +331,18 @@ function fetchFromStock()
    for idx, tbl in pairs(cD.Stock) do
       if not tbl.inUse then
          retval = tbl
-         cD.Stock[idx].inUse  =  true
+         -- set the frame as INUSE
+         cD.Stock[idx].inUse     =  true
+         -- stop rendering of old categoty icon that keeps re-emerging
+         cD.Stock[idx].typeIcon:SetVisible(false)
+         -- then we try to dereference it, somehow...
+         cD.Stock[idx].typeIcon  =  nil
+         -- finally we create a new icon and we reference in cD.Stock for future uses
+         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].typeIconFrame)
+         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size + 4)
+         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size + 4)
+         cD.Stock[idx].typeIcon:SetPoint("CENTER", cD.Stock[idx].typeIconFrame, "CENTER")
+         cD.Stock[idx].typeIcon:SetLayer(3)
          break
       end
    end
@@ -383,11 +392,6 @@ function cD.sortLootTable(parent)
          cD.sLTfullObjs[keys[idx]]:SetVisible(true)
          LASTOBJ = cD.sLTfullObjs[keys[idx]]
       end
-   end
-
-   if #keys > 0 then
-      cD.sLTfullObjs[keys[#keys]]:SetPoint("BOTTOMLEFT",    parent, "BOTTOMLEFT",  0, cD.borders.bottom)
-      cD.sLTfullObjs[keys[#keys]]:SetPoint("BOTTOMRIGHT",   parent, "BOTTOMRIGHT", 0, cD.borders.bottom)
    end
 
    --

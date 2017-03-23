@@ -139,7 +139,7 @@ function cD.createInfoWindow()
          container3:SetLayer(1)
          container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
          container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
-            
+
             -- HEADER GRAPHIC SEPARATOR
             local graphSep = UI.CreateFrame("Texture", "Separator", headerFrame)
             graphSep:SetTexture("Rift", "underscore.png.dds")
@@ -161,8 +161,8 @@ function cD.createInfoWindow()
          container4:SetHeight(cD.text.base_font_size)
          container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
          container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
-            
-            
+
+
             -- HEADER   -- LABEL -- CASTS Header
             local labelCastsOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_casts_totals_label", headerFrame)
             local objColor  =  cD.rarityColor("common")
@@ -212,7 +212,7 @@ function cD.createInfoWindow()
          container5:SetHeight(cD.text.base_font_size)
          container5:SetLayer(1)
          container5:SetPoint("TOPLEFT",  container4, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top))
-         container5:SetPoint("TOPRIGHT", container4, "BOTTOMRIGHT", 0,  (cD.borders.top))            
+         container5:SetPoint("TOPRIGHT", container4, "BOTTOMRIGHT", 0,  (cD.borders.top))
 
             -- HEADER -- LABEL  -- CAST TIMER Header
             local labelTimerOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_session_timer", headerFrame)
@@ -261,17 +261,17 @@ function cD.createInfoWindow()
 
 --    headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
 --    infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 10 )
-   
+
 --       headerFrame:SetHeight(cD.round(container5:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
       headerFrame:SetHeight(cD.round(container5:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
 --       headerFrame:SetBackgroundColor(1, 0, 0, .5)
 
-      local bottom = infoWindow:GetTop() + titleBar:GetHeight() + headerFrame:GetHeight() 
-      infoWindow:SetHeight( bottom - infoWindow:GetTop() + cD.borders.top + cD.borders.bottom*2)      
-      
+      local bottom = infoWindow:GetTop() + titleBar:GetHeight() + headerFrame:GetHeight()
+      infoWindow:SetHeight( bottom - infoWindow:GetTop() + cD.borders.top + cD.borders.bottom*2)
+
 
 -- --       local H = titleBar:GetBottom() + cD.borders.bottom
--- --       infoWindow:SetHeight((H - titleBar:GetTop()) + cD.borders.top + cD.borders.bottom)      
+-- --       infoWindow:SetHeight((H - titleBar:GetTop()) + cD.borders.top + cD.borders.bottom)
 
 
    -- Enable Dragging
@@ -285,16 +285,15 @@ function  cD.resetInfoWindow()
    --
    -- Reset Fields
    --
---    totalsCnt:SetFont(cD.addon, cD.text.base_font_name)
---    totalsCnt:SetFontSize(cD.text.base_font_size)
-
+   local zone, subzone = cD.getZoneInfos()
+   cD.sLThdrs[1]:SetText(zone)
+   cD.sLThdrs[2]:SetText(subzone)
+   --
+   cD.today.casts =  0
    cD.sLThdrs[3]:SetText(string.format("%5d", cD.today.casts))
    cD.sLThdrs[4]:SetText(string.format("%5d", 0))
    cD.sLThdrs[5]:SetText("--:--")
    cD.sLThdrs[6]:SetText("--:--")
-   local zone, subzone = cD.getZoneInfos()
-   cD.sLThdrs[1]:SetText(zone)
-   cD.sLThdrs[2]:SetText(subzone)
 
    return
 end
