@@ -242,8 +242,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
       if  categoryIcon ~= nil then
          typeIcon:SetTexture("Rift", categoryIcon)
+         typeIcon:SetLayer(3)
       else
          typeIcon:SetTexture("Rift", "")
+         typeIcon:SetLayer(0)
       end
 
       -- setup Loot Item's Icon
@@ -303,7 +305,8 @@ function  cD.resetLootWindow()
    local idx, tbl = nil, {}
    for idx, tbl in pairs(cD.Stock) do
       tbl.inUse = false
-      tbl.lootFrame:SetVisible(false)
+--       tbl.lootFrame:SetVisible(false)
+      tbl.typeIcon:SetLayer(0)
    end
    --
    --
@@ -353,6 +356,9 @@ function cD.sortLootTable(parent)
       obj:ClearAll()
       obj:SetHeight(height)
 
+      -- we hide them while we re-assemble the list
+      obj:SetVisible(false)
+
       cntPre   =  cntPre + 1
    end
 
@@ -364,7 +370,6 @@ function cD.sortLootTable(parent)
 
    local FIRST    =  true
    local LASTOBJ  =  nil
-   local cntPost  =  0
 
    for idx, value in ipairs(keys) do
       if FIRST then
@@ -372,26 +377,29 @@ function cD.sortLootTable(parent)
          cD.sLTfullObjs[keys[idx]]:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
          cD.sLTfullObjs[keys[idx]]:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
          LASTOBJ = cD.sLTfullObjs[keys[idx]]
+         cD.sLTfullObjs[keys[idx]]:SetVisible(true)
       else
          cD.sLTfullObjs[keys[idx]]:SetPoint("TOPLEFT", LASTOBJ, "BOTTOMLEFT", 0, cD.borders.top)
+         cD.sLTfullObjs[keys[idx]]:SetVisible(true)
          LASTOBJ = cD.sLTfullObjs[keys[idx]]
       end
-
-      cntPost = cntPost + 1
-
-      --
-      -- Resize container window, since now we sort the loottable we
-      -- can't trust anymore the last in the array to really be the
-      -- last frame, with the lowest X
-      --
-      local highestX =  0
-      local idx      =  nil
-      -- find the frame with the lowest bottom Y position
-      for idx in pairs(cD.sLTfullObjs) do if highestX < cD.sLTfullObjs[idx]:GetBottom() then highestX = cD.sLTfullObjs[idx]:GetBottom() end end
-      cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *3))
    end
 
---    print(string.format("Cleared [%s] re-assigned [%s]", cntPre, cntPost))
+   if #keys > 0 then
+      cD.sLTfullObjs[keys[#keys]]:SetPoint("BOTTOMLEFT",    parent, "BOTTOMLEFT",  0, cD.borders.bottom)
+      cD.sLTfullObjs[keys[#keys]]:SetPoint("BOTTOMRIGHT",   parent, "BOTTOMRIGHT", 0, cD.borders.bottom)
+   end
+
+   --
+   -- Resize container window, since now we sort the loottable we
+   -- can't trust anymore the last in the array to really be the
+   -- last frame, with the lowest X
+   --
+   local highestX =  0
+   local idx      =  nil
+   -- find the frame with the lowest bottom Y position
+   for idx in pairs(cD.sLTfullObjs) do if highestX < cD.sLTfullObjs[idx]:GetBottom() then highestX = cD.sLTfullObjs[idx]:GetBottom() end end
+   cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *3))
 
    return
 end
