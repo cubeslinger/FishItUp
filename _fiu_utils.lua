@@ -46,7 +46,7 @@ end
 
 
 function cD.detachLootWatchers()
-   Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot")
+--    Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot")
    Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,          "gotLoot")
    Command.Event.Detach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
    Command.Event.Detach(Event.System.Update.Begin, cD.fishTimer,        "Player is Fishing")

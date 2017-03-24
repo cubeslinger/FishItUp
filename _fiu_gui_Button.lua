@@ -170,7 +170,7 @@ function cD.createButtonWindow()
                --                                     false :  if the slot is now empty, or the string
                --                                     "nil" :  if the slot no longer exists.
                --
-               Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
+--                Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
                --
                -- Event.Item.Slot(updates)
                -- Parameter	Type	      Datatype	   Description

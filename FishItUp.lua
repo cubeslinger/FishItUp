@@ -114,6 +114,6 @@ end
 cD.addon       =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 
 table.insert(Command.Slash.Register("fiu"), {function (params) doThings(params)   end, cD.addon, "getpole command"})
-Command.Event.Attach(Event.Map.Change,                   gotZoneChange, "Player is Zoning")
+-- Command.Event.Attach(Event.Map.Change,                   gotZoneChange, "Player is Zoning")
 
 
