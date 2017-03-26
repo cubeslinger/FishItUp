@@ -12,6 +12,99 @@ local addon, cD = ...
 local LOOTFRAME         =  3
 local POLECASTBUTTON    =  5
 
+function cD.timedEventsManager()
+
+   local now = Inspect.Time.Frame()
+   --
+   -- Section rolling Timers - Begin 
+   --
+   --
+   -- first run
+   --   
+   if cD.timeRStart == nil then
+      cD.timeRStart     = now
+      cD.lastTotalTime  = now
+   else
+      local secs  =  now - cD.timeRStart
+      local mins  =  0
+      local hour  =  0
+
+      if secs > 1 then
+         secs = math.floor(secs)
+         while secs  >  60 do
+            secs  = secs - 60
+            mins = mins + 1
+         end
+         while mins  >  60 do
+            mins  = mins - 60
+            hour = hour + 1
+         end
+
+         local tSecs = 0
+         tSecs =  now - cD.lastTotalTime
+         cD.lastTotalTime = now
+         cD.time.secs = cD.time.secs + tSecs
+         while cD.time.secs  >  60 do
+            cD.time.secs  = cD.time.secs - 60
+            cD.time.mins = cD.time.mins + 1
+         end
+         while cD.time.mins  >  60 do
+            cD.time.mins  = cD.time.mins - 60
+            cD.time.hour = cD.time.hour + 1
+         end
+
+         -- cast time
+         cD.sLThdrs[5]:SetText(string.format("%02d:%02d", mins, secs))
+         -- total time
+         local txt = string.format("%02d:%02d", cD.time.mins, cD.time.secs)
+         if cD.time.hour > 0 then txt = cD.time.hour .. ":" .. txt end
+         cD.sLThdrs[6]:SetText(txt)
+         -- pole castTimer
+         local s = string.format("%02d", secs)
+         cD.poleTimer:SetText(s)
+      end
+   end
+   --
+   -- Section rolling Timers - End
+   --
+
+   if cD.waitingForTheSunRunning == true then
+      --
+      -- Section WaitingForTheSun - Begin 
+      --
+      -- first run
+      if cD.timeStart == nil then
+         cD.timeStart = now
+      else
+         if (now - cD.timeStart) >= cD.time2Wait then
+
+            -- remove handlers
+            cD.detachLootWatchers()
+            cD.detachOtherWatchers()
+
+            -- we are done, stop timer/flags
+            cD.timeStart               =  nil
+            cD.waitingForTheSunRunning =  false
+            
+            -- hide timer on pole cast Button
+            cD.poleTimer:SetVisible(false)
+            cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)         
+            
+            -- let's update lootTable         
+            cD.processEventBuffer()
+            
+         end
+      end         
+      --
+      -- Section WaitingForTheSun - End 
+      --
+   end
+
+   return
+end
+
+
+
 --[[
     
 local t = { [223]="asd", [23]="fgh", [543]="hjk", [7]="qwe" }
@@ -82,10 +175,9 @@ function cD.processEventBuffer()
 
    print("cD.processEventBuffer")
    
-   local LASTTIME =  nil
-   local LASTOBJ  =  nil   
-  
---    for time, obj in pairs(cD.eventBuffer) do
+   local LASTTIME, LASTOBJ
+   local idx, tbl, t, o
+
    for idx, tbl in pairs(cD.eventBuffer) do
           
       for t, o in pairs(tbl) do
@@ -156,8 +248,9 @@ end
 function cD.detachLootWatchers()
    Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot")
    Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,          "gotLoot")
-   Command.Event.Detach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
-   Command.Event.Detach(Event.System.Update.Begin, cD.fishTimer,        "Player is Fishing")
+--    Command.Event.Detach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
+--    Command.Event.Detach(Event.System.Update.Begin, cD.fishTimer,        "Player is Fishing")
+   Command.Event.Detach(Event.System.Update.Begin, cD.timedEventsManager, "Event.System.Update.Begin")
 
    return
 end
@@ -286,7 +379,7 @@ function cD.gotCastBar(_, info)
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
             
             if not cD.waitingForTheSunRunning then
-               Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
+--                Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
                cD.waitingForTheSunRunning =  true
             end
          end
@@ -495,7 +588,7 @@ function cD.gotLoot(h, eventTable)
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
                --
                if not cD.waitingForTheSunRunning then
-                  Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
+--                   Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
                   cD.waitingForTheSunRunning =  true
                end
             end
