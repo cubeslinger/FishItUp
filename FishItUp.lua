@@ -70,10 +70,6 @@ local function gotZoneChange(_, t)
 end
 
 local function doThings(params)
---    print(string.format("cD.window.infoObj    [%s]", cD.window.infoObj))
---    print(string.format("cD.window.lootObj    [%s]", cD.window.lootObj))
---    print(string.format("cD.window.buttonObj  [%s]", cD.window.buttonObj))
-
    -- Create Display/Hide infoWindow
    if cD.window.infoObj    == nil then
       cD.window.infoObj    =  cD.createInfoWindow()
@@ -114,6 +110,5 @@ end
 cD.addon       =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 
 table.insert(Command.Slash.Register("fiu"), {function (params) doThings(params)   end, cD.addon, "getpole command"})
--- Command.Event.Attach(Event.Map.Change,                   gotZoneChange, "Player is Zoning")
 
 

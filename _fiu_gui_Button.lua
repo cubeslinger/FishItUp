@@ -54,6 +54,8 @@ function cD.loadLastSession()
                -- the junk line in loot window
                --
                if cD.junkOBJ == nil and itemCache[iID].rarity == "sellable" then cD.junkOBJ = iID end
+               
+               print(string.format("cD.loadLastSession time[%s] item[%s]", Inspect.Time.Frame(), iID))
                cD.updateLootTable(iID, cnt, true)
                retval = true
             end
@@ -159,28 +161,28 @@ function cD.createButtonWindow()
                -- change action associated with cast button: now it will "/stopcasting"
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "stopcasting")
 
-               --
-               -- Begin waiting for loot events and External Interrupting Events
-               --
-               -- Event.Item.Update(updates)
-               -- Parameter	Type	      Datatype	   Description
-               -- ------------------------------------------------------------------------------------------------------
-               -- updates	   parameter	variant	   Table of changes.
-               --                                     Key   :  is the slot identifier, value is an item ID,
-               --                                     false :  if the slot is now empty, or the string
-               --                                     "nil" :  if the slot no longer exists.
-               --
-               Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
-               --
-               -- Event.Item.Slot(updates)
-               -- Parameter	Type	      Datatype	   Description
-               -- ------------------------------------------------------------------------------------------------------
-               -- updates	   parameter	variant	   Table of changes.
-               --                                     Key   :  is the slot identifier, value is an item ID,
-               --                                     false :  if the slot is now empty, or the string
-               --                                     "nil" :  if the slot no longer exists.
-               --
-               Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
+--                --
+--                -- Begin waiting for loot events and External Interrupting Events
+--                --
+--                -- Event.Item.Update(updates)
+--                -- Parameter	Type	      Datatype	   Description
+--                -- ------------------------------------------------------------------------------------------------------
+--                -- updates	   parameter	variant	   Table of changes.
+--                --                                     Key   :  is the slot identifier, value is an item ID,
+--                --                                     false :  if the slot is now empty, or the string
+--                --                                     "nil" :  if the slot no longer exists.
+--                --
+--                Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
+--                --
+--                -- Event.Item.Slot(updates)
+--                -- Parameter	Type	      Datatype	   Description
+--                -- ------------------------------------------------------------------------------------------------------
+--                -- updates	   parameter	variant	   Table of changes.
+--                --                                     Key   :  is the slot identifier, value is an item ID,
+--                --                                     false :  if the slot is now empty, or the string
+--                --                                     "nil" :  if the slot no longer exists.
+--                --
+--                Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
                Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent, "Player in Combat")
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
 
@@ -192,7 +194,7 @@ function cD.createButtonWindow()
                --
                cD.detachLootWatchers()
                cD.poleTimer:SetVisible(false)
-               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
+               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)               
             end
          end
       end

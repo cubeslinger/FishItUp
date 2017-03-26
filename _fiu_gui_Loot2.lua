@@ -355,7 +355,7 @@ end
 function cD.sortLootTable(parent)
    -- cD.sLTids         contains items IDs:              idx->itemID          => 1 = i00303030303, 2 = i00303030306, ...
    -- cD.sLTfullObjs    contains full LootLine Objects:  idx->fullLootFrame   => 1 = objx0a0a0a, 2 = objx0aba0c, ...
-   -- cD.sLTrarity      contains ItemID's rarity:        idx->NumercRarity    => 1 = 4, 2 = 1, 3 = 2, ...
+   -- cD.sLTrarity      contains ItemID's rarity:        idx->NumericRarity   => 1 = 4, 2 = 1, 3 = 2, ...
 
    -- reset all Pinned Point of Full loot Frames objs
    local cntPre   =  0
@@ -375,14 +375,14 @@ function cD.sortLootTable(parent)
 
    local t     =  cD.sLTrarity
    local keys  =  {}
-   local idx, value = nil, nil
-   for idx, value in ipairs(t) do table.insert(keys, idx) end
+   local idx   = nil
+   for idx, _ in ipairs(t) do table.insert(keys, idx) end
    table.sort(keys, function(a,b) return cD.sLTrarity[a] > cD.sLTrarity[b] end)
 
    local FIRST    =  true
    local LASTOBJ  =  nil
 
-   for idx, value in ipairs(keys) do
+   for idx, _ in ipairs(keys) do
       if FIRST then
          FIRST = false
          cD.sLTfullObjs[keys[idx]]:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)

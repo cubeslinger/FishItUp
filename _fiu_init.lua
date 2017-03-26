@@ -142,6 +142,7 @@ local function _init()
    cD.junkOBJ     =  nil
    cD.Stock       =  {}
    cD.itemCache   =  {}
+   cD.eventBuffer =  {}
    --
    -- Logs affected by the RESET button
    --

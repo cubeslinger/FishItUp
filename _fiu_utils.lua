@@ -12,6 +12,114 @@ local addon, cD = ...
 local LOOTFRAME         =  3
 local POLECASTBUTTON    =  5
 
+--[[
+    
+local t = { [223]="asd", [23]="fgh", [543]="hjk", [7]="qwe" }
+   
+local tkeys = {}
+   
+-- populate the table that holds the keys
+for k in pairs(t) do table.insert(tkeys, k) end
+   
+-- sort the keys   
+table.sort(tkeys)
+   
+-- use the keys to retrieve the values in the sorted order
+for _, k in ipairs(tkeys) do print(k, t[k]) end
+   
+]]
+
+-- function cD.processEventBuffer()
+-- 
+--    print("cD.processEventBuffer")
+--    
+--    -- index by timestamp   
+--    local obj, time, keys = nil, nil, {}
+-- 
+--    -- SOURCE IS:
+--    -- table.insert( cD.eventBuffer, { [now] = itemOBJ } )
+--   
+--    for idx in pairs(cD.eventBuffer) do table.insert(keys, idx) end
+--    table.sort(keys)
+--    
+--    local LASTTIME =  nil
+--    local LASTOBJ  =  nil   
+--    print("keys size ["..#keys.."]")
+--   
+--    for _, idx in ipairs(keys) do
+--       
+--       print(string.format("cD.processEventBuffer idx[%s] cD.eventBuffer[idx][%s]", idx,cD.eventBuffer[idx]))
+--       print(string.format("  cD.eventBuffer[idx][1]=[%s] cD.eventBuffer[idx][2]=[%s]", cD.eventBuffer[idx][1],cD.eventBuffer[idx][2]))
+--       
+--       if LASTOBJ == nil then
+--          cD.updateLootTable( cD.eventBuffer[idx][2], 1, false )
+--          LASTTIME= cD.eventBuffer[idx][1]
+--          LASTOBJ = cD.eventBuffer[idx][2]
+--       else
+--          if LASTTIME == cD.eventBuffer[idx][1] then
+--             if LASTOBJ ~= cD.eventBuffer[idx][2] then
+--                cD.updateLootTable( cD.eventBuffer[idx][2], 1, false )
+--                LASTTIME= cD.eventBuffer[idx][1]
+--                LASTOBJ = cD.eventBuffer[idx][2]
+--             else
+--                print(string.format("Skipping DOUBLE event WAS [%s][%s]", LASTTIME, LASTOBJ))
+--                print(string.format("Skipping DOUBLE event NOW [%s][%s]", cD.eventBuffer[idx][1], cD.eventBuffer[idx][2]))
+--             end
+--          else
+--             cD.updateLootTable( cD.eventBuffer[idx][2], 1, false )
+--             LASTTIME= cD.eventBuffer[idx][1]
+--             LASTOBJ = cD.eventBuffer[idx][2]
+--          end
+--       end
+--    end
+-- 
+--    cD.eventBuffer = {}
+--    
+--    return
+-- end
+                  
+function cD.processEventBuffer()
+
+   print("cD.processEventBuffer")
+   
+   local LASTTIME =  nil
+   local LASTOBJ  =  nil   
+  
+--    for time, obj in pairs(cD.eventBuffer) do
+   for idx, tbl in pairs(cD.eventBuffer) do
+          
+      for t, o in pairs(tbl) do
+      
+         print(string.format("t[%s] o[%s]", t, o))
+         
+         if LASTOBJ == nil then
+            cD.updateLootTable( o, 1, false )
+            LASTTIME= t
+            LASTOBJ = o
+         else
+            if LASTTIME == t then
+               if LASTOBJ ~= o then
+                  cD.updateLootTable( o, 1, false )
+                  LASTTIME= t
+                  LASTOBJ = o
+               else
+                  print(string.format("Skipping DOUBLE event WAS [%s][%s]", LASTTIME, LASTOBJ))
+                  print(string.format("Skipping DOUBLE event  IS [%s][%s]", t, o))
+               end
+            else
+               cD.updateLootTable( o, 1, false )
+               LASTTIME= t
+               LASTOBJ = o
+            end
+         end
+      end
+   end
+
+   cD.eventBuffer = {}
+   
+   return
+end                  
+
 function cD.getZoneInfos()
    local zoneText       =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).name
    local zoneID         =  Inspect.Unit.Detail("player").id
@@ -91,29 +199,73 @@ function cD.waitingForTheSun()
          -- we are done, stop timer/flags
          cD.timeStart               =  nil
          cD.waitingForTheSunRunning =  false
+         
          -- hide timer on pole cast Button
          cD.poleTimer:SetVisible(false)
-         cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
+         cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)         
+         
+         -- let's update lootTable         
+         cD.processEventBuffer()
+         
       end
    end
 
    return
 end
 
+-- function cD.gotCastBar(_, info)
+--    
+--    local casterID, eventTBL = nil, nil
+--    local playerID =  Inspect.Unit.Detail("player").id
+--    
+--    for casterID, eventTBL in pairs(info) do
+--       print(string.format("Castbar data Player[%s]", Inspect.Unit.Detail("player").id))
+--       print(string.format("Castbar data begin k[%s] v[%s] Inspect[%s]", casterID, eventTBL, Inspect.Unit.Castbar(casterID)))
+-- 
+-- --       if casterID ~= nil and casterID == playerID then
+--          if casterID ~= nil then
+-- 
+--          local castDetails = Inspect.Unit.Castbar(casterID)
+-- 
+--          if eventTBL == nil or not eventTBL then
+--             print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")        
+--             
+--             if not cD.waitingForTheSunRunning then
+--                Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
+--                cD.waitingForTheSunRunning =  true                                          
+--             end
+--          else
+--             print("CASTBAR EVENT: castDetails is NOT NIL!!!")
+--             for kk, vv in pairs(eventTBL) do
+--                print(string.format("ability kk[%s] vv[%s]", kk, vv))
+--             end            
+--          end
+--       end
+--    end
+--    --    print "Castbar data ----- end"
+-- 
+--    return
+-- 
+-- end
+
+
 function cD.gotCastBar(_, info)
---    print "Castbar data ----- begin"
-   for k, v in pairs(info) do
 
-      if k ~= nil then
+   local playerID, eventTBL = nil, nil
+   
+   for playerID, eventTBL in pairs(info) do
 
-         local castDetails = Inspect.Unit.Castbar(k)
+      if playerID ~= nil then
+
+         local castDetails = Inspect.Unit.Castbar(playerID)
 
          if castDetails ~= nil then
 
 --             print(string.format("cast details [%s]", castDetails))
 
-            if castDetails.abilityNew ~= nil then
-               local ability = Inspect.Ability.New.Detail(castDetails.abilityNew)
+--             if castDetails.abilityNew ~= nil then
+            if castDetails.ability ~= nil then
+               local ability = Inspect.Ability.New.Detail(castDetails.ability)
 
                print "Castbar data ----- ABILITY begin"
                for kk, vv in pairs(ability) do
@@ -128,7 +280,11 @@ function cD.gotCastBar(_, info)
 --                --                print "Castbar data ----- EVENT end"
             end
          else
---             print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
+            print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
+
+            Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
+            Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
+            
             if not cD.waitingForTheSunRunning then
                Command.Event.Attach(Event.System.Update.Begin, cD.waitingForTheSun, "Event.System.Update.Begin")
                cD.waitingForTheSunRunning =  true
@@ -324,9 +480,16 @@ function cD.gotLoot(h, eventTable)
             -- that we need to ignore
             --
             if itemName ~= cD.poleTBL.name then
-               cD.updateLootTable(itemOBJ, 1, false)
---                print(string.format("cD.updateLootTable added [%s]", Inspect.Item.Detail(itemOBJ).name))
-
+--                print(string.format("cD.loadLastSession time[%s] item[%s] name[%s]", Inspect.Time.Frame(), itemOBJ, itemName))
+               
+               local now = Inspect.Time.Frame()
+               table.insert( cD.eventBuffer, { [now] = itemOBJ } )
+               print(string.format("INSERTED [%s][%s][%s]", #cD.eventBuffer, cD.eventBuffer[#cD.eventBuffer][1], cD.eventBuffer[#cD.eventBuffer][2]))
+               
+               
+--                cD.updateLootTable(itemOBJ, 1, false)
+-- --                print(string.format("cD.updateLootTable added [%s]", Inspect.Item.Detail(itemOBJ).name))
+-- 
                --
                -- we will wait 1 more second (cD.time2Wait=1) Event.Item.Update and
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
@@ -495,22 +658,15 @@ function searchArrayByValue(table, value2search)
    return retval
 end
 
---[[
-Error: Incorrect function usage.
-  Parameters: (table: 2fb09128), nil, "Event.System.Update.Begin"
-  Parameter types: eventGlobal, nil, string
-Function documentation:
-	Attaches an event handler to an event.
-		Command.Event.Attach(event, handler, label)   -- eventGlobal, function, string
-		Command.Event.Attach(event, handler, label, priority)   -- eventGlobal, function, string, number
-Parameters:
-		event:	A global event handle, usually pulled out of the "Event." hierarchy.
-		handler:	A global event handler function. This will be called when the event fires. The first parameter will be the standard global event handle, any other parameters will follow that.
-		label:	Human-readable label used to identify the handler in error reports, performance reports, and for later detaching.
-		priority:	Priority of the event handler. Higher numbers trigger first.
-    In FishItUp / gotLoot, event Event.Item.Slot
+     
+      
+--[[      
+Error: FishItUp/_fiu_utils.lua:33: attempt to compare two nil values
+    In FishItUp / Event.System.Update.Begin, event Event.System.Update.Begin
 stack traceback:
-	[C]: ?
-	[C]: in function 'Attach'
-	FishItUp/_fiu_utils.lua:334: in function <FishItUp/_fiu_utils.lua:307>
-    ]]--
+	[C]: in function '__lt'
+	FishItUp/_fiu_utils.lua:33: in function <FishItUp/_fiu_utils.lua:33>
+	[C]: in function 'sort'
+	FishItUp/_fiu_utils.lua:33: in function 'processEventBuffer'
+	FishItUp/_fiu_utils.lua:160: in function <FishItUp/_fiu_utils.lua:138>
+]]--      
