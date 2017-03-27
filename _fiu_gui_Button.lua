@@ -187,7 +187,6 @@ function cD.createButtonWindow()
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
 
                cD.timeRStart  =  nil
---                Command.Event.Attach(Event.System.Update.Begin,       cD.fishTimer,        "Player is Fishing")
                Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Player is Fishing")
             else
                --

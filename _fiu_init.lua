@@ -106,6 +106,7 @@ local function _init()
                   }
    -- loot Tables
    cD.sLTids      =  {}
+   cD.sLTnames    =  {}
    cD.sLTcnts     =  {}
    cD.sLTprcnts   =  {}
    cD.sLThdrs     =  {}
@@ -190,15 +191,7 @@ function cD.fiuLoadVariables(_, addonName)
          end
       end
 
-      --
-      -- code to handle migration of
-      -- itemCache to itemCacheGlobal
-      --
-      if itemCacheGlobal   ~=   nil then
-         if next(itemCacheGlobal)   ~= nil then
-            cD.itemCache    = itemCacheGlobal
-         end
-      elseif   itemCache   ~= nil then
+      if   itemCache   ~= nil then
          if next(itemCache)~= nil then
             cD.itemCache    = itemCache
          end
@@ -225,7 +218,6 @@ function cD.fiuSaveVariables(_, addonName)
 
       waterlog          =  cD.history
       itemCache         =  cD.itemCache
-      itemCacheGlobal   =  cD.itemCache
       zoneids           =  cD.zoneIDs
       --
       lastZoneLootObjs  =  cD.lastZoneLootObjs

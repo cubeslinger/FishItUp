@@ -32,9 +32,8 @@ Dependencies = {
 SavedVariables = {
    guilog            =  'character',
    waterlog          =  'character',
-   itemCache         =  'character',
+   itemCache         =  'global',
    zoneids           =  'character',
    lastZoneLootObjs  =  'character',
    zoneTotalCnts     =  'character',
-   itemCacheGlobal   =  'account'
 }
