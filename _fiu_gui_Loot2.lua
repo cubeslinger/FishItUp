@@ -118,40 +118,25 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
       --
-      -- setup Loot Item's Type Icon Frame
-      typeIconFrame = UI.CreateFrame("Texture", "Type_Icon_Frame" .. itemName, lootFrame)
-      typeIconFrame:SetHeight(cD.text.base_font_size)
-      typeIconFrame:SetWidth(cD.text.base_font_size)
-      typeIconFrame:SetLayer(2)
-      typeIconFrame:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 1)
-
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
 
       -- setup Loot Item's Type Icon
-      typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
+      typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
       if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
-
-      typeIcon:SetWidth(cD.text.base_font_size + 4)
-      typeIcon:SetHeight(cD.text.base_font_size + 4)
-      typeIcon:SetPoint("CENTER",    typeIconFrame, "CENTER")
+--       typeIcon:SetWidth(cD.text.base_font_size + 4)
+--       typeIcon:SetHeight(cD.text.base_font_size + 4)
+      typeIcon:SetWidth(cD.text.base_font_size)
+      typeIcon:SetHeight(cD.text.base_font_size)
+      typeIcon:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 0)
       typeIcon:SetLayer(3)
 
-      -- setup Loot Item's Icon Frame
-      lootIconFrame = UI.CreateFrame("Texture", "Loot_Icon_Frame" .. itemName, lootFrame)
-      lootIconFrame:SetHeight(cD.text.base_font_size)
-      lootIconFrame:SetWidth(cD.text.base_font_size)
-      lootIconFrame:SetLayer(2)
-      lootIconFrame:SetBackgroundColor(0, 0, 0, .5)
-      lootIconFrame:SetPoint("TOPLEFT",   typeIconFrame, "TOPRIGHT", cD.borders.left, 0)
-
       -- setup Loot Item's Icon
-      lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. itemName, lootIconFrame)
+      lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. itemName, lootFrame)
       lootIcon:SetTexture("Rift", itemIcon)
       lootIcon:SetWidth(cD.text.base_font_size)
       lootIcon:SetHeight(cD.text.base_font_size)
-
-      lootIcon:SetPoint("CENTER",    lootIconFrame, "CENTER")
+      lootIcon:SetPoint("TOPLEFT",   typeIcon, "TOPRIGHT", cD.borders.left, 0)
       lootIcon:SetLayer(3)
 
       -- setup Loot Item's Counter
@@ -160,7 +145,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       lootCnt:SetFontSize(cD.text.base_font_size )
       lootCnt:SetText(string.format("%3d", txtCnt))
       lootCnt:SetLayer(3)
-      lootCnt:SetPoint("TOPLEFT",   lootIconFrame, "TOPRIGHT", cD.borders.left, 0)
+      lootCnt:SetPoint("TOPLEFT",   lootIcon, "TOPRIGHT", cD.borders.left, -4)
       --
       -- setup Loot Item's Text Color based on Loot Item Rarity
       --
