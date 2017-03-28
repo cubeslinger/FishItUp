@@ -54,8 +54,8 @@ function cD.loadLastSession()
                -- the junk line in loot window
                --
                if cD.junkOBJ == nil and itemCache[iID].rarity == "sellable" then cD.junkOBJ = iID end
-               
-               print(string.format("cD.loadLastSession time[%s] item[%s]", Inspect.Time.Frame(), iID))
+
+--                print(string.format("cD.loadLastSession time[%s] item[%s]", Inspect.Time.Frame(), iID))
                cD.updateLootTable(iID, cnt, true)
                retval = true
             end
@@ -162,7 +162,7 @@ function cD.createButtonWindow()
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "stopcasting")
 
 --                --
---                -- Begin waiting for loot events and External Interrupting Events
+--                -- Begin waiting cD.loadLastSession timefor loot events and External Interrupting Events
 --                --
 --                -- Event.Item.Update(updates)
 --                -- Parameter	Type	      Datatype	   Description
@@ -194,7 +194,7 @@ function cD.createButtonWindow()
                --
                cD.detachLootWatchers()
                cD.poleTimer:SetVisible(false)
-               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)               
+               poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
             end
          end
       end

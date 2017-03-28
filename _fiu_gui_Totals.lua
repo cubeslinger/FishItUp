@@ -15,7 +15,7 @@ local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 
 -- local cD.text.base_font_size               =  11
-local tWINWIDTH               =  405
+local tWINWIDTH               =  445
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
@@ -46,7 +46,6 @@ function cD.createTotalsWindow()
       totalsWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cD.window.totalsX or 0, cD.window.totalsY or 0)
    end
 
---    totalsWindow:SetWidth(cD.window.width)
    totalsWindow:SetWidth(tWINWIDTH)
    totalsWindow:SetLayer(-1)
    totalsWindow:SetBackgroundColor(0, 0, 0, .5)
@@ -102,7 +101,6 @@ function cD.createTotalsWindow()
       local maskFrame = UI.CreateFrame("Mask", "Totals_Mask_Frame", cD.sTOFrames[EXTERNALTOTALSFRAME])
       maskFrame:SetAllPoints(cD.sTOFrames[EXTERNALTOTALSFRAME])
       cD.sTOFrames[TOTALSMASKFRAME]  = maskFrame
-      --    maskFrame:SetBackgroundColor(1, 0, 0, .3)
 
       -- TOTALS CONTAINER FRAME
       local totalsFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sTOFrames[TOTALSMASKFRAME])
@@ -165,7 +163,7 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    znOBJ:SetPoint("TOPLEFT",   totalsFrame, "TOPLEFT", cD.borders.left, 2)
 
    local parentOBJ   =  znOBJ
-
+   local total       =  0
    for idx, _ in pairs(zoneTotals) do
       -- setup Totals Item's Counter
       local totalsCnt  =  UI.CreateFrame("Text", "Totals_Cnt_" .. idx, totalsFrame)
@@ -178,7 +176,19 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
       totalsCnt:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
       parentOBJ   =  totalsCnt
       table.insert(totOBJs, totalsCnt)
+
+      total = total + zoneTotals[idx]
    end
+
+   -- last field is the Total of Totals
+   local totalsTotal  =  UI.CreateFrame("Text", "Totals_Total", totalsFrame)
+   totalsTotal:SetFont(cD.addon, cD.text.base_font_name)
+   totalsTotal:SetFontSize(cD.text.base_font_size)
+   totalsTotal:SetText(string.format("%5d", total))
+   totalsTotal:SetLayer(3)
+   totalsTotal:SetFontColor(txtColors[2].r, txtColors[2].g, txtColors[2].b)
+   totalsTotal:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
+   table.insert(totOBJs, totalsTotal)
 
    totalsFrame:SetHeight(znOBJ:GetHeight() + 1)
 

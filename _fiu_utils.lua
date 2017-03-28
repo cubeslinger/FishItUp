@@ -122,7 +122,7 @@ function cD.processEventBuffer()
 
       for t, o in pairs(tbl) do
 
-         print(string.format("Buffer: t[%s] o[%s]", t, o))
+--          print(string.format("Buffer: t[%s] o[%s]", t, o))
 
          cD.updateLootTable( o, 1, false )
 
@@ -226,7 +226,7 @@ function cD.gotCastBar(_, info)
 --                --                print "Castbar data ----- EVENT end"
             end
          else
-            print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
+--             print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
 
             Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")

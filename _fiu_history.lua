@@ -103,7 +103,7 @@ function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)
 --       print(string.format("0 - parent is [%s]", parent))
       if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
 --       print(string.format("1 - parent is [%s]", parent))
-      local totalsFrame, znOBJ, totOBJs= cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, cD.zoneTotalCnts[zoneID])
+      local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, cD.zoneTotalCnts[zoneID])
 
       table.insert(cD.sTOzoneIDs,   zoneID)
       table.insert(cD.sTOFrame,     totalsFrame)
@@ -115,6 +115,12 @@ function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)
       local cnt = string.format("%3d", cD.zoneTotalCnts[zoneID][idx])
       cD.sTOcntObjs[zoneID][idx]:SetText(cnt)
    end
+
+   -- adjust Whole Zone Total
+   local total =  0
+   local i     =  nil
+   for i=1, 7 do total = total + cD.zoneTotalCnts[zoneID][i] end
+   cD.sTOcntObjs[zoneID][#cD.sTOcntObjs[zoneID]]:SetText(string.format("%5d", total))
 
    newZone  =  false
 
