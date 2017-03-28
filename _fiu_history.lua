@@ -38,18 +38,18 @@ local function getToday()
    return(string.format("20%02d%02d%02d", aToday[3], aToday[2], aToday[1]))
 end
 
-function cD.addToTodayHistory(zoneOBJ, lootArray, lootCnts)
-   local today =  getToday()
---    print(string.format("Today [%s] zoneOBJ [%s] lootArraySize [%s]", today, zoneOBJ, #lootArray))
-
-   if cD.history[today] then
-      table.insert(cD.history[today], { [zoneOBJ] = { lootArray, lootCnts } })
-   else
-      cD.history[today] =  { [zoneOBJ] = { lootArray, lootCnts } }
-   end
-
-   return
-end
+-- function cD.addToTodayHistory(zoneOBJ, lootArray, lootCnts)
+--    local today =  getToday()
+-- --    print(string.format("Today [%s] zoneOBJ [%s] lootArraySize [%s]", today, zoneOBJ, #lootArray))
+--
+--    if cD.history[today] then
+--       table.insert(cD.history[today], { [zoneOBJ] = { lootArray, lootCnts } })
+--    else
+--       cD.history[today] =  { [zoneOBJ] = { lootArray, lootCnts } }
+--    end
+--
+--    return
+-- end
 
 
 function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)

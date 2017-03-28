@@ -134,7 +134,7 @@ local function _init()
    cD.time2Wait   =  .5             -- wait .2 more second
    cD.waitingForTheSunRunning =  false
    cD.timeRStart  =  0
-   cD.history     =  {}
+--    cD.history     =  {}
    cD.today       =  {  casts=0, }
    cD.time        =  {  hour=0, mins=0, secs=0 }
    cD.infoOBJ     =  nil
@@ -176,11 +176,11 @@ function cD.fiuLoadVariables(_, addonName)
             cD.zoneTotalCnts        =  zoneTotalCnts
          end
       end
-      if waterlog         ~= nil then
-         if next(waterlog)~= nil then
-            cD.history     =  waterlog
-         end
-      end
+--       if waterlog         ~= nil then
+--          if next(waterlog)~= nil then
+--             cD.history     =  waterlog
+--          end
+--       end
       if   itemCache   ~= nil then
          if next(itemCache)~= nil then
             cD.itemCache    = itemCache
@@ -204,9 +204,9 @@ function cD.fiuSaveVariables(_, addonName)
       a.lootObj   =  nil
       a.buttonObj =  nil
       a.totalsObj =  nil
-      guilog      =  a
 
-      waterlog          =  cD.history
+      guilog            =  a
+--       waterlog          =  cD.history
       itemCache         =  cD.itemCache
       --
       lastZoneLootObjs  =  cD.lastZoneLootObjs
