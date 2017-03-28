@@ -103,6 +103,7 @@ local function doThings(params)
       cD.initTotalsWindow()
       cD.window.totalsObj:SetVisible(false)
    end
+   if cD.window.infoObj:GetVisible() == false then cD.window.totalsObj:SetVisible(false) end
 
    return
 end

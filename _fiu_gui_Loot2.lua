@@ -123,9 +123,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
-      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
+--       if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
 --       typeIcon:SetWidth(cD.text.base_font_size + 4)
 --       typeIcon:SetHeight(cD.text.base_font_size + 4)
+      if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon)  end
       typeIcon:SetWidth(cD.text.base_font_size)
       typeIcon:SetHeight(cD.text.base_font_size)
       typeIcon:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 0)
@@ -182,9 +183,9 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       tmp         =  {
                      inUse           =  true,
                      lootFrame       =  lootFrame,
-                     typeIconFrame   =  typeIconFrame,
+--                      typeIconFrame   =  typeIconFrame,
                      typeIcon        =  typeIcon,
-                     lootIconFrame   =  lootIconFrame,
+--                      lootIconFrame   =  lootIconFrame,
                      lootIcon        =  lootIcon,
                      lootCnt         =  lootCnt,
                      textOBJ         =  textOBJ,
@@ -198,9 +199,9 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- to put in new values
       --
       lootFrame      =  fromStock.lootFrame
-      typeIconFrame  =  fromStock.typeIconFrame
+--       typeIconFrame  =  fromStock.typeIconFrame
       typeIcon       =  fromStock.typeIcon
-      lootIconFrame  =  fromStock.lootIconFrame
+--       lootIconFrame  =  fromStock.lootIconFrame
       lootIcon       =  fromStock.lootIcon
       lootCnt        =  fromStock.lootCnt
       textOBJ        =  fromStock.textOBJ
@@ -212,6 +213,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
 --       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
+      typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
       if  categoryIcon ~= nil then
          typeIcon:SetTexture("Rift", categoryIcon)
          typeIcon:SetVisible(true)
@@ -264,6 +266,7 @@ function  cD.resetLootWindow()
    cD.sLTfullObjs =  {}
    cD.sLTprcntObjs=  {}
    cD.sLTrarity   =  {}
+   cD.sLTnames    =  {}
    cD.today       =  {  casts=0, }
    cD.time        =  {  hour=0, mins=0, secs=0 }
    cD.infoOBJ     =  nil
@@ -303,16 +306,17 @@ function fetchFromStock()
          retval = tbl
          -- set the frame as INUSE
          cD.Stock[idx].inUse     =  true
-         -- stop rendering of old categoty icon that keeps re-emerging
+         -- stop rendering of old category icon that keeps re-emerging
          cD.Stock[idx].typeIcon:SetVisible(false)
          -- then we try to dereference it, somehow...
          cD.Stock[idx].typeIcon  =  nil
          -- finally we create a new icon and we reference in cD.Stock for future uses
-         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].typeIconFrame)
-         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size + 4)
-         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size + 4)
-         cD.Stock[idx].typeIcon:SetPoint("CENTER", cD.Stock[idx].typeIconFrame, "CENTER")
+         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].lootFrame)
+         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size)
+         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size)
          cD.Stock[idx].typeIcon:SetLayer(3)
+--          cD.Stock[idx].typeIcon:SetPoint("CENTER", cD.Stock[idx].typeIconFrame, "CENTER")
+         cD.Stock[idx].typeIcon:SetPoint("TOPLEFT",   cD.Stock[idx].lootFrame, "TOPLEFT", cD.borders.left, 0)
          break
       end
    end
