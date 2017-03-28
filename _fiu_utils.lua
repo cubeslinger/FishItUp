@@ -207,9 +207,6 @@ function cD.gotCastBar(_, info)
 
          if castDetails ~= nil then
 
---             print(string.format("cast details [%s]", castDetails))
-
---             if castDetails.abilityNew ~= nil then
             if castDetails.ability ~= nil then
                local ability = Inspect.Ability.New.Detail(castDetails.ability)
 
@@ -231,9 +228,7 @@ function cD.gotCastBar(_, info)
             Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
 
-            if not cD.waitingForTheSunRunning then
-               cD.waitingForTheSunRunning =  true
-            end
+            if not cD.waitingForTheSunRunning then cD.waitingForTheSunRunning =  true end
          end
       end
    end
@@ -407,9 +402,7 @@ function cD.gotLoot(h, eventTable)
                -- we will wait 1 more second (cD.time2Wait=1) Event.Item.Update and
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
                --
-               if not cD.waitingForTheSunRunning then
-                  cD.waitingForTheSunRunning =  true
-               end
+               if not cD.waitingForTheSunRunning then cD.waitingForTheSunRunning =  true end
             end
          else
             --             print("Skipping event, for slot ["..slot.."]")

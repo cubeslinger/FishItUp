@@ -122,7 +122,7 @@ function cD.createButtonWindow()
 
          function poleCastButton.Event:LeftClick()
             local currentMacro   =  poleCastButton:EventMacroGet(Event.UI.Input.Mouse.Left.Click)
---             print(string.format("CurrentMacro [%s]", currentMacro))
+
             if currentMacro ~= "stopcasting" then
 
                -- change button Action to "/stopcasting"
@@ -132,6 +132,7 @@ function cD.createButtonWindow()
                -- stop eventually still running loot event monitor
                --
                cD.detachLootWatchers()
+--                cD.detachOtherWatchers()
                --
                -- hide timer on castButton
                --
@@ -141,8 +142,8 @@ function cD.createButtonWindow()
                --
                local zone, subzone = cD.getZoneInfos()
                --
-               -- if we changed zone, w try to reloa last stored
-               -- session values or rest the loot window
+               -- if we changed zone, we try to reload the last
+               -- stored session values or reset the loot window
                --
                if cD.sLThdrs[1]:GetText() ~= zone     then
                   cD.sLThdrs[1]:SetText(zone)
@@ -187,13 +188,21 @@ function cD.createButtonWindow()
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
 
                cD.timeRStart  =  nil
-               Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Player is Fishing")
+               Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Event.System.Update.Begin")
             else
                --
                -- stop eventually still running loot event monitor
                --
                cD.detachLootWatchers()
+--                cD.detachOtherWatchers()
+
+               -- hide pole Timer
                cD.poleTimer:SetVisible(false)
+
+               -- reset to default Macro Action
+               -- THIS ONE CRASHES WHEN ENTERING IN COMBAT: frame is
+               -- protected and we can't modify it while in combat.
+               --
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
             end
          end

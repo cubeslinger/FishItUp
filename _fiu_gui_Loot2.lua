@@ -254,7 +254,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
    return   textOBJ, lootFrame, lootCnt, prcntCnt
 end
 
-function  cD.resetLootWindow()
+function  cD.resetLootWindow(manual)
    --
    -- Reset Indexes
    --
@@ -268,7 +268,7 @@ function  cD.resetLootWindow()
    cD.sLTrarity   =  {}
    cD.sLTnames    =  {}
    cD.today       =  {  casts=0, }
---    cD.time        =  {  hour=0, mins=0, secs=0 }
+   if manual then cD.time        =  {  hour=0, mins=0, secs=0 } end
    cD.infoOBJ     =  nil
    --
    -- Set all cD.Stock lootFrames to "invisible"
