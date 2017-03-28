@@ -112,7 +112,7 @@ function cD.processEventBuffer()
 
       -- reset textOBJ background color
       -- from highlighted
-      frame:SetBackgroundColor(.2, .2, .2, .5)
+      frame:SetBackgroundColor(.2, .2, .2, 0)
    end
 
    local LASTTIME, LASTOBJ
@@ -366,7 +366,9 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       --
       if fromHistory == false then
          local zoneOBJ  =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-         cD.updateHistory(zoneOBJ, lootOBJ, lootCount)
+         local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
+         local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id         
+         cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity)
       end
       --
       --

@@ -13,7 +13,7 @@ local LOOTFRAME         =  3
 local LOOTSCROLLBAR     =  4
 local POLECASTBUTTON    =  5
 local EXTERNALLOOTFRAME =  6
-local tLOOTNAMESIZE     =  180
+local tLOOTNAMESIZE     =  172
 
 function cD.createLootWindow()
 

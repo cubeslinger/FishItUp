@@ -52,7 +52,7 @@ end
 -- end
 
 
-function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)
+function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
    --
    -- cD.lastZoneLootObjs
    --
@@ -69,8 +69,10 @@ function cD.updateHistory(zoneOBJ, itemOBJ, lootCount)
    --
    -- cD.zoneTotalCnts
    --
-   local rarity   =  Inspect.Item.Detail(itemOBJ).rarity
-   local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
+--    local rarity   =  Inspect.Item.Detail(itemOBJ).rarity
+--    local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
+   local rarity   =  itemRarity
+   local zoneID   =  zID
    local newZone  =  false
    local idx      =  nil
    local val      =  nil
