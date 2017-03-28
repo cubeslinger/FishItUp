@@ -331,7 +331,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))
          cD.updatePercents(cD.get_totals())
 
-         if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.8, .8, .8, .5) end
+         if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.6, .6, .6, .5) end
 
       else
          --
@@ -340,7 +340,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          local lineOBJ, lootFrame, lootCnt, prcntCnt =  cD.createLootLine(cD.sLTFrames[LOOTFRAME], lootCount, lootOBJ, fromHistory)
 
          -- highlight last created row
-         if not fromHistory then lootCnt:SetBackgroundColor(.8, .8, .8, .5) end
+         if not fromHistory then lootCnt:SetBackgroundColor(.6, .6, .6, .5) end
 
          table.insert(cD.sLTids,       itemID)
          table.insert(cD.sLTnames,     itemName)
