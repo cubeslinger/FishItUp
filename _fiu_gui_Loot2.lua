@@ -22,15 +22,7 @@ function cD.createLootWindow()
 
    local lootWindow    =  UI.CreateFrame("Frame", "Loot", context)
 
---    if cD.window.lootX == nil or cD.window.lootY == nil then
---       -- first run, we position in the screen center
---       lootWindow:SetPoint("CENTER", UIParent, "CENTER")
---    else
---       -- we have coordinates
---       lootWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cD.window.lootX or 0, cD.window.lootY or 0)
---    end
-
---    -- Clamp to InfoWindow Bottom
+   -- Clamp to InfoWindow Bottom
    lootWindow:SetPoint("TOPLEFT",   cD.window.infoObj, "BOTTOMLEFT",  0, 1)
    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoObj, "BOTTOMRIGHT", 0, 1)
 
@@ -112,7 +104,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
    if fromStock   == nil   then
       -- setup Loot Item's containing Frame
       lootFrame =  UI.CreateFrame("Frame", "Loot_line_Container", parent)
-      lootFrame:SetHeight(cD.text.base_font_size)
+      lootFrame:SetHeight(cD.text.base_font_size + 2)
       lootFrame:SetLayer(1)
 
       -- attach to the last object present in loot table
@@ -131,19 +123,13 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       typeIconFrame:SetHeight(cD.text.base_font_size)
       typeIconFrame:SetWidth(cD.text.base_font_size)
       typeIconFrame:SetLayer(2)
-      typeIconFrame:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 0)
+      typeIconFrame:SetPoint("TOPLEFT",   lootFrame, "TOPLEFT", cD.borders.left, 1)
 
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, typeIconFrame)
---       if  categoryIcon ~= nil then
---          typeIcon:SetTexture("Rift", categoryIcon)
---          typeIcon:SetVisible(true)
---       else
---          typeIcon:SetVisible(false)
---       end
       if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon) end
 
       typeIcon:SetWidth(cD.text.base_font_size + 4)
@@ -197,13 +183,12 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetText(lootText)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-      textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT")
+      textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT", cD.borders.left, 0)
 
       -- setup Loot Item's Percentage counter
       prcntCnt  =  UI.CreateFrame("Text", "Percent_" .. itemName, lootFrame)
       prcntCnt:SetFont(cD.addon, cD.text.base_font_name)
       prcntCnt:SetFontSize(cD.text.base_font_size -2)
---       prcntCnt:SetText(string.format("(%2d", 0).."%)")
       prcntCnt:SetText(string.format("(%d", 0).."%)")
       prcntCnt:SetLayer(3)
       prcntCnt:SetPoint("TOPLEFT",  textOBJ,    "TOPRIGHT", cD.borders.left, 0)
@@ -223,7 +208,6 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       table.insert(cD.Stock, tmp)
    else
---       print(string.format("REUSING old frame from STOCK: name[%s] cat[%s]", itemCat, Inspect.Item.Detail(lootOBJ).name))
       --
       -- We recycle an old set of object, so we need just
       -- to put in new values
@@ -270,7 +254,6 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
 
       -- setup Loot Item's Percentage counter
---       prcntCnt:SetText(string.format("(%2d)", 0).."%")
       prcntCnt:SetText(string.format("(%d", 0).."%)")
 
       --

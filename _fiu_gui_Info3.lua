@@ -37,7 +37,7 @@ local function createTitleBar(parent)
       menuButton:SetHeight(titleFIU:GetHeight())
       menuButton:SetWidth(titleFIU:GetHeight())
       menuButton:SetLayer(1)
-      menuButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow() cD.addToZoneID() end, "Menu Button Pressed" )
+      menuButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow() end, "Menu Button Pressed" )
       menuButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
 
       -- HEADER SHOW TOTALS WINDOW BUTTON

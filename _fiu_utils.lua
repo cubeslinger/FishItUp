@@ -16,11 +16,11 @@ function cD.timedEventsManager()
 
    local now = Inspect.Time.Frame()
    --
-   -- Section rolling Timers - Begin 
+   -- Section rolling Timers - Begin
    --
    --
    -- first run
-   --   
+   --
    if cD.timeRStart == nil then
       cD.timeRStart     = now
       cD.lastTotalTime  = now
@@ -53,13 +53,15 @@ function cD.timedEventsManager()
             cD.time.hour = cD.time.hour + 1
          end
 
-         -- cast time
+         -- Cast Time
          cD.sLThdrs[5]:SetText(string.format("%02d:%02d", mins, secs))
-         -- total time
+
+         -- Session Time
          local txt = string.format("%02d:%02d", cD.time.mins, cD.time.secs)
          if cD.time.hour > 0 then txt = cD.time.hour .. ":" .. txt end
          cD.sLThdrs[6]:SetText(txt)
-         -- pole castTimer
+
+         -- Pole castTimer
          local s = string.format("%02d", secs)
          cD.poleTimer:SetText(s)
       end
@@ -70,7 +72,7 @@ function cD.timedEventsManager()
 
    if cD.waitingForTheSunRunning == true then
       --
-      -- Section WaitingForTheSun - Begin 
+      -- Section WaitingForTheSun - Begin
       --
       -- first run
       if cD.timeStart == nil then
@@ -85,62 +87,52 @@ function cD.timedEventsManager()
             -- we are done, stop timer/flags
             cD.timeStart               =  nil
             cD.waitingForTheSunRunning =  false
-            
+
             -- hide timer on pole cast Button
             cD.poleTimer:SetVisible(false)
-            cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)         
-            
-            -- let's update lootTable         
+            cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
+
+            -- let's update lootTable
             cD.processEventBuffer()
-            
+
          end
-      end         
+      end
       --
-      -- Section WaitingForTheSun - End 
+      -- Section WaitingForTheSun - End
       --
    end
 
    return
 end
-                 
+
 function cD.processEventBuffer()
-  
+
+   local idx, frame = nil, nil
+   for idx, frame in pairs(cD.sLTcntsObjs) do
+
+      -- reset textOBJ background color
+      -- from highlighted
+      frame:SetBackgroundColor(.2, .2, .2, .5)
+   end
+
    local LASTTIME, LASTOBJ
    local idx, tbl, t, o
 
    for idx, tbl in pairs(cD.eventBuffer) do
-          
+
       for t, o in pairs(tbl) do
-      
+
          print(string.format("Buffer: t[%s] o[%s]", t, o))
-         
-         if LASTOBJ == nil then
-            cD.updateLootTable( o, 1, false )
-            LASTTIME= t
-            LASTOBJ = o
-         else
-            if LASTTIME == t then
-               if LASTOBJ ~= o then
-                  cD.updateLootTable( o, 1, false )
-                  LASTTIME= t
-                  LASTOBJ = o
-               else
-                  print(string.format("Skipping DOUBLE event WAS [%s][%s]", LASTTIME, LASTOBJ))
-                  print(string.format("Skipping DOUBLE event  IS [%s][%s]", t, o))
-               end
-            else
-               cD.updateLootTable( o, 1, false )
-               LASTTIME= t
-               LASTOBJ = o
-            end
-         end
+
+         cD.updateLootTable( o, 1, false )
+
       end
    end
 
    cD.eventBuffer = {}
-   
+
    return
-end                  
+end
 
 function cD.getZoneInfos()
    local zoneText       =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).name
@@ -206,7 +198,7 @@ end
 function cD.gotCastBar(_, info)
 
    local playerID, eventTBL = nil, nil
-   
+
    for playerID, eventTBL in pairs(info) do
 
       if playerID ~= nil then
@@ -238,7 +230,7 @@ function cD.gotCastBar(_, info)
 
             Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
-            
+
             if not cD.waitingForTheSunRunning then
                cD.waitingForTheSunRunning =  true
             end
@@ -250,36 +242,6 @@ function cD.gotCastBar(_, info)
    return
 
 end
-
-local function resetObjColor(idx, c)
-   local obj = cD.sLTtextObjs[idx]
-   obj:SetFontColor(c.r, c.g, c.b, c.a)
-   return
-end
-
-local function animB(idx, c)
-   local obj = cD.sLTtextObjs[idx]
-   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, resetObjColor(idx, c) )
-   return
-end
-
-local function animA(idx, c )
-   local obj = cD.sLTtextObjs[idx]
-   obj:AnimateFontColor(2, "smoothstep", c.r, 0, c.b, c.a, animB(idx, c))
-   return
-end
-
-
-local function runFontColorAnimation(idx)
-   local obj = cD.sLTtextObjs[idx]
-   -- save original color
-   local c = {}
-
-   c.r, c.g, c.b, c.a = obj:GetFontColor()
-   obj:AnimateFontColor(2, "smoothstep", c.r, 1, c.b, c.a, animA(idx, c))
-   return
-end
-
 
 function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
@@ -348,7 +310,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             idx = key
          end
       end
-      
+
       if not idx then
          -- search by itemName
          for key, val in pairs(cD.sLTnames) do
@@ -359,7 +321,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             end
          end
       end
-      
+
 
       if idx then
          --
@@ -368,15 +330,17 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.sLTcnts[idx]   =  cD.sLTcnts[idx] + lootCount
          cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))
          cD.updatePercents(cD.get_totals())
---          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
 
---          runFontColorAnimation(idx)
+         if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.8, .8, .8, .5) end
 
       else
          --
          -- NEW - we create
          --
          local lineOBJ, lootFrame, lootCnt, prcntCnt =  cD.createLootLine(cD.sLTFrames[LOOTFRAME], lootCount, lootOBJ, fromHistory)
+
+         -- highlight last created row
+         if not fromHistory then lootCnt:SetBackgroundColor(.8, .8, .8, .5) end
 
          table.insert(cD.sLTids,       itemID)
          table.insert(cD.sLTnames,     itemName)
@@ -390,8 +354,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.updatePercents(cD.get_totals())
 
          cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
-
---          runFontColorAnimation(table.getn(cD.sLTtextObjs))
 
          retval	=	true
       end
@@ -437,10 +399,10 @@ function cD.gotLoot(h, eventTable)
             -- When a Lure expires the Pole itself triggers an
             -- event that we need to ignore
             --
-            if itemName ~= cD.poleTBL.name then             
+            if itemName ~= cD.poleTBL.name then
                local now = Inspect.Time.Frame()
                table.insert( cD.eventBuffer, { [now] = itemOBJ } )
-              
+
                --
                -- we will wait 1 more second (cD.time2Wait=1) Event.Item.Update and
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
@@ -511,46 +473,4 @@ function cD.categoryIcon(categoryName, objID, desc)
    elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
    end
   return retval
-end
-
-
-
-function cD.addToZoneID()
-   local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-   local zoneName =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).name
-
-   cD.zoneIDs[zoneID]   =  zoneName
-
-   return
-end
-
-function slt_search(table, fieldID)
-   local l  =  table
-   local x  =  nil
-   local y  =  nil
-   local xx =  nil
-   local yy =  nil
-   retval   =  nil
-
-   for x,y in pairs(table) do
-      for xx, yy in pairs(y) do
-         if xx == fieldID then
-            retval = x
-         end
-      end
-   end
-
-   return retval
-end
-
-function searchArrayByValue(table, value2search)
-   local k     =  nil
-   local v     =  nil
-   local retval=  nil
-
-   for k,v in pairs(table) do
-      if v == value2search then retval = k end
-   end
-
-   return retval
 end

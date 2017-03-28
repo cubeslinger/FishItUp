@@ -152,10 +152,6 @@ local function _init()
    -- Logs that are permanent
    --
    cD.zoneTotalCnts  =  {}
-   --
-   -- Log Debug
-   --
-   cD.zoneIDs  =  {}
 
    return cD
 end
@@ -185,19 +181,13 @@ function cD.fiuLoadVariables(_, addonName)
             cD.history     =  waterlog
          end
       end
-      if zoneids          ~= nil then
-         if next(zoneids) ~= nil then
-            cD.zoneIDs     =  zoneids
-         end
-      end
-
       if   itemCache   ~= nil then
          if next(itemCache)~= nil then
             cD.itemCache    = itemCache
          end
       end
    end
-   
+
    if cD.text.base_font_name ~= nil then cD.text.base_font_name = "fonts/MonospaceTypewriter.ttf" end
 
    return
@@ -218,7 +208,6 @@ function cD.fiuSaveVariables(_, addonName)
 
       waterlog          =  cD.history
       itemCache         =  cD.itemCache
-      zoneids           =  cD.zoneIDs
       --
       lastZoneLootObjs  =  cD.lastZoneLootObjs
       zoneTotalCnts     =  cD.zoneTotalCnts
