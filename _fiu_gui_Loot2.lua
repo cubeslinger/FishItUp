@@ -98,10 +98,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
 
       -- debug
-      local x,y = nil, nil
-      for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
-         print(string.format("Name [%s] [%s] [%s]", itemName, x, y))
-      end
+--       local x,y = nil, nil
+--       for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
+--          print(string.format("Name [%s] [%s] [%s]", itemName, x, y))
+--       end
    end
 
 
