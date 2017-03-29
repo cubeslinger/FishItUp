@@ -116,7 +116,7 @@ function cD.createTotalsWindow()
 end
 
 
-function cD.createTotalsLine(parent, zoneName, zoneTotals)
+function cD.createTotalsLine(parent, zoneName, zoneTotals, isLegend)
 
    if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
 
@@ -124,7 +124,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    local znOBJ       =  nil
    local idx         =  nil
    local parentOBJ   =  nil
-   local totOBJs  =  {}
+   local totOBJs     =  {}
+   local legendColor =  1
 
 
    --     1        2        3       4    5      6      7
@@ -137,7 +138,7 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
    txtColors[5]   =  { r = .676,   g = .281,   b = .98 }    -- epic
    txtColors[6]   =  { r = 1,      g = 1,      b = 0 }      -- quest
    txtColors[7]   =  { r = 1,      g = .5,     b = 0 }      -- relic
-
+   txtColors[8]   =  { r = .98,    g = .98,    b = .98 }    -- used only by legend, white color
 
    -- setup Totals containing Frame
    totalsFrame =  UI.CreateFrame("Frame", "Totals_line_Container", parent)
@@ -169,22 +170,34 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals)
       local totalsCnt  =  UI.CreateFrame("Text", "Totals_Cnt_" .. idx, totalsFrame)
       totalsCnt:SetFont(cD.addon, cD.text.base_font_name)
       totalsCnt:SetFontSize(cD.text.base_font_size)
-
-      totalsCnt:SetText(string.format("%3d", zoneTotals[idx]))
       totalsCnt:SetLayer(3)
-      totalsCnt:SetFontColor(txtColors[idx].r, txtColors[idx].g, txtColors[idx].b)
+
+      if isLegend then
+         totalsCnt:SetFontColor(txtColors[legendColor].r, txtColors[legendColor].g, txtColors[legendColor].b)
+         totalsFrame:SetBackgroundColor(.0, .0, .0, .6)
+         totalsCnt:SetText(string.format("%3s", zoneTotals[idx]))
+         legendColor = legendColor + 1
+      else
+         totalsCnt:SetFontColor(txtColors[idx].r, txtColors[idx].g, txtColors[idx].b)
+         totalsCnt:SetText(string.format("%3d", zoneTotals[idx]))
+      end
+
       totalsCnt:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
       parentOBJ   =  totalsCnt
       table.insert(totOBJs, totalsCnt)
 
-      total = total + zoneTotals[idx]
+      if not isLegend then total = total + zoneTotals[idx] end
    end
 
    -- last field is the Total of Totals
    local totalsTotal  =  UI.CreateFrame("Text", "Totals_Total", totalsFrame)
    totalsTotal:SetFont(cD.addon, cD.text.base_font_name)
    totalsTotal:SetFontSize(cD.text.base_font_size)
-   totalsTotal:SetText(string.format("%5d", total))
+   if isLegend then
+      totalsTotal:SetText(string.format("%5s", total))
+   else
+      totalsTotal:SetText(string.format("%5d", total))
+   end
    totalsTotal:SetLayer(3)
    totalsTotal:SetFontColor(txtColors[2].r, txtColors[2].g, txtColors[2].b)
    totalsTotal:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
@@ -199,6 +212,20 @@ function cD.initTotalsWindow()
 
    local zn, tbl     =  nil, {}
    local parentOBJ   =  cD.sTOFrames[TOTALSFRAME]
+
+   -- Inject Legend into Table 1st row - begin
+   local legendZnName   =  "Zone Name"
+   local legendTbl      =  { "jnk", "Com", "Unc" , "Rar" , "Epi" , "Qst", "Rel", "Total"}
+   local legendFrame, legendZnOBJ, legendTotOBJs = cD.createTotalsLine(parentOBJ, legendZnName, legendTbl, true)
+
+   table.insert(cD.sTOzoneIDs,   legendZnName)
+   table.insert(cD.sTOFrame,     legendFrame)
+   table.insert(cD.sTOznObjs,    legendZnOBJ)
+
+   cD.sTOcntObjs[legendZnName] = legendTotOBJs
+   parentOBJ   =  legendFrame
+   -- Inject Legend into Table 1st row - end
+
 
    for zn, tbl in pairs(cD.zoneTotalCnts) do
 
