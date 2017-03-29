@@ -367,7 +367,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       if fromHistory == false then
          local zoneOBJ  =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
          local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
-         local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id         
+         local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity)
       end
       --
@@ -462,10 +462,11 @@ end
 function cD.categoryIcon(categoryName, objID, desc)
    local retval   =  nil
 --    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find( categoryName, "artifact" ) ~= nil then   retval = "Minion_I3C.dds"                          -- artifact icon
-   elseif   string.find( categoryName, "quest")     ~= nil then   retval = "icon_menu_quest.png.dds"                 -- exclamation point
-   elseif   string.find( categoryName, "dimension") ~= nil then   retval = "Minion_I153.dds"                         -- little key
-   elseif   desc and string.find(desc, "exchange")  ~= nil then   retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+   if       string.find( categoryName, "artifact" ) ~= nil                                then  retval = "Minion_I3C.dds"                          -- artifact icon
+   elseif   string.find( categoryName, "quest")     ~= nil                                then  retval = "icon_menu_quest.png.dds"                 -- exclamation point
+   elseif   string.find( categoryName, "dimension") ~= nil                                then  retval = "Minion_I153.dds"                         -- little key
+   elseif   desc and string.find(desc, "exchange")  ~= nil                                then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+   elseif   desc and (string.find(desc, "chest") or string.find(desc, "trasure") ~= nil)  then  retval = "btn_bag_(normal).png.dds"             	-- little sack
    end
   return retval
 end

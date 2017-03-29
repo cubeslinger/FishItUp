@@ -137,21 +137,19 @@ function cD.createInfoWindow()
          local container3  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator_container", headerFrame)
          container3:SetHeight(cD.text.base_font_size/2)
          container3:SetLayer(1)
-         container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
-         container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
+--          container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
+--          container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
+         container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top*2))
+         container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top*2))
+
 
             -- HEADER GRAPHIC SEPARATOR
             local graphSep = UI.CreateFrame("Texture", "Separator", headerFrame)
-            graphSep:SetTexture("Rift", "underscore.png.dds")
---             graphSep:SetTexture("Rift", "line_window_break_png.dds")
---             graphSep:SetHeight(titleBar:GetHeight())
+--             graphSep:SetTexture("Rift", "underscore.png.dds")
+            graphSep:SetTexture("Rift", "line_window_break.png.dds")
             graphSep:SetHeight(cD.text.base_font_size/2)
             graphSep:SetWidth(container3:GetWidth())
             graphSep:SetLayer(1)
---             graphSep:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.right,   cD.borders.top *3)
---             graphSep:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", - cD.borders.right, cD.borders.top *3)
---             graphSep:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  - cD.borders.left,   cD.borders.top *4)
---             graphSep:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", cD.borders.right, cD.borders.top *4)
             graphSep:SetPoint("CENTER", container3, "CENTER")
 
 
@@ -159,8 +157,10 @@ function cD.createInfoWindow()
          local container4  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_castscatches_container", headerFrame)
          container4:SetLayer(1)
          container4:SetHeight(cD.text.base_font_size)
-         container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
-         container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
+--          container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
+--          container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
+         container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  0)
+         container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT")
 
 
             -- HEADER   -- LABEL -- CASTS Header
