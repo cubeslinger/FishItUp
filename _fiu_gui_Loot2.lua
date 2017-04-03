@@ -78,6 +78,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
    local itemDesc       =  nil
    local itemCat        =  nil
    local itemIcon       =  nil
+   local itemValue      =  nil
 
 
    if fromHistory == nil then fromHistory = false end
@@ -89,6 +90,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemDesc    =  cD.itemCache[lootOBJ].description
       itemCat     =  cD.itemCache[lootOBJ].category
       itemIcon    =  cD.itemCache[lootOBJ].icon
+      itemValue   =  cD.itemCache[lootOBJ].value
+      if itemValue == nil then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
       itemName    =  Inspect.Item.Detail(lootOBJ).name
@@ -96,12 +99,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemDesc    =  Inspect.Item.Detail(lootOBJ).description
       itemCat     =  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
-
-      -- debug
---       local x,y = nil, nil
---       for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
---          print(string.format("Name [%s] [%s] [%s]", itemName, x, y))
---       end
+      itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      if itemValue == nil then itemValue = 0 end
    end
 
 
@@ -168,8 +167,11 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetHeight(cD.text.base_font_size)
       textOBJ:SetWidth(tLOOTNAMESIZE)
       -- we pack Junk/Sellable Items
-      if objRarity == "sellable" then lootText  =  "Sellable (Junk)" end
-      textOBJ:SetText(lootText)
+      if objRarity == "sellable" then 
+         cD.totJunkMoney = cD.totJunkMoney + itemValue
+         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney) 
+      end
+      textOBJ:SetText(lootText, true)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
       textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT", cD.borders.left, 0)
@@ -186,9 +188,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       tmp         =  {
                      inUse           =  true,
                      lootFrame       =  lootFrame,
---                      typeIconFrame   =  typeIconFrame,
                      typeIcon        =  typeIcon,
---                      lootIconFrame   =  lootIconFrame,
                      lootIcon        =  lootIcon,
                      lootCnt         =  lootCnt,
                      textOBJ         =  textOBJ,
@@ -236,8 +236,11 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       lootText =  string.sub(lootText, 1, 20)
       -- we pack Junk/Sellable Items
-      if objRarity == "sellable" then lootText  =  "Sellable (Junk)" end
-      textOBJ:SetText(lootText)
+      if objRarity == "sellable" then 
+         cD.totJunkMoney = cD.totJunkMoney + itemValue
+         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney) 
+      end         
+      textOBJ:SetText(lootText, true)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
 
       -- setup Loot Item's Percentage counter
@@ -281,14 +284,17 @@ function  cD.resetLootWindow(manual)
    end
    --
    --
-   -- Reset the "Junk" pointer
+   -- Reset the "Junk" releted
    --
    cD.junkOBJ     =  nil
+   cD.totJunkMoney=  0
    --
    -- Reset Last Session History
    --
-   local zn = Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-   cD.lastZoneLootObjs[zn] = nil
+   if manual then
+      local zn = Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
+      cD.lastZoneLootObjs[zn] = nil
+   end
    --
    -- list is empty, so nothing to show
    --

@@ -11,48 +11,10 @@ local addon, cD = ...
 local TITLEBARTOTALSFRAME     =  1
 local TOTALSFRAME             =  5
 
-local function split(text, delim)
-   -- returns an array of fields based on text and delimiter (one character only)
-   local result = {}
-   local magic = "().%+-*?[]^$"
-
-   if delim == nil then
-      delim = "%s"
-   elseif string.find(delim, magic, 1, true) then
-      -- escape magic
-      delim = "%"..delim
-   end
-
-   local pattern = "[^"..delim.."]+"
-   for w in string.gmatch(text, pattern) do
-      table.insert(result, w)
-   end
-   return result
-end
-
-local function getToday()
-   local adate = os.date()
-   local dateFields = split(adate, " ")
-   local aToday = split(dateFields[1], "/")
-
-   return(string.format("20%02d%02d%02d", aToday[3], aToday[2], aToday[1]))
-end
-
--- function cD.addToTodayHistory(zoneOBJ, lootArray, lootCnts)
---    local today =  getToday()
--- --    print(string.format("Today [%s] zoneOBJ [%s] lootArraySize [%s]", today, zoneOBJ, #lootArray))
---
---    if cD.history[today] then
---       table.insert(cD.history[today], { [zoneOBJ] = { lootArray, lootCnts } })
---    else
---       cD.history[today] =  { [zoneOBJ] = { lootArray, lootCnts } }
---    end
---
---    return
--- end
-
-
-function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
+function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValue)
+   
+   if itemValue == nil  then itemValue = 0 end
+   
    --
    -- cD.lastZoneLootObjs
    --
@@ -69,8 +31,6 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
    --
    -- cD.zoneTotalCnts
    --
---    local rarity   =  Inspect.Item.Detail(itemOBJ).rarity
---    local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
    local rarity   =  itemRarity
    local zoneID   =  zID
    local newZone  =  false
@@ -79,16 +39,22 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
 
    if rarity   == nil   then  rarity   =  "common" end
    -- Legend
-   -- sellable=1, common=2, uncommon=3, rare=4, epic=5, quest=6, relic=7
+   -- sellable=1, common=2, uncommon=3, rare=4, epic=5, quest=6, relic=7, MoneyfromJunk=8
    --
    if cD.zoneTotalCnts == nil or cD.zoneTotalCnts[zoneID] == nil then
-      --                              1        2        3       4    5      6     7
-      --                          sellable, common, uncommon, rare, epic, quest, relic
-      cD.zoneTotalCnts[zoneID] = {0, 0, 0, 0, 0, 0, 0 }
+      --                              1        2        3       4    5      6     7          8
+      --                          sellable, common, uncommon, rare, epic, quest, relic, MoneyfromJunk
+      cD.zoneTotalCnts[zoneID] = {0, 0, 0, 0, 0, 0, 0, 0 }
       newZone  =  true
    end
 
-   if        rarity == "sellable"  then   cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1  idx =  1  -- idx = 1
+   if        rarity == "sellable"   then   cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1  idx =  1  -- idx = 1
+                                    if cD.zoneTotalCnts[zoneID][8]   == nil   then 
+                                       cD.zoneTotalCnts[zoneID][8] = itemValue 
+                                    else                                           
+                                       cD.zoneTotalCnts[zoneID][8]	=  cD.zoneTotalCnts[zoneID][8]	+  itemValue  
+                                    end
+                                    idx =  8  -- idx = 8  junk money, not a real category
       elseif rarity == "common"    then   cD.zoneTotalCnts[zoneID][2]   =  cD.zoneTotalCnts[zoneID][2]   +  1  idx =  2  -- idx = 2
       elseif rarity == "uncommon"  then   cD.zoneTotalCnts[zoneID][3]   =  cD.zoneTotalCnts[zoneID][3]	+  1  idx =  3  -- idx = 3
       elseif rarity == "rare"      then   cD.zoneTotalCnts[zoneID][4]   =  cD.zoneTotalCnts[zoneID][4]   +  1  idx =  4  -- idx = 4
@@ -102,9 +68,7 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
    --
    if newZone  then
       local parent = cD.sTOFrame[table.getn(cD.sTOFrame)]
---       print(string.format("0 - parent is [%s]", parent))
       if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
---       print(string.format("1 - parent is [%s]", parent))
       local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, cD.zoneTotalCnts[zoneID])
 
       table.insert(cD.sTOzoneIDs,   zoneID)
@@ -118,11 +82,20 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity)
       cD.sTOcntObjs[zoneID][idx]:SetText(cnt)
    end
 
+
+   -- adjust MfJ (Money from Junk) counter
+   local j = cD.zoneTotalCnts[zoneID][8] or 0
+   cD.sTOcntObjs[zoneID][#cD.sTOcntObjs[zoneID] - 1]:SetText(string.format("%5s", cD.printJunkMoney(j)), true)
+
    -- adjust Whole Zone Total
    local total =  0
    local i     =  nil
    for i=1, 7 do total = total + cD.zoneTotalCnts[zoneID][i] end
+--    print(string.format("Total [%s]", total))
    cD.sTOcntObjs[zoneID][#cD.sTOcntObjs[zoneID]]:SetText(string.format("%5d", total))
+
+
+
 
    newZone  =  false
 

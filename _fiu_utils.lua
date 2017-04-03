@@ -12,6 +12,42 @@ local addon, cD = ...
 local LOOTFRAME         =  3
 local POLECASTBUTTON    =  5
 
+function cD.printJunkMoney(money)
+   local silver   =  '#c0c0c0'
+   local gold     =  '#ffd700'
+   local platinum =  '#e5e4e2'
+   local white    =  '#ffffff'
+   local s        =  money
+   local g        =  0
+   local p        =  0
+   local t        =  ""
+
+   if s  == nil   then  s = 0 end
+
+   if s > 0 then
+      while s > 100 do
+         s = s -100
+         g = g + 1
+      end
+
+      while g > 1000 do
+         g = g - 1000
+         p = p + 1
+      end
+   end
+
+   -- silver
+   t = "<font color=\'"..white.."\'>"..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
+   if g > 0 then
+      t = "<font color=\'"..white.."\'>"..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
+   end
+   if p > 0 then
+      t = "<font color=\'"..white.."\'>"..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
+   end
+
+   return(t)
+end
+
 function cD.timedEventsManager()
 
    local now = Inspect.Time.Frame()
@@ -252,6 +288,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
    local itemDesc    =  nil
    local itemCategory=  nil
    local itemiCon    =  nil
+   local itemValue   =  nil
 
    --
    -- Manage History and Update itemsCache
@@ -263,6 +300,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemDesc    =  cD.itemCache[lootOBJ].description
       itemCategory=  cD.itemCache[lootOBJ].category
       itemiCon    =  cD.itemCache[lootOBJ].icon
+      itemValue   =  cD.itemCache[lootOBJ].value
+      if itemValue   == nil   then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
       itemName    =  Inspect.Item.Detail(lootOBJ).name
@@ -270,9 +309,11 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemDesc    =  Inspect.Item.Detail(lootOBJ).description
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
+      itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      if itemValue   == nil   then itemValue = 0 end
 
       if cD.itemCache[lootOBJ]   == nil then
-         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon }
+         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue }
       end
    end
 
@@ -288,6 +329,9 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          if cD.junkOBJ == nil then
             cD.junkOBJ  =  lootOBJ
          else
+            -- we add the REAL value of this item
+--             cD.totJunkMoney = cD.totJunkMoney + itemValue
+            -- then we set up the fake/static Junk target
             lootOBJ     =  cD.junkOBJ
             itemID      =  cD.itemCache[lootOBJ].id
             itemName    =  cD.itemCache[lootOBJ].name
@@ -295,6 +339,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             itemDesc    =  cD.itemCache[lootOBJ].description
             itemCategory=  cD.itemCache[lootOBJ].category
             itemiCon    =  cD.itemCache[lootOBJ].icon
+            itemValue   =  cD.itemCache[lootOBJ].value
          end
       end
 
@@ -322,8 +367,15 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          --
          -- OLD - we update
          --
-         cD.sLTcnts[idx]   =  cD.sLTcnts[idx] + lootCount
-         cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))
+         cD.sLTcnts[idx]   =  cD.sLTcnts[idx] + lootCount                     -- loot counter
+         cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))   -- loot field
+         
+         if itemRarity == "sellable" then                                     -- loot text field
+            cD.totJunkMoney = cD.totJunkMoney + itemValue                     -- if junk we adjust
+            local lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)    -- MfJ text value
+            cD.sLTtextObjs[idx]:SetText(lootText, true)
+         end
+         
          cD.updatePercents(cD.get_totals())
 
          if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.6, .6, .6, .5) end
@@ -362,13 +414,13 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       cD.sLThdrs[4]:SetText(totS)
       cD.timeRStart  =  nil
       --
-      -- Adjust Waterlog Totals
+      -- Adjust History Totals
       --
       if fromHistory == false then
          local zoneOBJ  =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
          local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
          local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
-         cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity)
+         cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity, itemValue)
       end
       --
       --

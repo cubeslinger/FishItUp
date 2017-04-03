@@ -36,9 +36,11 @@ end
 function cD.loadLastSession()
    local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
    local retval   =  false
+   local zID, t = nil, nil
+
+--    print("entering cD.loadLastSession")
 
    -- load lootIDs Array
-   local zID, t = nil, nil
    for zID, t in pairs(cD.lastZoneLootObjs) do
       if zID == zoneID then
 
@@ -140,12 +142,13 @@ function cD.createButtonWindow()
                --
                -- refresh Zone Headers
                --
-               local zone, subzone = cD.getZoneInfos()
+               local zone, subzone, zoneID = cD.getZoneInfos()
                --
                -- if we changed zone, we try to reload the last
                -- stored session values or reset the loot window
                --
                if cD.sLThdrs[1]:GetText() ~= zone     then
+                  print(string.format("OLD ZONE[%s] NEWZONE[%s]", cD.sLThdrs[1]:GetText(), zone))
                   cD.sLThdrs[1]:SetText(zone)
                   cD.resetLootWindow()
                   cD.loadLastSession()

@@ -9,7 +9,6 @@
 local addon, cD = ...
 
 local HEADERFRAME       =  1
--- local cD.text.base_font_size         =  11
 local tWIDTH            =  355
 local tMAXSTRINGSIZE    =	20
 local tWIDTH				=  200
@@ -42,9 +41,7 @@ local function createTitleBar(parent)
 
       -- HEADER SHOW TOTALS WINDOW BUTTON
       local showTotalsButton = UI.CreateFrame("Texture", "totalsButton", titleInfoFrame)
---       showTotalsButton:SetTexture("Rift", "arrow_dropdown.png.dds")
       showTotalsButton:SetTexture("Rift", "reward_gold.png.dds")
---       showTotalsButton:SetHeight(titleFIU:GetHeight())
       showTotalsButton:SetHeight(titleFIU:GetHeight())
       showTotalsButton:SetWidth(titleFIU:GetHeight())
       showTotalsButton:SetLayer(1)
@@ -96,8 +93,6 @@ function cD.createInfoWindow()
          local container1  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_zone_container", headerFrame)
          container1:SetHeight(cD.text.base_font_size)
          container1:SetLayer(1)
---          container1:SetPoint("TOPLEFT",  headerFrame, "TOPLEFT",  0,  cD.borders.top)
---          container1:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT", 0,  cD.borders.top)
          container1:SetPoint("TOPLEFT",  headerFrame, "TOPLEFT")
          container1:SetPoint("TOPRIGHT", headerFrame, "TOPRIGHT")
 
@@ -137,15 +132,12 @@ function cD.createInfoWindow()
          local container3  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator_container", headerFrame)
          container3:SetHeight(cD.text.base_font_size/2)
          container3:SetLayer(1)
---          container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
---          container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
          container3:SetPoint("TOPLEFT",  container2, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top*2))
          container3:SetPoint("TOPRIGHT", container2, "BOTTOMRIGHT", 0,  (cD.borders.top*2))
 
 
             -- HEADER GRAPHIC SEPARATOR
             local graphSep = UI.CreateFrame("Texture", "Separator", headerFrame)
---             graphSep:SetTexture("Rift", "underscore.png.dds")
             graphSep:SetTexture("Rift", "line_window_break.png.dds")
             graphSep:SetHeight(cD.text.base_font_size/2)
             graphSep:SetWidth(container3:GetWidth())
@@ -157,8 +149,6 @@ function cD.createInfoWindow()
          local container4  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_castscatches_container", headerFrame)
          container4:SetLayer(1)
          container4:SetHeight(cD.text.base_font_size)
---          container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top/2))
---          container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT", 0,  (cD.borders.top/2))
          container4:SetPoint("TOPLEFT",  container3, "BOTTOMLEFT",  cD.borders.left,  0)
          container4:SetPoint("TOPRIGHT", container3, "BOTTOMRIGHT")
 
@@ -171,7 +161,6 @@ function cD.createInfoWindow()
             labelCastsOBJ:SetFontSize(cD.text.base_font_size)
             labelCastsOBJ:SetLayer(1)
             labelCastsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
---             labelCastsOBJ:SetPoint("TOPLEFT", graphSep, "BOTTOMLEFT", cD.borders.left *5, (cD.borders.top))
             labelCastsOBJ:SetPoint("TOPLEFT", container4, "TOPLEFT", cD.borders.left, 0)
 
             -- HEADER   -- CASTS Header [idx=3]
@@ -222,7 +211,6 @@ function cD.createInfoWindow()
             labelTimerOBJ:SetFontSize(cD.text.base_font_size)
             labelTimerOBJ:SetLayer(1)
             labelTimerOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
---             labelTimerOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "BOTTOMLEFT")
             labelTimerOBJ:SetPoint("TOPLEFT", container5, "TOPLEFT")
 
 
@@ -259,20 +247,60 @@ function cD.createInfoWindow()
             dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.right, 0)
             table.insert(cD.sLThdrs, dayOBJ )
 
---    headerFrame:SetHeight(cD.round(dayOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.bottom )
---    infoWindow:SetHeight(cD.round((infoWindow:GetTop() - headerFrame:GetHeight()))    + cD.borders.bottom * 10 )
+--          -- HEADER   -- MONEY CONTAINER Header
+--          local container6  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_money_container", headerFrame)
+--          container6:SetHeight(cD.text.base_font_size)
+--          container6:SetLayer(1)
+--          container6:SetPoint("TOPLEFT",  container5, "BOTTOMLEFT",  cD.borders.left,  (cD.borders.top))
+--          container6:SetPoint("TOPRIGHT", container5, "BOTTOMRIGHT", 0,  (cD.borders.top))
+--
+--             -- HEADER -- LABEL  -- MONEY Header
+--             local junkCntLBL =  UI.CreateFrame("Text", infoWindow:GetName() .. "_junk_money_label", headerFrame)
+--             local objColor  =  cD.rarityColor("common") -- white
+--             junkCntLBL:SetText("Junk Money:")
+--             junkCntLBL:SetFont(cD.addon, cD.text.base_font_name)
+--             junkCntLBL:SetFontSize(cD.text.base_font_size)
+--             junkCntLBL:SetLayer(1)
+--             junkCntLBL:SetFontColor(objColor.r, objColor.g, objColor.b)
+--             junkCntLBL:SetPoint("TOPLEFT", container6, "TOPLEFT")
+--
+--             -- HEADER   -- JUNK MONEY CNT Header [idx=7]
+--             local junkCntOBJ=  UI.CreateFrame("Text", infoWindow:GetName() .. "_junk_money_cnt", headerFrame)
+--             local objColor  =  cD.rarityColor("quest") -- yellow
+--             junkCntOBJ:SetText(string.format("%5d", 0))
+--             junkCntOBJ:SetFont(cD.addon, cD.text.base_font_name)
+--             junkCntOBJ:SetFontSize(cD.text.base_font_size)
+--             junkCntOBJ:SetLayer(1)
+--             junkCntOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+--             junkCntOBJ:SetPoint("TOPLEFT", junkCntLBL, "TOPRIGHT", cD.borders.left, 0)
+--             table.insert(cD.sLThdrs, junkCntOBJ )
+--
+--             -- HEADER   -- MONEY SEPARATOR Header
+--             local sep2OBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_separator_2", headerFrame)
+--             local objColor  =  cD.rarityColor("quest") -- green
+--             sep2OBJ:SetText("/")
+--             sep2OBJ:SetFont(cD.addon, cD.text.base_font_name)
+--             sep2OBJ:SetFontSize(cD.text.base_font_size)
+--             sep2OBJ:SetLayer(1)
+--             sep2OBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+--             sep2OBJ:SetPoint("TOPLEFT", junkCntOBJ, "TOPRIGHT", cD.borders.right, 0)
+--
+--             -- HEADER   -- ALL MONEY CNT Header [idx=8]
+--             local moneyCntOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_all_money_cnt", headerFrame)
+--             local objColor  =  cD.rarityColor("quest") -- green
+--             moneyCntOBJ:SetText(string.format("%5d", 0))
+--             moneyCntOBJ:SetFont(cD.addon, cD.text.base_font_name)
+--             moneyCntOBJ:SetFontSize(cD.text.base_font_size)
+--             moneyCntOBJ:SetHeight(cD.text.base_font_size)
+--             moneyCntOBJ:SetLayer(1)
+--             moneyCntOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+--             moneyCntOBJ:SetPoint("TOPLEFT", sep2OBJ, "TOPRIGHT", cD.borders.right, 0)
+--             table.insert(cD.sLThdrs, moneyCntOBJ )
 
---       headerFrame:SetHeight(cD.round(container5:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
       headerFrame:SetHeight(cD.round(container5:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
---       headerFrame:SetBackgroundColor(1, 0, 0, .5)
 
       local bottom = infoWindow:GetTop() + titleBar:GetHeight() + headerFrame:GetHeight()
       infoWindow:SetHeight( bottom - infoWindow:GetTop() + cD.borders.top + cD.borders.bottom*2)
-
-
--- --       local H = titleBar:GetBottom() + cD.borders.bottom
--- --       infoWindow:SetHeight((H - titleBar:GetTop()) + cD.borders.top + cD.borders.bottom)
-
 
    -- Enable Dragging
    Library.LibDraggable.draggify(infoWindow, cD.updateGuiCoordinates)
@@ -285,7 +313,7 @@ function  cD.resetInfoWindow()
    --
    -- Reset Fields
    --
-   local zone, subzone = cD.getZoneInfos()
+   local zone, subzone, zoneID = cD.getZoneInfos()
    cD.sLThdrs[1]:SetText(zone)
    cD.sLThdrs[2]:SetText(subzone)
    --

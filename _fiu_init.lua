@@ -140,7 +140,9 @@ local function _init()
    cD.infoOBJ     =  nil
    cD.buttonOBJ   =  nil
    cD.addon       =  addon.toc.Identifier
+   -- Junk
    cD.junkOBJ     =  nil
+   cD.totJunkMoney=  0
    cD.Stock       =  {}
    cD.itemCache   =  {}
    cD.eventBuffer =  {}

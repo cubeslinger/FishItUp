@@ -15,7 +15,7 @@ local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 
 -- local cD.text.base_font_size               =  11
-local tWINWIDTH               =  445
+local tWINWIDTH               =  500
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
@@ -138,7 +138,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals, isLegend)
    txtColors[5]   =  { r = .676,   g = .281,   b = .98 }    -- epic
    txtColors[6]   =  { r = 1,      g = 1,      b = 0 }      -- quest
    txtColors[7]   =  { r = 1,      g = .5,     b = 0 }      -- relic
-   txtColors[8]   =  { r = .98,    g = .98,    b = .98 }    -- used only by legend, white color
+   txtColors[8]   =  { r = 1,      g = 1,      b = 0 }      -- MfJ yellow
+   txtColors[9]   =  { r = .98,    g = .98,    b = .98 }    -- Totals white
 
    -- setup Totals containing Frame
    totalsFrame =  UI.CreateFrame("Frame", "Totals_line_Container", parent)
@@ -165,7 +166,8 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals, isLegend)
 
    local parentOBJ   =  znOBJ
    local total       =  0
-   for idx, _ in pairs(zoneTotals) do
+--    for idx, _ in pairs(zoneTotals) do
+   for idx=1, 7 do
       -- setup Totals Item's Counter
       local totalsCnt  =  UI.CreateFrame("Text", "Totals_Cnt_" .. idx, totalsFrame)
       totalsCnt:SetFont(cD.addon, cD.text.base_font_name)
@@ -189,19 +191,36 @@ function cD.createTotalsLine(parent, zoneName, zoneTotals, isLegend)
       if not isLegend then total = total + zoneTotals[idx] end
    end
 
-   -- last field is the Total of Totals
+   -- This field is the MfJ (Money from Junk)
+   local mfjTotal  =  UI.CreateFrame("Text", "MfJ", totalsFrame)
+   mfjTotal:SetFont(cD.addon, cD.text.base_font_name)
+   mfjTotal:SetFontSize(cD.text.base_font_size)
+   mfjTotal:SetWidth(cD.text.base_font_size * 4)
+   if isLegend then
+      mfjTotal:SetText(string.format("%5s", zoneTotals[8]), true)
+   else
+      mfjTotal:SetText(string.format("%5s", cD.printJunkMoney(zoneTotals[8])), true)
+   end
+   mfjTotal:SetLayer(3)
+   mfjTotal:SetFontColor(txtColors[8].r, txtColors[8].g, txtColors[8].b)
+   mfjTotal:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
+   table.insert(totOBJs, mfjTotal)
+   parentOBJ   =  mfjTotal
+
+   -- This field is the Total of Totals
    local totalsTotal  =  UI.CreateFrame("Text", "Totals_Total", totalsFrame)
    totalsTotal:SetFont(cD.addon, cD.text.base_font_name)
    totalsTotal:SetFontSize(cD.text.base_font_size)
    if isLegend then
-      totalsTotal:SetText(string.format("%5s", total))
+      totalsTotal:SetText(string.format("%5s", zoneTotals[9]))
    else
       totalsTotal:SetText(string.format("%5d", total))
    end
    totalsTotal:SetLayer(3)
-   totalsTotal:SetFontColor(txtColors[2].r, txtColors[2].g, txtColors[2].b)
+   totalsTotal:SetFontColor(txtColors[9].r, txtColors[9].g, txtColors[9].b)
    totalsTotal:SetPoint("TOPLEFT",   parentOBJ, "TOPRIGHT", cD.borders.left, 0)
    table.insert(totOBJs, totalsTotal)
+   parentOBJ   =  totalsTotal
 
    totalsFrame:SetHeight(znOBJ:GetHeight() + 1)
 
@@ -215,7 +234,7 @@ function cD.initTotalsWindow()
 
    -- Inject Legend into Table 1st row - begin
    local legendZnName   =  "Zone Name"
-   local legendTbl      =  { "jnk", "Com", "Unc" , "Rar" , "Epi" , "Qst", "Rel", "Total"}
+   local legendTbl      =  { "jnk", "Com", "Unc" , "Rar" , "Epi" , "Qst", "Rel", "MfJ", "Total" }
    local legendFrame, legendZnOBJ, legendTotOBJs = cD.createTotalsLine(parentOBJ, legendZnName, legendTbl, true)
 
    table.insert(cD.sTOzoneIDs,   legendZnName)
