@@ -178,11 +178,6 @@ function cD.fiuLoadVariables(_, addonName)
             cD.zoneTotalCnts        =  zoneTotalCnts
          end
       end
---       if waterlog         ~= nil then
---          if next(waterlog)~= nil then
---             cD.history     =  waterlog
---          end
---       end
       if   itemCache   ~= nil then
          if next(itemCache)~= nil then
             cD.itemCache    = itemCache

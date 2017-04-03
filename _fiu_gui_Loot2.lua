@@ -124,7 +124,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
       --
       local categoryIcon  =  nil
-      categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
+      categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc, itemName)
 
       -- setup Loot Item's Type Icon
       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
@@ -167,9 +167,9 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetHeight(cD.text.base_font_size)
       textOBJ:SetWidth(tLOOTNAMESIZE)
       -- we pack Junk/Sellable Items
-      if objRarity == "sellable" then 
+      if objRarity == "sellable" then
          cD.totJunkMoney = cD.totJunkMoney + itemValue
-         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney) 
+         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)
       end
       textOBJ:SetText(lootText, true)
       textOBJ:SetLayer(3)
@@ -212,7 +212,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- Actually we draw Icons for just 2 itemtypes: Quests and Artifacts.
       --
       local categoryIcon  =  nil
-      categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc)
+      categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc, itemName)
 --       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
       if  categoryIcon ~= nil then
          typeIcon:SetTexture("Rift", categoryIcon)
@@ -236,10 +236,10 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       lootText =  string.sub(lootText, 1, 20)
       -- we pack Junk/Sellable Items
-      if objRarity == "sellable" then 
+      if objRarity == "sellable" then
          cD.totJunkMoney = cD.totJunkMoney + itemValue
-         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney) 
-      end         
+         lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)
+      end
       textOBJ:SetText(lootText, true)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
 

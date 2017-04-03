@@ -12,9 +12,9 @@ local TITLEBARTOTALSFRAME     =  1
 local TOTALSFRAME             =  5
 
 function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValue)
-   
+
    if itemValue == nil  then itemValue = 0 end
-   
+
    --
    -- cD.lastZoneLootObjs
    --
@@ -48,13 +48,14 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
       newZone  =  true
    end
 
-   if        rarity == "sellable"   then   cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1  idx =  1  -- idx = 1
-                                    if cD.zoneTotalCnts[zoneID][8]   == nil   then 
-                                       cD.zoneTotalCnts[zoneID][8] = itemValue 
-                                    else                                           
-                                       cD.zoneTotalCnts[zoneID][8]	=  cD.zoneTotalCnts[zoneID][8]	+  itemValue  
-                                    end
-                                    idx =  8  -- idx = 8  junk money, not a real category
+   if        rarity == "sellable"   then
+                                       cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1
+                                       idx =  1  -- idx = 1
+                                       if cD.zoneTotalCnts[zoneID][8] == nil   then                                      -- idx = 8  junk money, not a real category
+                                          cD.zoneTotalCnts[zoneID][8] = itemValue
+                                       else
+                                          cD.zoneTotalCnts[zoneID][8]	=  cD.zoneTotalCnts[zoneID][8]	+  itemValue
+                                       end
       elseif rarity == "common"    then   cD.zoneTotalCnts[zoneID][2]   =  cD.zoneTotalCnts[zoneID][2]   +  1  idx =  2  -- idx = 2
       elseif rarity == "uncommon"  then   cD.zoneTotalCnts[zoneID][3]   =  cD.zoneTotalCnts[zoneID][3]	+  1  idx =  3  -- idx = 3
       elseif rarity == "rare"      then   cD.zoneTotalCnts[zoneID][4]   =  cD.zoneTotalCnts[zoneID][4]   +  1  idx =  4  -- idx = 4

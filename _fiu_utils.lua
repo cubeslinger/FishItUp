@@ -203,8 +203,8 @@ end
 
 
 function cD.detachLootWatchers()
-   Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot")
-   Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,          "gotLoot")
+   Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot_item_update")
+   Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,          "gotLoot_item_slot")
    Command.Event.Detach(Event.System.Update.Begin, cD.timedEventsManager, "Event.System.Update.Begin")
 
    return
@@ -261,8 +261,8 @@ function cD.gotCastBar(_, info)
          else
 --             print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
 
-            Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
-            Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
+            Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot_item_update")
+            Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot_item_slot")
 
             if not cD.waitingForTheSunRunning then cD.waitingForTheSunRunning =  true end
          end
@@ -369,13 +369,13 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          --
          cD.sLTcnts[idx]   =  cD.sLTcnts[idx] + lootCount                     -- loot counter
          cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))   -- loot field
-         
+
          if itemRarity == "sellable" then                                     -- loot text field
             cD.totJunkMoney = cD.totJunkMoney + itemValue                     -- if junk we adjust
             local lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)    -- MfJ text value
             cD.sLTtextObjs[idx]:SetText(lootText, true)
          end
-         
+
          cD.updatePercents(cD.get_totals())
 
          if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.6, .6, .6, .5) end
@@ -499,7 +499,8 @@ end
 
 function cD.rarityColor(rarityName)
    ret = {}
-   if        rarityName == "sellable"  then ret.r = .34375; ret.g = .34375; ret.b = .34375;
+--    if        rarityName == "sellable"  then ret.r = .34375; ret.g = .34375; ret.b = .34375;
+   if        rarityName == "sellable"  then ret.r = .35375; ret.g = .35375; ret.b = .35375;
       elseif rarityName == "common"    then ret.r = .98;    ret.g = .98     ret.b = .98;
       elseif rarityName == "uncommon"  then ret.r = 0;      ret.g = .797;   ret.b = 0;
       elseif rarityName == "rare"      then ret.r = .148;   ret.g = .496;   ret.b = .977;
@@ -511,14 +512,31 @@ function cD.rarityColor(rarityName)
    return ret
 end
 
-function cD.categoryIcon(categoryName, objID, desc)
+function cD.categoryIcon(categoryName, objID, description, itemName)
+   local catName  =  categoryName
+   local desc     =  description or ""
+   local iName    =  itemName
    local retval   =  nil
+
+   string.lower(catName)
+   string.lower(desc)
+   string.lower(iName)
+
+--    pesci da dailies:
+--    Emerald Flytcatcher e Duskeen Eel (Dusken - Tullio Retreat)
+--    Kraken Hatchling e Coldflare Octopus (Brevane - Tulan)
+
 --    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find( categoryName, "artifact" ) ~= nil                                then  retval = "Minion_I3C.dds"                          -- artifact icon
-   elseif   string.find( categoryName, "quest")     ~= nil                                then  retval = "icon_menu_quest.png.dds"                 -- exclamation point
-   elseif   string.find( categoryName, "dimension") ~= nil                                then  retval = "Minion_I153.dds"                         -- little key
-   elseif   desc and string.find(desc, "exchange")  ~= nil                                then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
-   elseif   desc and (string.find(desc, "chest") or string.find(desc, "trasure") ~= nil)  then  retval = "btn_bag_(normal).png.dds"             	-- little sack
+   if       string.find( catName, "artifact" )        ~= nil                              then  retval = "Minion_I3C.dds"                          -- artifact icon
+   elseif   string.find( catName, "quest")            ~= nil                              then  retval = "icon_menu_quest.png.dds"                 -- exclamation point
+   elseif   string.find( catName, "dimension")        ~= nil                              then  retval = "Minion_I153.dds"                         -- little key
+   elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+   elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "btn_bag_(normal).png.dds"             	-- little sack
+   elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
+            string.find(iName, "duskeen eel")         ~= nil   or
+            string.find(iName, "kraken hatchling")    ~= nil   or
+            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
    end
+
   return retval
 end
