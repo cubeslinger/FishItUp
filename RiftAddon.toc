@@ -15,6 +15,7 @@ RunOnStartup = {
    "_fiu_gui_Info3.lua",
    "_fiu_gui_Loot2.lua",
    "_fiu_gui_Totals.lua",
+   "_fiu_gui_Cache.lua",
    "_fiu_gui_Button.lua",
    "FishItUp.lua"
 }
@@ -32,6 +33,6 @@ Dependencies = {
 SavedVariables = {
    guilog            =  'character',
    itemCache         =  'global',
-   lastZoneLootObjs  =  'character',
+   lastZoneLootOBJs  =  'character',
    zoneTotalCnts     =  'character',
 }

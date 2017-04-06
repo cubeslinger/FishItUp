@@ -25,12 +25,12 @@ function cD.printJunkMoney(money)
    if s  == nil   then  s = 0 end
 
    if s > 0 then
-      while s > 100 do
+      while s > 99 do
          s = s -100
          g = g + 1
       end
 
-      while g > 1000 do
+      while g > 999 do
          g = g - 1000
          p = p + 1
       end
@@ -144,7 +144,7 @@ end
 function cD.processEventBuffer()
 
    local idx, frame = nil, nil
-   for idx, frame in pairs(cD.sLTcntsObjs) do
+   for idx, frame in pairs(cD.sLTcntsOBJs) do
 
       -- reset textOBJ background color
       -- from highlighted
@@ -194,7 +194,7 @@ function cD.updatePercents(totals)
 
    for key,val in pairs(cD.sLTcnts) do
       cD.sLTprcnts[key] = val * 100 / totals
-      cD.sLTprcntObjs[key]:SetText(string.format("(%d", cD.sLTprcnts[key]).."%)")
+      cD.sLTprcntOBJs[key]:SetText(string.format("(%d", cD.sLTprcnts[key]).."%)")
    end
 
    return(totals)
@@ -301,6 +301,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemCategory=  cD.itemCache[lootOBJ].category
       itemiCon    =  cD.itemCache[lootOBJ].icon
       itemValue   =  cD.itemCache[lootOBJ].value
+      itemZone    =  cD.itemCache[lootOBJ].zone
       if itemValue   == nil   then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
@@ -310,10 +311,11 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end
 
       if cD.itemCache[lootOBJ]   == nil then
-         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue }
+         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
       end
    end
 
@@ -340,6 +342,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             itemCategory=  cD.itemCache[lootOBJ].category
             itemiCon    =  cD.itemCache[lootOBJ].icon
             itemValue   =  cD.itemCache[lootOBJ].value
+            itemZone    =  cD.itemCache[lootOBJ].zone
          end
       end
 
@@ -368,17 +371,17 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          -- OLD - we update
          --
          cD.sLTcnts[idx]   =  cD.sLTcnts[idx] + lootCount                     -- loot counter
-         cD.sLTcntsObjs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))   -- loot field
+         cD.sLTcntsOBJs[idx]:SetText(string.format("%3d", cD.sLTcnts[idx]))   -- loot field
 
          if itemRarity == "sellable" then                                     -- loot text field
             cD.totJunkMoney = cD.totJunkMoney + itemValue                     -- if junk we adjust
             local lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)    -- MfJ text value
-            cD.sLTtextObjs[idx]:SetText(lootText, true)
+            cD.sLTtextOBJs[idx]:SetText(lootText, true)
          end
 
          cD.updatePercents(cD.get_totals())
 
-         if not fromHistory then cD.sLTcntsObjs[idx]:SetBackgroundColor(.6, .6, .6, .5) end
+         if not fromHistory then cD.sLTcntsOBJs[idx]:SetBackgroundColor(.6, .6, .6, .5) end
 
       else
          --
@@ -392,10 +395,10 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          table.insert(cD.sLTids,       itemID)
          table.insert(cD.sLTnames,     itemName)
          table.insert(cD.sLTcnts,      lootCount)
-         table.insert(cD.sLTtextObjs,  lineOBJ )
-         table.insert(cD.sLTfullObjs,  lootFrame )
-         table.insert(cD.sLTcntsObjs,  lootCnt )
-         table.insert(cD.sLTprcntObjs, prcntCnt )
+         table.insert(cD.sLTtextOBJs,  lineOBJ )
+         table.insert(cD.sLTfullOBJs,  lootFrame )
+         table.insert(cD.sLTcntsOBJs,  lootCnt )
+         table.insert(cD.sLTprcntOBJs, prcntCnt )
          table.insert(cD.sLTrarity,    cD.getItemNumericRarity(itemRarity))
 
          cD.updatePercents(cD.get_totals())
@@ -418,9 +421,10 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       --
       if fromHistory == false then
          local zoneOBJ  =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-         local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
+--          local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
          local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
-         cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity, itemValue)
+--          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity, itemValue)
+         cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, itemRarity, itemValue)
       end
       --
       --
@@ -429,7 +433,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       print("ERROR in updateLootTable, lootOBJ.id is nil")
    end
 
-   if not cD.window.lootObj:GetVisible() then cD.window.lootObj:SetVisible(true) end
+   if not cD.window.lootOBJ:GetVisible() then cD.window.lootOBJ:SetVisible(true) end
 
    return retval
 end
@@ -513,9 +517,9 @@ function cD.rarityColor(rarityName)
 end
 
 function cD.categoryIcon(categoryName, objID, description, itemName)
-   local catName  =  categoryName
-   local desc     =  description or ""
-   local iName    =  itemName
+   local catName  =  categoryName   or ""
+   local desc     =  description    or ""
+   local iName    =  itemName       or ""
    local retval   =  nil
 
    string.lower(catName)

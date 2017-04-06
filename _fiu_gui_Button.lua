@@ -41,7 +41,7 @@ function cD.loadLastSession()
 --    print("entering cD.loadLastSession")
 
    -- load lootIDs Array
-   for zID, t in pairs(cD.lastZoneLootObjs) do
+   for zID, t in pairs(cD.lastZoneLootOBJs) do
       if zID == zoneID then
 
          cD.SLTids   =  {}
@@ -135,6 +135,7 @@ function cD.createButtonWindow()
                --
                cD.detachLootWatchers()
 --                cD.detachOtherWatchers()
+               cD.waitingForTheSunRunning = false
                --
                -- hide timer on castButton
                --
@@ -165,32 +166,10 @@ function cD.createButtonWindow()
                -- change action associated with cast button: now it will "/stopcasting"
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "stopcasting")
 
---                --
---                -- Begin waiting cD.loadLastSession timefor loot events and External Interrupting Events
---                --
---                -- Event.Item.Update(updates)
---                -- Parameter	Type	      Datatype	   Description
---                -- ------------------------------------------------------------------------------------------------------
---                -- updates	   parameter	variant	   Table of changes.
---                --                                     Key   :  is the slot identifier, value is an item ID,
---                --                                     false :  if the slot is now empty, or the string
---                --                                     "nil" :  if the slot no longer exists.
---                --
---                Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot")
---                --
---                -- Event.Item.Slot(updates)
---                -- Parameter	Type	      Datatype	   Description
---                -- ------------------------------------------------------------------------------------------------------
---                -- updates	   parameter	variant	   Table of changes.
---                --                                     Key   :  is the slot identifier, value is an item ID,
---                --                                     false :  if the slot is now empty, or the string
---                --                                     "nil" :  if the slot no longer exists.
---                --
---                Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot")
-               Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent, "Player in Combat")
-               Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,       "Player is Casting")
-
                cD.timeRStart  =  nil
+
+               Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent,    "Player in Combat")
+               Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,          "Player is Casting")
                Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Event.System.Update.Begin")
             else
                --
@@ -198,12 +177,13 @@ function cD.createButtonWindow()
                --
                cD.detachLootWatchers()
 --                cD.detachOtherWatchers()
+               cD.waitingForTheSunRunning =  false
 
                -- hide pole Timer
                cD.poleTimer:SetVisible(false)
 
                -- reset to default Macro Action
-               -- THIS ONE CRASHES WHEN ENTERING IN COMBAT: frame is
+               -- THIS ONE MAY CRASH WHEN ENTERING IN COMBAT: frame is
                -- protected and we can't modify it while in combat.
                --
                poleCastButton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)

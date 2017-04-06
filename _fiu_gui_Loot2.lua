@@ -23,8 +23,8 @@ function cD.createLootWindow()
    local lootWindow    =  UI.CreateFrame("Frame", "Loot", context)
 
    -- Clamp to InfoWindow Bottom
-   lootWindow:SetPoint("TOPLEFT",   cD.window.infoObj, "BOTTOMLEFT",  0, 1)
-   lootWindow:SetPoint("TOPRIGHT",  cD.window.infoObj, "BOTTOMRIGHT", 0, 1)
+   lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT",  0, 1)
+   lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
 
    lootWindow:SetWidth(cD.window.width)
    lootWindow:SetLayer(-1)
@@ -79,7 +79,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
    local itemCat        =  nil
    local itemIcon       =  nil
    local itemValue      =  nil
-
+   local itemZone       =  nil
 
    if fromHistory == nil then fromHistory = false end
 
@@ -91,6 +91,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemCat     =  cD.itemCache[lootOBJ].category
       itemIcon    =  cD.itemCache[lootOBJ].icon
       itemValue   =  cD.itemCache[lootOBJ].value
+      itemZone    =  cD.itemCache[lootOBJ].zone
       if itemValue == nil then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
@@ -100,6 +101,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemCat     =  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue == nil then itemValue = 0 end
    end
 
@@ -114,7 +116,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- attach to the last object present in loot table
       if table.getn(cD.sLTids) > 0 then
-         lootFrame:SetPoint("TOPLEFT", cD.sLTfullObjs[table.getn(cD.sLTids)], "BOTTOMLEFT", 0, cD.borders.top)
+         lootFrame:SetPoint("TOPLEFT", cD.sLTfullOBJs[table.getn(cD.sLTids)], "BOTTOMLEFT", 0, cD.borders.top)
       else
          lootFrame:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
          lootFrame:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
@@ -213,14 +215,13 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(itemCat, lootOBJ, itemDesc, itemName)
---       typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. itemName, lootFrame)
       if  categoryIcon ~= nil then
          typeIcon:SetTexture("Rift", categoryIcon)
          typeIcon:SetVisible(true)
       end
 
       -- setup Loot Item's Icon
-      lootIcon:SetTexture("Rift", Inspect.Item.Detail(lootOBJ).icon)
+      lootIcon:SetTexture("Rift", itemIcon)
 
       -- setup Loot Item's Counter
       lootCnt:SetText(string.format("%3d", txtCnt))
@@ -228,9 +229,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       --
       -- setup Loot Item's Text Color based on Loot Item Rarity
       --
-      local objRarity   =  Inspect.Item.Detail(lootOBJ).rarity
-      local objColor    =  cD.rarityColor(objRarity)
-      local lootText    =  Inspect.Item.Detail(lootOBJ).name
+      local objColor    =  cD.rarityColor(itemRarity)
+      local lootText    =  itemName
 
       if objRarity == nil then objRarity   =  "common" end
 
@@ -250,7 +250,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- finally we set the whole container Frame visible but
       -- only in infoWindow is visible too.
       --
-      if cD.window.infoObj:GetVisible() == true then lootFrame:SetVisible(true) end
+      if cD.window.infoOBJ:GetVisible() == true then lootFrame:SetVisible(true) end
 
    end
 
@@ -264,10 +264,10 @@ function  cD.resetLootWindow(manual)
    cD.sLTids      =  {}
    cD.sLTcnts     =  {}
    cD.sLTprcnts   =  {}
-   cD.sLTtextObjs =  {}
-   cD.sLTcntsObjs =  {}
-   cD.sLTfullObjs =  {}
-   cD.sLTprcntObjs=  {}
+   cD.sLTtextOBJs =  {}
+   cD.sLTcntsOBJs =  {}
+   cD.sLTfullOBJs =  {}
+   cD.sLTprcntOBJs=  {}
    cD.sLTrarity   =  {}
    cD.sLTnames    =  {}
    cD.today       =  {  casts=0, }
@@ -293,12 +293,12 @@ function  cD.resetLootWindow(manual)
    --
    if manual then
       local zn = Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-      cD.lastZoneLootObjs[zn] = nil
+      cD.lastZoneLootOBJs[zn] = nil
    end
    --
    -- list is empty, so nothing to show
    --
-   if cD.window.lootObj ~= nil then cD.window.lootObj:SetVisible(false) end
+   if cD.window.lootOBJ ~= nil then cD.window.lootOBJ:SetVisible(false) end
 
    return
 end
@@ -334,12 +334,12 @@ end
 
 function cD.sortLootTable(parent)
    -- cD.sLTids         contains items IDs:              idx->itemID          => 1 = i00303030303, 2 = i00303030306, ...
-   -- cD.sLTfullObjs    contains full LootLine Objects:  idx->fullLootFrame   => 1 = objx0a0a0a, 2 = objx0aba0c, ...
+   -- cD.sLTfullOBJs    contains full LootLine OBJects:  idx->fullLootFrame   => 1 = objx0a0a0a, 2 = objx0aba0c, ...
    -- cD.sLTrarity      contains ItemID's rarity:        idx->NumericRarity   => 1 = 4, 2 = 1, 3 = 2, ...
 
    -- reset all Pinned Point of Full loot Frames objs
    local cntPre   =  0
-   for idx, obj in pairs(cD.sLTfullObjs) do
+   for idx, obj in pairs(cD.sLTfullOBJs) do
       -- ClearAll() reset also: height, width, so we save Height and then Set it again
       local width    =  obj:GetWidth()
       local height   =  obj:GetHeight()
@@ -365,14 +365,14 @@ function cD.sortLootTable(parent)
    for idx, _ in ipairs(keys) do
       if FIRST then
          FIRST = false
-         cD.sLTfullObjs[keys[idx]]:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
-         cD.sLTfullObjs[keys[idx]]:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
-         LASTOBJ = cD.sLTfullObjs[keys[idx]]
-         cD.sLTfullObjs[keys[idx]]:SetVisible(true)
+         cD.sLTfullOBJs[keys[idx]]:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
+         cD.sLTfullOBJs[keys[idx]]:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
+         LASTOBJ = cD.sLTfullOBJs[keys[idx]]
+         cD.sLTfullOBJs[keys[idx]]:SetVisible(true)
       else
-         cD.sLTfullObjs[keys[idx]]:SetPoint("TOPLEFT", LASTOBJ, "BOTTOMLEFT", 0, cD.borders.top)
-         cD.sLTfullObjs[keys[idx]]:SetVisible(true)
-         LASTOBJ = cD.sLTfullObjs[keys[idx]]
+         cD.sLTfullOBJs[keys[idx]]:SetPoint("TOPLEFT", LASTOBJ, "BOTTOMLEFT", 0, cD.borders.top)
+         cD.sLTfullOBJs[keys[idx]]:SetVisible(true)
+         LASTOBJ = cD.sLTfullOBJs[keys[idx]]
       end
    end
 
@@ -384,8 +384,8 @@ function cD.sortLootTable(parent)
    local highestX =  0
    local idx      =  nil
    -- find the frame with the lowest bottom Y position
-   for idx in pairs(cD.sLTfullObjs) do if highestX < cD.sLTfullObjs[idx]:GetBottom() then highestX = cD.sLTfullObjs[idx]:GetBottom() end end
-   cD.window.lootObj:SetHeight((highestX - cD.window.lootObj:GetTop() ) + (cD.borders.bottom *3))
+   for idx in pairs(cD.sLTfullOBJs) do if highestX < cD.sLTfullOBJs[idx]:GetBottom() then highestX = cD.sLTfullOBJs[idx]:GetBottom() end end
+   cD.window.lootOBJ:SetHeight((highestX - cD.window.lootOBJ:GetTop() ) + (cD.borders.bottom *3))
 
    return
 end

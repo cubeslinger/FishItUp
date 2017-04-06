@@ -15,7 +15,7 @@ local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 
 -- local cD.text.base_font_size               =  11
-local tWINWIDTH               =  500
+local tWINWIDTH               =  504
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
@@ -65,32 +65,28 @@ function cD.createTotalsWindow()
       titleFIU:SetText("FIU! Lifetime Totals")
       titleFIU:SetFont(cD.addon, cD.text.base_font_name)
       titleFIU:SetLayer(3)
-      titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 1)
+      titleFIU:SetPoint("TOPLEFT", cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 0)
       cD.sTOFrames[TITLEBARTCONTENTFRAME]  =   titleFIU
 
-      -- TITLE BAR Widgets: setup Icon Frame
-      titleIcon1  =  UI.CreateFrame("Texture", "Title_Icon_1_Frame", cD.sTOFrames[TITLEBARTOTALSFRAME])
-      titleIcon1:SetWidth(cD.text.base_font_size)
-      titleIcon1:SetHeight(cD.text.base_font_size)
-      titleIcon1:SetLayer(2)
-      titleIcon1:SetBackgroundColor(0, 0, 0, .5)
-      titleIcon1:SetPoint("TOPRIGHT",   cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPRIGHT", -cD.borders.right, 0)
 
-      -- TITLE BAR Widgets: setup Icon
-      lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", titleIcon1)
+      -- TITLE BAR Widgets: setup Icon for Iconize
+      lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", cD.sTOFrames[TITLEBARTOTALSFRAME])
       lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
       lootIcon:SetWidth(cD.text.base_font_size)
       lootIcon:SetHeight(cD.text.base_font_size)
-      lootIcon:SetPoint("CENTER",    titleIcon1, "CENTER")
+      lootIcon:SetPoint("TOPRIGHT",   cD.sTOFrames[TITLEBARTOTALSFRAME], "TOPRIGHT", -cD.borders.right, 0)
       lootIcon:SetLayer(3)
-      lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end , "Iconize Totals Pressed" )
+      lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end , "Iconize Totals Pressed" )
 
---    titleTotalsFrame:SetHeight(cD.text.base_font_size)
+   titleTotalsFrame:SetHeight(cD.text.base_font_size + 6)
 
    -- EXTERNAL TOTALS CONTAINER FRAME
    local externaTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
-   externaTotalsFrame:SetPoint("TOPLEFT",     cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMLEFT",  cD.borders.left,    cD.borders.top)
-   externaTotalsFrame:SetPoint("TOPRIGHT",    cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMRIGHT", - cD.borders.right, cD.borders.top)
+--    externaTotalsFrame:SetPoint("TOPLEFT",     cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMLEFT",  cD.borders.left,    cD.borders.top)
+--    externaTotalsFrame:SetPoint("TOPRIGHT",    cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMRIGHT", - cD.borders.right, cD.borders.top)
+   externaTotalsFrame:SetPoint("TOPLEFT",     cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMLEFT",  cD.borders.left,    1)
+   externaTotalsFrame:SetPoint("TOPRIGHT",    cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMRIGHT", - cD.borders.right, 1)
+
    externaTotalsFrame:SetPoint("BOTTOMLEFT",  totalsWindow,                      "BOTTOMLEFT",  cD.borders.left,    - cD.borders.bottom)
    externaTotalsFrame:SetPoint("BOTTOMRIGHT", totalsWindow,                      "BOTTOMRIGHT", - cD.borders.right, - cD.borders.bottom)
    externaTotalsFrame:SetBackgroundColor(.2, .2, .2, .5)
@@ -239,9 +235,9 @@ function cD.initTotalsWindow()
 
    table.insert(cD.sTOzoneIDs,   legendZnName)
    table.insert(cD.sTOFrame,     legendFrame)
-   table.insert(cD.sTOznObjs,    legendZnOBJ)
+   table.insert(cD.sTOznOBJs,    legendZnOBJ)
 
-   cD.sTOcntObjs[legendZnName] = legendTotOBJs
+   cD.sTOcntOBJs[legendZnName] = legendTotOBJs
    parentOBJ   =  legendFrame
    -- Inject Legend into Table 1st row - end
 
@@ -254,15 +250,15 @@ function cD.initTotalsWindow()
 
       table.insert(cD.sTOzoneIDs,   zn)
       table.insert(cD.sTOFrame,     totalsFrame)
-      table.insert(cD.sTOznObjs,    znOBJ)
-      cD.sTOcntObjs[znID] = totOBJs
+      table.insert(cD.sTOznOBJs,    znOBJ)
+      cD.sTOcntOBJs[znID] = totOBJs
 
       parentOBJ   =  totalsFrame
    end
 
    local H = cD.sTOFrames[TITLEBARTOTALSFRAME]:GetBottom() + cD.borders.bottom
-   if cD.sTOznObjs ~= nil and next(cD.sTOznObjs) then H = cD.sTOznObjs[table.getn(cD.sTOznObjs)]:GetBottom() end
-   cD.window.totalsObj:SetHeight((H - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
+   if cD.sTOznOBJs ~= nil and next(cD.sTOznOBJs) then H = cD.sTOznOBJs[table.getn(cD.sTOznOBJs)]:GetBottom() end
+   cD.window.totalsOBJ:SetHeight((H - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
 
    return
 end

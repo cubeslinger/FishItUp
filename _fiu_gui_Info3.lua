@@ -31,13 +31,13 @@ local function createTitleBar(parent)
       titleFIU:SetPoint("TOPLEFT", titleInfoFrame, "TOPLEFT", cD.borders.left, 1)
 
       -- HEADER RESET BUTTON
-      local menuButton = UI.CreateFrame("Texture", "Reset Button", titleInfoFrame)
-      menuButton:SetTexture("Rift", "NPCDialogIcon_questrepeatable.png.dds")
-      menuButton:SetHeight(titleFIU:GetHeight())
-      menuButton:SetWidth(titleFIU:GetHeight())
-      menuButton:SetLayer(1)
-      menuButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow(true) end, "Menu Button Pressed" )
-      menuButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
+      local resetButton = UI.CreateFrame("Texture", "Reset Button", titleInfoFrame)
+      resetButton:SetTexture("Rift", "NPCDialogIcon_questrepeatable.png.dds")
+      resetButton:SetHeight(titleFIU:GetHeight())
+      resetButton:SetWidth(titleFIU:GetHeight())
+      resetButton:SetLayer(1)
+      resetButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow(true) end, "Reset Button Pressed" )
+      resetButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
 
       -- HEADER SHOW TOTALS WINDOW BUTTON
       local showTotalsButton = UI.CreateFrame("Texture", "totalsButton", titleInfoFrame)
@@ -45,8 +45,17 @@ local function createTitleBar(parent)
       showTotalsButton:SetHeight(titleFIU:GetHeight())
       showTotalsButton:SetWidth(titleFIU:GetHeight())
       showTotalsButton:SetLayer(1)
-      showTotalsButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsObj:SetVisible(not cD.window.totalsObj:GetVisible()) end, "Menu Button Pressed" )
-      showTotalsButton:SetPoint("TOPRIGHT", menuButton, "TOPLEFT", -2, 1)
+      showTotalsButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end, "Totals Button Pressed" )
+      showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT", -2, 1)
+
+      -- TITLE BAR Widgets: setup Icon for Iconize
+      local cacheIcon = UI.CreateFrame("Texture", "Title_Icon_2", titleInfoFrame)
+      cacheIcon:SetTexture("Rift", "vfx_ui_mob_tag_heal_mini.png.dds")
+      cacheIcon:SetWidth(titleFIU:GetHeight())
+      cacheIcon:SetHeight(titleFIU:GetHeight())
+      cacheIcon:SetPoint("TOPRIGHT",   showTotalsButton, "TOPLEFT", -2, 1)
+      cacheIcon:SetLayer(3)
+      cacheIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.cacheOBJ:SetVisible(not cD.window.cacheOBJ:GetVisible()) end , "Show Cache Pressed" )
 
    -- re-arrenge title container Height
    titleInfoFrame:SetHeight((titleFIU:GetBottom() - titleInfoFrame:GetTop()))

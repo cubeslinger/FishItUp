@@ -16,15 +16,15 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
    if itemValue == nil  then itemValue = 0 end
 
    --
-   -- cD.lastZoneLootObjs
+   -- cD.lastZoneLootOBJs
    --
-   if cD.lastZoneLootObjs[zoneOBJ] ==  nil   then
-      cD.lastZoneLootObjs[zoneOBJ]  =  { [itemOBJ] = lootCount }
+   if cD.lastZoneLootOBJs[zoneOBJ] ==  nil   then
+      cD.lastZoneLootOBJs[zoneOBJ]  =  { [itemOBJ] = lootCount }
    else
-      if cD.lastZoneLootObjs[zoneOBJ][itemOBJ] ==  nil   then
-         cD.lastZoneLootObjs[zoneOBJ][itemOBJ]  =  lootCount
+      if cD.lastZoneLootOBJs[zoneOBJ][itemOBJ] ==  nil   then
+         cD.lastZoneLootOBJs[zoneOBJ][itemOBJ]  =  lootCount
       else
-         cD.lastZoneLootObjs[zoneOBJ][itemOBJ]  =  cD.lastZoneLootObjs[zoneOBJ][itemOBJ] + lootCount
+         cD.lastZoneLootOBJs[zoneOBJ][itemOBJ]  =  cD.lastZoneLootOBJs[zoneOBJ][itemOBJ] + lootCount
       end
    end
 
@@ -74,26 +74,26 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
 
       table.insert(cD.sTOzoneIDs,   zoneID)
       table.insert(cD.sTOFrame,     totalsFrame)
-      table.insert(cD.sTOznObjs,    znOBJ)
-      cD.sTOcntObjs[zoneID] = totOBJs
+      table.insert(cD.sTOznOBJs,    znOBJ)
+      cD.sTOcntOBJs[zoneID] = totOBJs
 
-      cD.window.totalsObj:SetHeight((cD.sTOznObjs[table.getn(cD.sTOznObjs)]:GetBottom() - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
+      cD.window.totalsOBJ:SetHeight((cD.sTOznOBJs[table.getn(cD.sTOznOBJs)]:GetBottom() - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
    else
       local cnt = string.format("%3d", cD.zoneTotalCnts[zoneID][idx])
-      cD.sTOcntObjs[zoneID][idx]:SetText(cnt)
+      cD.sTOcntOBJs[zoneID][idx]:SetText(cnt)
    end
 
 
    -- adjust MfJ (Money from Junk) counter
    local j = cD.zoneTotalCnts[zoneID][8] or 0
-   cD.sTOcntObjs[zoneID][#cD.sTOcntObjs[zoneID] - 1]:SetText(string.format("%5s", cD.printJunkMoney(j)), true)
+   cD.sTOcntOBJs[zoneID][#cD.sTOcntOBJs[zoneID] - 1]:SetText(string.format("%5s", cD.printJunkMoney(j)), true)
 
    -- adjust Whole Zone Total
    local total =  0
    local i     =  nil
    for i=1, 7 do total = total + cD.zoneTotalCnts[zoneID][i] end
 --    print(string.format("Total [%s]", total))
-   cD.sTOcntObjs[zoneID][#cD.sTOcntObjs[zoneID]]:SetText(string.format("%5d", total))
+   cD.sTOcntOBJs[zoneID][#cD.sTOcntOBJs[zoneID]]:SetText(string.format("%5d", total))
 
 
 

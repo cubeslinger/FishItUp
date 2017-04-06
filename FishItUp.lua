@@ -52,64 +52,53 @@
 
 local addon, cD = ...
 
-local function gotZoneChange(_, t)
-
-   print("..possible zoning..")
-
-   local playerID = Inspect.Unit.Detail("player").id
-
-   for k,v in pairs(t) do
-      if k == playerID then
-         print(string.format("Player has entered %s", Inspect.Zone.Detail(v)))
-      else
-         print(string.format("Zone Event not for us [%s]=>[%s]", k, v))
-      end
-   end
-
-   return
-end
-
 local function doThings(params)
    -- Create Display/Hide infoWindow
-   if cD.window.infoObj    == nil then
-      cD.window.infoObj    =  cD.createInfoWindow()
-      cD.window.infoObj:SetVisible(true)
+   if cD.window.infoOBJ    == nil then
+      cD.window.infoOBJ    =  cD.createInfoWindow()
+      cD.window.infoOBJ:SetVisible(true)
    else
-      cD.window.infoObj:SetVisible(not cD.window.infoObj:GetVisible())
+      cD.window.infoOBJ:SetVisible(not cD.window.infoOBJ:GetVisible())
    end
 
    -- Create/Display lootWindow
    local filled = false
-   if cD.window.lootObj    == nil then
-      cD.window.lootObj    =  cD.createLootWindow()
+   if cD.window.lootOBJ    == nil then
+      cD.window.lootOBJ    =  cD.createLootWindow()
       filled = cD.loadLastSession()
    end
    if filled then
-      cD.window.lootObj:SetVisible(cD.window.infoObj:GetVisible())
+      cD.window.lootOBJ:SetVisible(cD.window.infoOBJ:GetVisible())
    else
-      cD.window.lootObj:SetVisible(false)
+      cD.window.lootOBJ:SetVisible(false)
    end
-
 
    -- Create/Display buttonWindow
-   if cD.window.buttonObj  == nil then
-      cD.window.buttonObj  =  cD.createButtonWindow()
+   if cD.window.buttonOBJ  == nil then
+      cD.window.buttonOBJ  =  cD.createButtonWindow()
    end
-   cD.window.buttonObj:SetVisible(cD.window.infoObj:GetVisible())
+   cD.window.buttonOBJ:SetVisible(cD.window.infoOBJ:GetVisible())
 
    -- Create/Display totalsWindow
-   if cD.window.totalsObj  == nil then
-      cD.window.totalsObj  =  cD.createTotalsWindow()
+   if cD.window.totalsOBJ  == nil then
+      cD.window.totalsOBJ  =  cD.createTotalsWindow()
       cD.initTotalsWindow()
-      cD.window.totalsObj:SetVisible(false)
+      cD.window.totalsOBJ:SetVisible(false)
    end
-   if cD.window.infoObj:GetVisible() == false then cD.window.totalsObj:SetVisible(false) end
+   if cD.window.infoOBJ:GetVisible() == false then cD.window.totalsOBJ:SetVisible(false) end
+
+   -- Create/Display cacheWindow
+   if cD.window.cacheOBJ  == nil then
+      cD.window.cacheOBJ  =  cD.createCacheWindow()
+--       cD.initCacheWindow()
+      cD.window.cacheOBJ:SetVisible(false)
+   end
+   if cD.window.infoOBJ:GetVisible() == false then cD.window.cacheOBJ:SetVisible(false) end
 
    return
 end
 
 cD.addon       =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
-
 table.insert(Command.Slash.Register("fiu"), {function (params) doThings(params)   end, cD.addon, "getpole command"})
 
 

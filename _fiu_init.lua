@@ -98,11 +98,12 @@ end
 
 local function _init()
 
-   cD.window   =  {  width=300,     height=60,
-                     infoObj=nil,   infoX=nil,     infoY=nil,
-                     buttonObj=nil, buttonX=nil,   buttonY=nil,
-                     lootObj=nil,   lootX=nil,     lootY=nil,
-                     totalsObj=nil, totalsX=nil,   totalsY=nil
+   cD.window   =  {  width    =  300,  height   =  60,
+                     infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,
+                     buttonOBJ=  nil,  buttonX  =  nil,  buttonY  =  nil,
+                     lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,
+                     totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,
+                     cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil
                   }
    -- loot Tables
    cD.sLTids      =  {}
@@ -111,16 +112,16 @@ local function _init()
    cD.sLTprcnts   =  {}
    cD.sLThdrs     =  {}
    cD.sLTFrames   =  {}
-   cD.sLTtextObjs =  {}
-   cD.sLTcntsObjs =  {}
-   cD.sLTfullObjs =  {}
-   cD.sLTprcntObjs=  {}
+   cD.sLTtextOBJs =  {}
+   cD.sLTcntsOBJs =  {}
+   cD.sLTfullOBJs =  {}
+   cD.sLTprcntOBJs=  {}
    cD.sLTrarity   =  {}
    -- totals Tables
    cD.sTOzoneIDs  =  {}
    cD.sTOFrame    =  {}
-   cD.sTOznObjs   =  {}
-   cD.sTOcntObjs  =  {}
+   cD.sTOznOBJs   =  {}
+   cD.sTOcntOBJs  =  {}
    -- pole Table
    cD.poleTBL     =  {}
    -- pole Timer
@@ -149,7 +150,7 @@ local function _init()
    --
    -- Logs affected by the RESET button
    --
-   cD.lastZoneLootObjs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
+   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
    --
    -- Logs that are permanent
    --
@@ -166,11 +167,12 @@ function cD.fiuLoadVariables(_, addonName)
          cD.window            =  guilog
          cD.window.infoOBJ    =  nil
          cD.window.buttonOBJ  =  nil
-         cD.window.totalsObj  =  nil
+         cD.window.totalsOBJ  =  nil
+         cD.window.cacheOBJ   =  nil
       end
 
-      if lastZoneLootObjs ~= nil and next(lastZoneLootObjs) ~= nil then
-         cD.lastZoneLootObjs  =  lastZoneLootObjs
+      if lastZoneLootOBJs ~= nil and next(lastZoneLootOBJs) ~= nil then
+         cD.lastZoneLootOBJs  =  lastZoneLootOBJs
       end
 
       if zoneTotalCnts    ~= nil then
@@ -197,16 +199,16 @@ function cD.fiuSaveVariables(_, addonName)
       -- just coordinates and sizes
       --
       local a = cD.window
-      a.infoObj   =  nil
-      a.lootObj   =  nil
-      a.buttonObj =  nil
-      a.totalsObj =  nil
+      a.infoOBJ   =  nil
+      a.lootOBJ   =  nil
+      a.buttonOBJ =  nil
+      a.totalsOBJ =  nil
 
       guilog            =  a
 --       waterlog          =  cD.history
       itemCache         =  cD.itemCache
       --
-      lastZoneLootObjs  =  cD.lastZoneLootObjs
+      lastZoneLootOBJs  =  cD.lastZoneLootOBJs
       zoneTotalCnts     =  cD.zoneTotalCnts
 
 
@@ -218,3 +220,43 @@ end
 
 Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   cD.fiuLoadVariables,    "Load FIU Session Variables")
 Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, cD.fiuSaveVariables,    "Save FIU Session Variables")
+
+--[[
+   1,     -- "Silverwood"
+   1,     -- "Freemarch"
+   -----------------------
+   40,    -- "Gloamwood"
+   40,    -- "Stonefield"
+   -----------------------
+   90,    -- "Scarlet Gorge"
+   90,    -- "Scarwood Reach"
+   -----------------------
+   120,   -- "Iron Pine Peak"
+   120,   -- "Lake of Solace"
+   -----------------------
+   150,   -- "Moonshade Highlands"
+   -----------------------
+   180,   -- "Droughtlands"
+   -----------------------
+   210,   -- "Shimmersand"
+   210,   -- "Stillmoor"
+   -----------------------
+   240,   -- "Ember Isle"
+   -----------------------
+   270,   -- "Tempest Bay",
+   270,   -- "Kingdom of Pelladane",
+   270,   -- "Seratos",
+   270,   -- "Steppes of Infinity",
+   270,   -- "Morban",
+   270,   -- "Eastern Holdings",
+   270,   -- "Ardent Domain",
+   270,   -- "Cape Jule",
+   270,   -- "Meridian",
+   270,   -- "City Core",
+   270,   -- "The Dendrome",
+   270,   -- "Ashora",
+   -----------------------
+   318,   -- "Seratos"
+   -----------------------
+   405,   -- "Scaterrhan Forest"
+   ]]--
