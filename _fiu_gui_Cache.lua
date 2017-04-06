@@ -8,102 +8,143 @@
 
 local addon, cD = ...
 
-local tWINWIDTH               =  350
-local tWINHEIGTH              =  200
-local znListWIDTH             =  150
+local tWINWIDTH      =  450
+local tWINHEIGTH     =  200
+local znListWIDTH    =  150
+local itemsSBWIDTH   =  8
 
 local function resetZoneItems()
    print("resetZoneItems: STILL DO TO")
-   
+
    return
 end
 
-local function createZoneItemLine(znID, zoneName)
-   
-   print("Cliked!")
-   
-   local iobj, zil, t = nil, nil, {}
-   
-   for iobj, t in pairs(cD.itemCache) do
-      
-      if t.zone   == znID  then
-         
-         for x, y in pairs(t) do
-            print(string.format("x[%s] y[%s]", x, y))
-         end         
-         
-         print("GotZone!")
+local function resetZoneItemsList()
+   print("resetZoneItemsList: STILL DO TO")
+end
 
-         zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
-            
-         zil:SetLayer(1)
-         zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
-         zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+local function createZoneItemLine(parent, t)
 
-         -- setup Loot Item's Icon
-         zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
-         zilIcon:SetTexture("Rift", t.icon)
-         zilIcon:SetPoint("TOPLEFT",      zil, "TOPLEFT",      cD.borders.left, 0)
-         zilIcon:SetPoint("BOTTOMLEFT",   zil, "BOTTOMLEFT",   cD.borders.left, 0)
-         zilIcon:SetLayer(3)
-         
-         zil:SetWidth(zilIcon:GetWidth())
-         zil:SetHeight(zilIcon:GetHeight())
-      end
+   local first    = true
+   local lastobj  =  nil
+
+   if parent == nil then
+      parent = cD.sCACFrames["CACHEITEMSFRAME"]
+   else
+      first = false
    end
-   
+
+   print("Cliked!")
+
+   local zil, zilName, zilDesc, zilCat = nil, nil, nil, nil
+
+   zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
+   if first then
+      first = false
+      zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
+      zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+   else
+      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
+      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
+   end
+   zil:SetLayer(1)
+
+   -- setup Loot Item's Icon
+   zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
+   zilIcon:SetTexture("Rift", t.icon)
+   zilIcon:SetHeight(zilIcon:GetHeight())
+   zilIcon:SetWidth(zilIcon:GetWidth())
+   zilIcon:SetPoint("TOPLEFT",      zil, "TOPLEFT",      cD.borders.left, 0)
+--    zilIcon:SetPoint("BOTTOMLEFT",   zil, "BOTTOMLEFT",   cD.borders.left, 0)
+   zilIcon:SetLayer(3)
+
+--    { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
+   zilName = UI.CreateFrame("Text", "Item_name", zil)
+   zilName:SetLayer(3)
+   zilName:SetFont(cD.addon, cD.text.base_font_name)
+   zilName:SetFontSize(cD.text.base_font_size)
+   local txtColor =  cD.rarityColor(t.rarity)
+   zilName:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+   zilName:SetBackgroundColor(.2, .2, .2, .5)
+   zilName:SetText(t.name)
+   zilName:SetPoint("TOPLEFT",  zilIcon, "TOPRIGHT",  cD.borders.left, 0)
+
+   zilCat = UI.CreateFrame("Text", "Item_name", zil)
+   zilCat:SetLayer(3)
+   zilCat:SetFont(cD.addon, cD.text.base_font_name)
+   zilCat:SetFontSize(cD.text.base_font_size -2 )
+   local txtColor =  cD.rarityColor("common")
+   zilCat:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+   zilCat:SetBackgroundColor(.2, .2, .2, .5)
+   zilCat:SetText("("..t.category..")")
+   zilCat:SetPoint("BOTTOMLEFT",  zilIcon, "BOTTOMRIGHT", cD.borders.left, 0)
+--    zilName:SetPoint("RIGHT", zil, "RIGHT",  -cD.borders.right, 0)
+
+   lastobj  =  zilCat
+
+   if t.description ~= nil then
+      zilDesc = UI.CreateFrame("Text", "Item_name", zil)
+      zilDesc:SetLayer(3)
+      zilDesc:SetFont(cD.addon, cD.text.base_font_name)
+      zilDesc:SetFontSize(cD.text.base_font_size -2)
+      local txtColor =  cD.rarityColor("t.rarity")
+      zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+      zilDesc:SetBackgroundColor(.2, .2, .2, .5)
+      zilDesc:SetText(t.description)
+      zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
+      lastobj  =  zilDesc
+   end
+
+   -- HEADER   -- GRPAHIC SEPARATOR CONTAINER Header
+   local zilCont1  =  UI.CreateFrame("Text", "item_list_bottom_separator_container", zil)
+   zilCont1:SetHeight(cD.text.base_font_size)
+   zilCont1:SetLayer(1)
+   zilCont1:SetPoint("TOPLEFT",  lastobj, "BOTTOMLEFT",  cD.borders.left,  cD.borders.top)
+   zilCont1:SetPoint("TOPRIGHT", lastobj, "BOTTOMRIGHT", 0, cD.borders.top)
+
+   -- HEADER GRAPHIC SEPARATOR
+   local zilGSep1 = UI.CreateFrame("Texture", "item_list_bottom_separator", zil)
+   zilGSep1:SetTexture("Rift", "line_window_break.png.dds")
+   zilGSep1:SetHeight(cD.text.base_font_size)
+   zilGSep1:SetWidth(zilCont1:GetWidth())
+   zilGSep1:SetLayer(1)
+   zilGSep1:SetPoint("CENTER", zilCont1, "CENTER")
+
+   if zilDesc ~= nil then
+      zil:SetHeight((zil:GetHeight() + zilDesc:GetHeight() + zilCont1:GetHeight()) + 2)
+   else
+      zil:SetHeight(zil:GetHeight() + zilCont1:GetHeight() + 2)
+   end
+
+
    return zil
 
 end
 
+local function populateZoneItemsList(znID, zoneName)
 
--- local function populateSelectedZone(znID, znName)
--- 
---    resetZoneItems()
--- 
---    local iobj, t  =  nil, {}
---    local first    =  true
---    local parent   =  cD.sCACFrames["CACHEITEMSFRAME"] 
--- 
---    for iobj, t in pairs(cD.itemCache) do
---       if t.zone   == znID  then
---          print("Creating itemLine for ["..t.zone.."]")
--- --          local znItemLine  =  createZoneItemLine(t)
---             
---          local znLineFrame =  UI.CreateFrame("Frame", "Zone_Line_Frame", parent)
---          znLineFrame:SetLayer(2)
---          znLineFrame:SetBackgroundColor(1, 0, 0, .5)
--- --          if parent == nil then
---          if first then             
---             first    =  false
---             znLineFrame:SetPoint("TOPLEFT",  parent, "TOPLEFT",  1,  1)
---             znLineFrame:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -1, 1)
---          else
---             znLineFrame:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  1, 1)
---             znLineFrame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", -1, 1)
---          end            
---          
---          local znLine =  UI.CreateFrame("Text", "Zone_Line", znLineFrame)
---          znLine:SetAllPoints(znLineFrame)
---          znLine:SetLayer(3)
---          znLine:SetFont(cD.addon, cD.text.base_font_name)
---          znLine:SetFontSize(cD.text.base_font_size)
---          znLine:SetText(znName)
---          local txtColor =  cD.rarityColor("common")
---          znLine:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
---          znLine:SetBackgroundColor(0, 1, 0, .5)
--- 
---          znLineFrame:SetHeight(znLine:GetHeight() + 4)
---       end
---    end
--- 
--- end
+   local parent   = nil
+
+   resetZoneItemsList()
+
+   for iobj, t in pairs(cD.itemCache) do
+
+      if t.zone   == znID  then
+
+         local z = createZoneItemLine(parent, t)
+         parent = z
+
+      end
+   end
+
+   return
+end
 
 local function createZoneLine(parent, znID, zoneName)
-   print("zoneName ["..zoneName.."]")   
-   
+   print("zoneName ["..zoneName.."]")
+
 --    parent = parent or cD.sCACFrames["ZONECACHEFRAME"]
- 
+
    local znLine =  UI.CreateFrame("Text", "Zone_Line", parent or cD.sCACFrames["ZONECACHEFRAME"])
    znLine:SetLayer(3)
    znLine:SetFont(cD.addon, cD.text.base_font_name)
@@ -112,9 +153,8 @@ local function createZoneLine(parent, znID, zoneName)
    znLine:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
    znLine:SetBackgroundColor(.2, .2, .2, .5)
    znLine:SetText(zoneName)
---    znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() populateSelectedZone(znID, zoneName) end, "Zone Selected" )
-   znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() createZoneItemLine(znID, zoneName) end, "Zone Selected" )
-   
+   znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() populateZoneItemsList(znID, zoneName) end, "Zone Selected" )
+
    if parent == nil then
       znLine:SetPoint("TOPLEFT",  cD.sCACFrames["ZONECACHEFRAME"], "TOPLEFT",  1,  1)
       znLine:SetPoint("TOPRIGHT", cD.sCACFrames["ZONECACHEFRAME"], "TOPRIGHT", -1, 1)
@@ -126,22 +166,21 @@ local function createZoneLine(parent, znID, zoneName)
 end
 
 local function populateZoneList()
-   
+
    local iobj, t     =  nil, {}
    local zones       =  {}
    local znID, znName=  nil, nil
-   local parent      =  nil   
+   local parent      =  nil
+   local doneZones   =  {}
 
    for iobj, t in pairs(cD.itemCache) do
       zones[t.zone] =  Inspect.Zone.Detail(t.zone).name
-      print("zn load ["..t.zone.."]["..zones[t.zone].."]")
-      parent   =  createZoneLine(parent, t.zone, zones[t.zone])
-      for x, y in pairs(parent) do
-         print(string.format("x[%s] y[%s]", x, y))
-         for a,b in pairs(y) do 
-            print(string.format("a[%s] b[%s]", a, b))
-         end
-      end      
+
+      if doneZones[t.zone] == nil then
+         print("zn load ["..t.zone.."]["..zones[t.zone].."]")
+         parent   =  createZoneLine(parent, t.zone, zones[t.zone])
+         doneZones[t.zone] = 1
+      end
    end
 
 --    cD.sCACFrames["ZONECACHEFRAME"]:SetHeight(lastParent:GetBottom() - cD.sCACFrames["ZONECACHEFRAME"]:GetTop())
@@ -218,22 +257,45 @@ function cD.createCacheWindow()
       cD.sCACFrames["ZONECACHEFRAME"]  =   zoneCacheFrame
    --[[  ZONE CHOOSER ]]-- [[END]]--
 
-
    --[[  ITEM VIEWER ]]-- [[BEGIN]]--
+
+   local itemsExtFrame = UI.CreateFrame("Frame", "Cache_Items_Excternal_frame", cacheWindow)
+   itemsExtFrame:SetPoint("TOPLEFT",     cD.sCACFrames["TITLEBARCACHEFRAME"], "BOTTOMLEFT",  cD.borders.left + znListWIDTH + 1,    1)
+   itemsExtFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["TITLEBARCACHEFRAME"], "BOTTOMRIGHT", -(cD.borders.right), 1)
+   itemsExtFrame:SetPoint("BOTTOMRIGHT", cacheWindow, "BOTTOMRIGHT", -cD.borders.right, -cD.borders.bottom)
+   cD.sCACFrames["CACHEITEMSEXTFRAME"]  = itemsExtFrame
+
+
       -- CACHE ZONE ITEMS MASK FRAME
-      local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", cacheWindow)
-      itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames["TITLEBARCACHEFRAME"], "BOTTOMLEFT",     cD.borders.left + znListWIDTH + 1,    1)
-      itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["TITLEBARCACHEFRAME"], "BOTTOMRIGHT",    -cD.borders.right, 1)
-      itemsMaskFrame:SetPoint("BOTTOMRIGHT", cacheWindow, "BOTTOMRIGHT", -cD.borders.right, -cD.borders.bottom)
+      local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", itemsExtFrame)
+      itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPLEFT")
+      itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPRIGHT",    -(cD.borders.right + itemsSBWIDTH), 0)
+      itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames["CACHEITEMSEXTFRAME"], "BOTTOMRIGHT", -(cD.borders.right + itemsSBWIDTH), 0)
       cD.sCACFrames["CACHEITEMSMASKFRAME"]  = itemsMaskFrame
 
       -- CACHE ZONE ITEMS CONTAINER FRAME
       local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames["CACHEITEMSMASKFRAME"])
       cacheFrame:SetAllPoints(cD.sCACFrames["CACHEITEMSMASKFRAME"])
-      cacheFrame:SetLayer(1)
+      cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
       cacheFrame:SetBackgroundColor(0, 0, 0, .5)   -- GREEN
       cD.sCACFrames["CACHEITEMSFRAME"]  =   cacheFrame
+
+
    --[[  ITEM VIEWER ]]-- [[END]]--
+   local cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames["CACHEITEMSEXTFRAME"])
+   cfScroll:SetVisible(true)
+   cfScroll:SetEnabled(true)
+   cfScroll:SetLayer(1)
+   cfScroll:SetWidth(itemsSBWIDTH)
+   cfScroll:SetOrientation("vertical")
+   cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],"TOPRIGHT")
+   cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSFRAME"],   "BOTTOMRIGHT")
+   cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
+                           function()
+                              cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(cfScroll:GetPosition()) )
+                           end,
+                           "Event.UI.Scrollbar.Change")
+
 
    -- Enable Dragging
    Library.LibDraggable.draggify(cacheWindow, cD.updateGuiCoordinates)
