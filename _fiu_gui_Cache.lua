@@ -10,11 +10,42 @@ local addon, cD = ...
 
 -- local tWINWIDTH      =  450
 local tWINWIDTH      =  504
-local tWINHEIGTH     =  200
+local tWINHEIGTH     =  210
 local znListWIDTH    =  150
 local itemsSBWIDTH   =  8
 local magicNumber    =  7.5
-local itemsMaxLENGTH =  40
+-- local itemsMaxLENGTH =  40
+local ILStock        =  {}
+
+
+local function fetchFromILStock()
+   local idx, tbl =  nil, {}
+   local retval   =  nil
+
+   for idx, tbl in pairs(ILStock) do
+      if not tbl.inUse then
+         retval = tbl
+         -- set the frame as INUSE
+         ILStock[idx].inUse     =  true
+--[[
+         -- stop rendering of old category icon that keeps re-emerging
+         cD.Stock[idx].typeIcon:SetVisible(false)
+
+         -- then we try to dereference it, somehow...
+         cD.Stock[idx].typeIcon  =  nil
+
+         -- finally we create a new icon and we reference in cD.Stock for future uses
+         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].lootFrame)
+         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size)
+         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size)
+         cD.Stock[idx].typeIcon:SetLayer(3)
+         cD.Stock[idx].typeIcon:SetPoint("TOPLEFT",   cD.Stock[idx].lootFrame, "TOPLEFT", cD.borders.left, 0)]]
+         break
+      end
+   end
+
+   return retval
+end
 
 local function multiLineString(s, size)
 
@@ -55,13 +86,23 @@ local function resetZoneItems()
 end
 
 local function resetZoneItemsList()
-   print("resetZoneItemsList: STILL DO TO")
+   --
+   -- Set all ILStock Frames to "invisible"
+   -- and set all ILStock[].used = false
+   --
+   local idx, tbl = nil, {}
+   for idx, tbl in pairs(ILStock) do
+      tbl.inUse = false
+      tbl.zil:SetVisible(false)
+   end
+
 end
 
 local function createZoneItemLine(parent, t)
 
    local first    = true
    local lastobj  =  nil
+   local itemsMaxLENGTH =  math.floor((tWINWIDTH - (znListWIDTH + itemsSBWIDTH + cD.borders.left*2 + cD.borders.right*2)) / magicNumber)
 
    if parent == nil then
       parent = cD.sCACFrames["CACHEITEMSFRAME"]
@@ -69,91 +110,132 @@ local function createZoneItemLine(parent, t)
       first = false
    end
 
-   print("Cliked!")
+   local zil, zilIcon, zilName, zilDesc, zilCat = nil, nil, nil, nil, nil
 
-   local zil, zilName, zilDesc, zilCat = nil, nil, nil, nil
+   local fromILStock = fetchFromILStock()
 
-   zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
-   if first then
-      first = false
-      zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
-      zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+   if fromStock == nil then
+
+      zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
+      zil:SetBackgroundColor(.2, .2, .2, .5)
+      if first then
+         first = false
+         zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
+         zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+      else
+         zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
+         zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
+      end
+      zil:SetLayer(1)
+
+      -- setup Loot Item's Icon
+      zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
+      zilIcon:SetTexture("Rift", t.icon)
+      zilIcon:SetHeight(zilIcon:GetHeight())
+      zilIcon:SetWidth(zilIcon:GetWidth())
+      zilIcon:SetPoint("TOPLEFT",      zil, "TOPLEFT",      cD.borders.left, cD.borders.top)
+   --    zilIcon:SetPoint("BOTTOMLEFT",   zil, "BOTTOMLEFT",   cD.borders.left, 0)
+      zilIcon:SetLayer(3)
+
+   --    { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
+      zilName = UI.CreateFrame("Text", "Item_name", zil)
+      zilName:SetLayer(3)
+      zilName:SetFont(cD.addon, cD.text.base_font_name)
+      zilName:SetFontSize(cD.text.base_font_size)
+      local txtColor =  cD.rarityColor(t.rarity)
+      zilName:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+--       zilName:SetBackgroundColor(.2, .2, .2, .5)
+      zilName:SetText(t.name)
+      zilName:SetPoint("TOPLEFT",  zilIcon, "TOPRIGHT",  cD.borders.left, 0)
+
+      zilCat = UI.CreateFrame("Text", "Item_name", zil)
+      zilCat:SetLayer(3)
+      zilCat:SetFont(cD.addon, cD.text.base_font_name)
+      zilCat:SetFontSize(cD.text.base_font_size -2 )
+      local txtColor =  cD.rarityColor("common")
+      zilCat:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+--       zilCat:SetBackgroundColor(.2, .2, .2, .5)
+      zilCat:SetText("("..t.category..")")
+      zilCat:SetPoint("BOTTOMLEFT",  zilIcon, "BOTTOMRIGHT", cD.borders.left, 0)
+      lastobj  =  zilCat
+
+      if t.description ~= nil then
+         zilDesc = UI.CreateFrame("Text", "Item_name", zil)
+         zilDesc:SetLayer(3)
+         zilDesc:SetFont(cD.addon, cD.text.base_font_name)
+         zilDesc:SetFontSize(cD.text.base_font_size -2)
+         local txtColor =  cD.rarityColor("quest")
+         zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+         local dText = multiLineString(t.description, itemsMaxLENGTH)
+         zilDesc:SetText(dText)
+         zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
+         lastobj  =  zilDesc
+      end
+
+      -- HEADER   -- GRPAHIC SEPARATOR CONTAINER Header
+      local zilCont1  =  UI.CreateFrame("Text", "item_list_bottom_separator_container", zil)
+      zilCont1:SetHeight(cD.text.base_font_size)
+      zilCont1:SetLayer(1)
+      zilCont1:SetPoint("TOPLEFT",  lastobj, "BOTTOMLEFT",  cD.borders.left,  cD.borders.top)
+      zilCont1:SetPoint("TOPRIGHT", lastobj, "BOTTOMRIGHT", 0, cD.borders.top)
+
+      -- HEADER GRAPHIC SEPARATOR
+      local zilGSep1 = UI.CreateFrame("Texture", "item_list_bottom_separator", zil)
+      zilGSep1:SetTexture("Rift", "line_window_break.png.dds")
+      zilGSep1:SetHeight(cD.text.base_font_size)
+      zilGSep1:SetWidth(zilCont1:GetWidth())
+      zilGSep1:SetLayer(1)
+      zilGSep1:SetPoint("CENTER", zilCont1, "CENTER")
+
+      if zilDesc ~= nil then
+         zil:SetHeight((zil:GetHeight() + zilDesc:GetHeight() + zilCont1:GetHeight()) + 2)
+      else
+         zil:SetHeight(zil:GetHeight() + zilCont1:GetHeight() + 2)
+      end
+
+      local tmp   =  {}
+      tmp         =  {
+                        inUse    =  true,
+                        zil      =  zil,
+                        zilIcon  =  zilIcon,
+                        zilName  =  zilName,
+                        zilCat   =  zilCat,
+                        zilDesc  =  zilDesc,
+                     }
+
+      table.insert(ILStock, tmp)
+      tmp   =  {}
    else
-      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
-      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
+      --
+      -- We recycle an old set of object, so we need just
+      -- to put in new values
+      --
+            lootFrame      =  fromStock.lootFrame
+      zil      =  fromILStock.zil
+      zilIcon  =  fromILStock.zilIcon
+      zilName  =  fromILStock.zilName
+      zilCat   =  fromILStock.zilCat
+      zilDesc  =  fromILStock.zilDesc
+
+      zilIcon:SetTexture("Rift", t.icon)
+
+      local txtColor =  cD.rarityColor(t.rarity)
+      zilName:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+      zilName:SetText(t.name)
+
+      zilCat:SetText("("..t.category..")")
+
+      if t.description then
+         ilDesc:SetVisible(true)
+         local dText = multiLineString(t.description, itemsMaxLENGTH)
+         zilDesc:SetText(dText)
+      else
+         ilDesc:SetVisible(false)
+      end
+
+      zil:SetVisible(true)
+
    end
-   zil:SetLayer(1)
-
-   -- setup Loot Item's Icon
-   zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
-   zilIcon:SetTexture("Rift", t.icon)
-   zilIcon:SetHeight(zilIcon:GetHeight())
-   zilIcon:SetWidth(zilIcon:GetWidth())
-   zilIcon:SetPoint("TOPLEFT",      zil, "TOPLEFT",      cD.borders.left, 0)
---    zilIcon:SetPoint("BOTTOMLEFT",   zil, "BOTTOMLEFT",   cD.borders.left, 0)
-   zilIcon:SetLayer(3)
-
---    { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
-   zilName = UI.CreateFrame("Text", "Item_name", zil)
-   zilName:SetLayer(3)
-   zilName:SetFont(cD.addon, cD.text.base_font_name)
-   zilName:SetFontSize(cD.text.base_font_size)
-   local txtColor =  cD.rarityColor(t.rarity)
-   zilName:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-   zilName:SetBackgroundColor(.2, .2, .2, .5)
-   zilName:SetText(t.name)
-   zilName:SetPoint("TOPLEFT",  zilIcon, "TOPRIGHT",  cD.borders.left, 0)
-
-   zilCat = UI.CreateFrame("Text", "Item_name", zil)
-   zilCat:SetLayer(3)
-   zilCat:SetFont(cD.addon, cD.text.base_font_name)
-   zilCat:SetFontSize(cD.text.base_font_size -2 )
-   local txtColor =  cD.rarityColor("common")
-   zilCat:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-   zilCat:SetBackgroundColor(.2, .2, .2, .5)
-   zilCat:SetText("("..t.category..")")
-   zilCat:SetPoint("BOTTOMLEFT",  zilIcon, "BOTTOMRIGHT", cD.borders.left, 0)
-   lastobj  =  zilCat
-
-   if t.description ~= nil then
-      zilDesc = UI.CreateFrame("Text", "Item_name", zil)
-      zilDesc:SetLayer(3)
-      zilDesc:SetFont(cD.addon, cD.text.base_font_name)
-      zilDesc:SetFontSize(cD.text.base_font_size -2)
-      local txtColor =  cD.rarityColor("t.rarity")
-      zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-      zilDesc:SetBackgroundColor(.2, .2, .2, .5)
---       zilDesc:SetText(t.description)
-
-      itemsMaxLENGTH =  math.floor((tWINWIDTH - (znListWIDTH + itemsSBWIDTH + cD.borders.left*2 + cD.borders.right*2)) / magicNumber)
-
-      local dText = multiLineString(t.description, itemsMaxLENGTH)
-      zilDesc:SetText(dText)
-      zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
-      lastobj  =  zilDesc
-   end
-
-   -- HEADER   -- GRPAHIC SEPARATOR CONTAINER Header
-   local zilCont1  =  UI.CreateFrame("Text", "item_list_bottom_separator_container", zil)
-   zilCont1:SetHeight(cD.text.base_font_size)
-   zilCont1:SetLayer(1)
-   zilCont1:SetPoint("TOPLEFT",  lastobj, "BOTTOMLEFT",  cD.borders.left,  cD.borders.top)
-   zilCont1:SetPoint("TOPRIGHT", lastobj, "BOTTOMRIGHT", 0, cD.borders.top)
-
-   -- HEADER GRAPHIC SEPARATOR
-   local zilGSep1 = UI.CreateFrame("Texture", "item_list_bottom_separator", zil)
-   zilGSep1:SetTexture("Rift", "line_window_break.png.dds")
-   zilGSep1:SetHeight(cD.text.base_font_size)
-   zilGSep1:SetWidth(zilCont1:GetWidth())
-   zilGSep1:SetLayer(1)
-   zilGSep1:SetPoint("CENTER", zilCont1, "CENTER")
-
-   if zilDesc ~= nil then
-      zil:SetHeight((zil:GetHeight() + zilDesc:GetHeight() + zilCont1:GetHeight()) + 2)
-   else
-      zil:SetHeight(zil:GetHeight() + zilCont1:GetHeight() + 2)
-   end
-
 
    return zil
 
@@ -200,6 +282,7 @@ local function createZoneLine(parent, znID, zoneName)
       znLine:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT")
       znLine:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT")
    end
+
    return znLine
 end
 
@@ -243,7 +326,7 @@ function cD.createCacheWindow()
    cacheWindow:SetWidth(tWINWIDTH)
    cacheWindow:SetHeight(tWINHEIGTH)
    cacheWindow:SetLayer(-1)
-   cacheWindow:SetBackgroundColor(0, 0, 0, .5)
+   cacheWindow:SetBackgroundColor(.0, .0, .0, .5)
 
    -- TITLE BAR CONTAINER
    local titleCacheFrame =  UI.CreateFrame("Frame", "External_Cache_Frame", cacheWindow)
@@ -289,7 +372,7 @@ function cD.createCacheWindow()
       local zoneCacheFrame =  UI.CreateFrame("Frame", "Cache_Zone_frame", cD.sCACFrames["ZONECACHEMASKFRAME"])
       zoneCacheFrame:SetAllPoints(cD.sCACFrames["ZONECACHEMASKFRAME"])
       zoneCacheFrame:SetLayer(1)
-      zoneCacheFrame:SetBackgroundColor(.3, .3, .3, .5)
+      zoneCacheFrame:SetBackgroundColor(.2, .2, .2, .5)
       cD.sCACFrames["ZONECACHEFRAME"]  =   zoneCacheFrame
    --[[  ZONE CHOOSER ]]-- [[END]]--
 
