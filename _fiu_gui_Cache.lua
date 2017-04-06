@@ -1,6 +1,6 @@
 --
 -- Addon       _fiu_gui_Cache.lua
--- Version     0.1
+-- Version     0.2
 -- Author      marcob@marcob.org
 -- StartDate   04/04/2017
 -- StartDate   04/04/2017
@@ -8,10 +8,45 @@
 
 local addon, cD = ...
 
-local tWINWIDTH      =  450
+-- local tWINWIDTH      =  450
+local tWINWIDTH      =  504
 local tWINHEIGTH     =  200
 local znListWIDTH    =  150
 local itemsSBWIDTH   =  8
+local magicNumber    =  7.5
+local itemsMaxLENGTH =  40
+
+local function multiLineString(s, size)
+
+   local o  =  nil   -- output
+
+   if s and size then
+      local S  =  s     -- copy of source
+      local i  =  1     -- position
+      local t  =  nil   -- temp
+
+      while i < string.len(S) do
+
+         t  =  string.sub(S, i, size)
+         if o == nil then
+
+            o = t
+         else
+            o = o .. "\r" .. t
+         end
+
+         t  =  nil
+         i  =  i + size
+         S  =  string.sub(S, i)
+         i  =  1
+         print("split ["..i.."]")
+      end
+   end
+
+   if o then print("o ["..o.."]") end
+
+   return(o)
+end
 
 local function resetZoneItems()
    print("resetZoneItems: STILL DO TO")
@@ -78,8 +113,6 @@ local function createZoneItemLine(parent, t)
    zilCat:SetBackgroundColor(.2, .2, .2, .5)
    zilCat:SetText("("..t.category..")")
    zilCat:SetPoint("BOTTOMLEFT",  zilIcon, "BOTTOMRIGHT", cD.borders.left, 0)
---    zilName:SetPoint("RIGHT", zil, "RIGHT",  -cD.borders.right, 0)
-
    lastobj  =  zilCat
 
    if t.description ~= nil then
@@ -90,7 +123,12 @@ local function createZoneItemLine(parent, t)
       local txtColor =  cD.rarityColor("t.rarity")
       zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
       zilDesc:SetBackgroundColor(.2, .2, .2, .5)
-      zilDesc:SetText(t.description)
+--       zilDesc:SetText(t.description)
+
+      itemsMaxLENGTH =  math.floor((tWINWIDTH - (znListWIDTH + itemsSBWIDTH + cD.borders.left*2 + cD.borders.right*2)) / magicNumber)
+
+      local dText = multiLineString(t.description, itemsMaxLENGTH)
+      zilDesc:SetText(dText)
       zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
       lastobj  =  zilDesc
    end
@@ -182,8 +220,6 @@ local function populateZoneList()
          doneZones[t.zone] = 1
       end
    end
-
---    cD.sCACFrames["ZONECACHEFRAME"]:SetHeight(lastParent:GetBottom() - cD.sCACFrames["ZONECACHEFRAME"]:GetTop())
 
    return
 end
@@ -288,8 +324,8 @@ function cD.createCacheWindow()
    cfScroll:SetLayer(1)
    cfScroll:SetWidth(itemsSBWIDTH)
    cfScroll:SetOrientation("vertical")
-   cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],"TOPRIGHT")
-   cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSFRAME"],   "BOTTOMRIGHT")
+   cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],"TOPRIGHT",    cD.borders.right, 0)
+   cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSFRAME"],   "BOTTOMRIGHT", cD.borders.right, 0)
    cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
                            function()
                               cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(cfScroll:GetPosition()) )
