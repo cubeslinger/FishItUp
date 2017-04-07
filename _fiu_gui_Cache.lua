@@ -16,6 +16,10 @@ local itemsSBWIDTH   =  8
 local magicNumber    =  7.5
 -- local itemsMaxLENGTH =  40
 local ILStock        =  {}
+-- our globals
+cfScroll             =  nil
+ilScrollStep         =  1
+zlFrames             =  {}
 
 
 local function fetchFromILStock()
@@ -27,19 +31,6 @@ local function fetchFromILStock()
          retval = tbl
          -- set the frame as INUSE
          ILStock[idx].inUse     =  true
---[[
-         -- stop rendering of old category icon that keeps re-emerging
-         cD.Stock[idx].typeIcon:SetVisible(false)
-
-         -- then we try to dereference it, somehow...
-         cD.Stock[idx].typeIcon  =  nil
-
-         -- finally we create a new icon and we reference in cD.Stock for future uses
-         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].lootFrame)
-         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size)
-         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size)
-         cD.Stock[idx].typeIcon:SetLayer(3)
-         cD.Stock[idx].typeIcon:SetPoint("TOPLEFT",   cD.Stock[idx].lootFrame, "TOPLEFT", cD.borders.left, 0)]]
          break
       end
    end
@@ -243,7 +234,9 @@ end
 
 local function populateZoneItemsList(znID, zoneName)
 
-   local parent   = nil
+   local parent   =  nil
+   local cnt      =  0
+   local frameH   =  0
 
    resetZoneItemsList()
 
@@ -251,10 +244,16 @@ local function populateZoneItemsList(znID, zoneName)
 
       if t.zone   == znID  then
 
-         local z = createZoneItemLine(parent, t)
-         parent = z
-
+         local z  =  createZoneItemLine(parent, t)
+         parent   =  z
+         cnt      =  cnt + 1
+         frameH   =  frameH + z:GetHeight()
       end
+   end
+
+   if cnt > 0 then
+      cfScroll:SetRange(1, cnt)
+      ilScrollStep   = math.floor(frameH / cnt)
    end
 
    return
@@ -401,7 +400,7 @@ function cD.createCacheWindow()
 
 
    --[[  ITEM VIEWER ]]-- [[END]]--
-   local cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames["CACHEITEMSEXTFRAME"])
+   cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames["CACHEITEMSEXTFRAME"])
    cfScroll:SetVisible(true)
    cfScroll:SetEnabled(true)
    cfScroll:SetLayer(1)
@@ -411,7 +410,7 @@ function cD.createCacheWindow()
    cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSFRAME"],   "BOTTOMRIGHT", cD.borders.right, 0)
    cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
                            function()
-                              cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(cfScroll:GetPosition()) )
+                              cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(ilScrollStep*cfScroll:GetPosition()) )
                            end,
                            "Event.UI.Scrollbar.Change")
 
