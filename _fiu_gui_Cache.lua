@@ -238,8 +238,6 @@ local function populateZoneItemsList(znID, zoneName)
    local cnt      =  0
    local frameH   =  0
 
-   resetZoneItemsList()
-
    for iobj, t in pairs(cD.itemCache) do
 
       if t.zone   == znID  then
@@ -252,12 +250,35 @@ local function populateZoneItemsList(znID, zoneName)
    end
 
    if cnt > 0 then
+      frameH   =  frameH + cnt -- there's a 1 pixel separator between items, so be add it
       cfScroll:SetRange(1, cnt)
-      ilScrollStep   = math.floor(frameH / cnt)
+      ilScrollStep   = math.floor(frameH / cnt) -1
    end
 
    return
 end
+
+local function selectZone(znID, zoneName)
+   local unsel =  cD.rarityColor("common")
+   local sel   =  cD.rarityColor("relic")
+   local obj   =  nil
+
+   -- reset last selected elemenent highlight
+   for _, obj in pairs(zlFrames) do
+      obj:SetFontColor(unsel.r, unsel.g, unsel.b)
+   end
+
+   -- highligth selected Zone
+   print("ZONE NAME["..zoneName.."]")
+   zlFrames[zoneName]:SetFontColor(sel.r, sel.g, sel.b)
+
+   resetZoneItemsList()
+
+   populateZoneItemsList(znID, zoneName)
+
+   return
+end
+
 
 local function createZoneLine(parent, znID, zoneName)
    print("zoneName ["..zoneName.."]")
@@ -272,7 +293,8 @@ local function createZoneLine(parent, znID, zoneName)
    znLine:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
    znLine:SetBackgroundColor(.2, .2, .2, .5)
    znLine:SetText(zoneName)
-   znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() populateZoneItemsList(znID, zoneName) end, "Zone Selected" )
+--    znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() populateZoneItemsList(znID, zoneName) end, "Zone Selected" )
+   znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() selectZone(znID, zoneName) end, "Zone Selected" )
 
    if parent == nil then
       znLine:SetPoint("TOPLEFT",  cD.sCACFrames["ZONECACHEFRAME"], "TOPLEFT",  1,  1)
@@ -291,15 +313,14 @@ local function populateZoneList()
    local zones       =  {}
    local znID, znName=  nil, nil
    local parent      =  nil
-   local doneZones   =  {}
 
    for iobj, t in pairs(cD.itemCache) do
       zones[t.zone] =  Inspect.Zone.Detail(t.zone).name
 
-      if doneZones[t.zone] == nil then
+      if zlFrames[zones[t.zone]] == nil then
          print("zn load ["..t.zone.."]["..zones[t.zone].."]")
          parent   =  createZoneLine(parent, t.zone, zones[t.zone])
-         doneZones[t.zone] = 1
+         zlFrames[zones[t.zone]] = parent
       end
    end
 
