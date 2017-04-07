@@ -276,6 +276,15 @@ end
 
 function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
+   -- debug
+--    if not fromHistory then
+--       local x, y = nil, nil
+--       for x,y in pairs(Inspect.Item.Detail(lootOBJ)) do
+--          print(string.format("ITEM DATA [%s]=[%s]", x,y))
+--       end
+--    end
+
+
    if lootCount   == nil   then  lootCount   = 1      end
    if fromHistory == nil   then  fromHistory = false  end
 
@@ -302,6 +311,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemiCon    =  cD.itemCache[lootOBJ].icon
       itemValue   =  cD.itemCache[lootOBJ].value
       itemZone    =  cD.itemCache[lootOBJ].zone
+      itemFlavor  =  cD.itemCache[lootOBJ].flavor
       if itemValue   == nil   then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
@@ -311,11 +321,12 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end
 
       if cD.itemCache[lootOBJ]   == nil then
-         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
+         cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
       end
    end
 
@@ -343,6 +354,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             itemiCon    =  cD.itemCache[lootOBJ].icon
             itemValue   =  cD.itemCache[lootOBJ].value
             itemZone    =  cD.itemCache[lootOBJ].zone
+            itemFlavor  =  cD.itemCache[lootOBJ].flavor
          end
       end
 
@@ -359,8 +371,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          for key, val in pairs(cD.sLTnames) do
             if val == itemName then
                idx = key
-               print(string.format("ITEM MATCH by NAME: _ITEM [%s][%s]", itemID,itemName))
-               print(string.format("ITEM MATCH by NAME: MATCH [%s][%s]", cD.sLTids[idx], cD.sLTnames[idx]))
+--                print(string.format("ITEM MATCH by NAME: _ITEM [%s][%s]", itemID,itemName))
+--                print(string.format("ITEM MATCH by NAME: MATCH [%s][%s]", cD.sLTids[idx], cD.sLTnames[idx]))
             end
          end
       end

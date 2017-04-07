@@ -149,7 +149,7 @@ function cD.createButtonWindow()
                -- stored session values or reset the loot window
                --
                if cD.sLThdrs[1]:GetText() ~= zone     then
-                  print(string.format("OLD ZONE[%s] NEWZONE[%s]", cD.sLThdrs[1]:GetText(), zone))
+--                   print(string.format("OLD ZONE[%s] NEWZONE[%s]", cD.sLThdrs[1]:GetText(), zone))
                   cD.sLThdrs[1]:SetText(zone)
                   cD.resetLootWindow()
                   cD.loadLastSession()

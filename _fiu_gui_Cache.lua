@@ -61,11 +61,11 @@ local function multiLineString(s, size)
          i  =  i + size
          S  =  string.sub(S, i)
          i  =  1
-         print("split ["..i.."]")
+--          print("split ["..i.."]")
       end
    end
 
-   if o then print("o ["..o.."]") end
+--    if o then print("o ["..o.."]") end
 
    return(o)
 end
@@ -163,6 +163,23 @@ local function createZoneItemLine(parent, t)
          lastobj  =  zilDesc
       end
 
+      if t.flavor ~= nil then
+         zilFlav = UI.CreateFrame("Text", "Item_name", zil)
+         zilFlav:SetLayer(3)
+         zilFlav:SetFont(cD.addon, cD.text.base_font_name)
+         zilFlav:SetFontSize(cD.text.base_font_size -2)
+         local txtColor =  cD.rarityColor("relic")
+         zilFlav:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+         local dText = multiLineString(t.flavor, itemsMaxLENGTH)
+         zilFlav:SetText(dText)
+         if zilDesc ~= nil then
+            zilFlav:SetPoint("TOPLEFT",  zilDesc, "BOTTOMLEFT", 0, 2)
+         else
+            zilFlav:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
+         end
+         lastobj  =  zilFlav
+      end
+
       -- HEADER   -- GRPAHIC SEPARATOR CONTAINER Header
       local zilCont1  =  UI.CreateFrame("Text", "item_list_bottom_separator_container", zil)
       zilCont1:SetHeight(cD.text.base_font_size)
@@ -178,11 +195,11 @@ local function createZoneItemLine(parent, t)
       zilGSep1:SetLayer(1)
       zilGSep1:SetPoint("CENTER", zilCont1, "CENTER")
 
-      if zilDesc ~= nil then
-         zil:SetHeight((zil:GetHeight() + zilDesc:GetHeight() + zilCont1:GetHeight()) + 2)
-      else
-         zil:SetHeight(zil:GetHeight() + zilCont1:GetHeight() + 2)
-      end
+      local optional = 0
+      if zilDesc ~= nil then optional = optional + zilDesc:GetHeight() end
+      if zilFlav ~= nil	then optional = optional + zilFlav:GetHeight() end
+
+      zil:SetHeight((zil:GetHeight() + optional + zilCont1:GetHeight()) + 2)
 
       local tmp   =  {}
       tmp         =  {
@@ -269,7 +286,7 @@ local function selectZone(znID, zoneName)
    end
 
    -- highligth selected Zone
-   print("ZONE NAME["..zoneName.."]")
+--    print("ZONE NAME["..zoneName.."]")
    zlFrames[zoneName]:SetFontColor(sel.r, sel.g, sel.b)
 
    resetZoneItemsList()
@@ -281,7 +298,7 @@ end
 
 
 local function createZoneLine(parent, znID, zoneName)
-   print("zoneName ["..zoneName.."]")
+--    print("zoneName ["..zoneName.."]")
 
 --    parent = parent or cD.sCACFrames["ZONECACHEFRAME"]
 
@@ -293,7 +310,6 @@ local function createZoneLine(parent, znID, zoneName)
    znLine:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
    znLine:SetBackgroundColor(.2, .2, .2, .5)
    znLine:SetText(zoneName)
---    znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() populateZoneItemsList(znID, zoneName) end, "Zone Selected" )
    znLine:EventAttach(Event.UI.Input.Mouse.Left.Click, function() selectZone(znID, zoneName) end, "Zone Selected" )
 
    if parent == nil then
@@ -318,7 +334,7 @@ local function populateZoneList()
       zones[t.zone] =  Inspect.Zone.Detail(t.zone).name
 
       if zlFrames[zones[t.zone]] == nil then
-         print("zn load ["..t.zone.."]["..zones[t.zone].."]")
+--          print("zn load ["..t.zone.."]["..zones[t.zone].."]")
          parent   =  createZoneLine(parent, t.zone, zones[t.zone])
          zlFrames[zones[t.zone]] = parent
       end
@@ -433,7 +449,8 @@ function cD.createCacheWindow()
                            function()
                               cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(ilScrollStep*cfScroll:GetPosition()) )
                            end,
-                           "Event.UI.Scrollbar.Change")
+                           "Event.UI.Scrollbar.Change"
+                        )
 
 
    -- Enable Dragging
@@ -445,3 +462,26 @@ function cD.createCacheWindow()
 
 end
 
+--[[
+    12:15:09: You received: [Lobster]
+   12:15:10: [FishItUp] ITEM DATA [icon]=[Data/\UI\item_icons\fish14.dds]
+   12:15:10: [FishItUp] ITEM DATA [id]=[i055A800062BB2E20]
+   12:15:10: [FishItUp] ITEM DATA [stack]=[5]
+   12:15:10: [FishItUp] ITEM DATA [flavor]=[Found in deep water in Moonshade Highlands.]
+   12:15:10: [FishItUp] ITEM DATA [category]=[crafting material fish]
+   12:15:10: [FishItUp] ITEM DATA [sell]=[82]
+   12:15:10: [FishItUp] ITEM DATA [stackMax]=[99]
+   12:15:10: [FishItUp] ITEM DATA [name]=[Lobster]
+   12:15:10: [FishItUp] ITEM DATA [type]=[I6F1900EAC1E60F32,CFD29DC5A11A34E1,,,,,,]
+
+   12:15:29: You received: [Lobster]
+   12:15:30: [FishItUp] ITEM DATA [icon]=[Data/\UI\item_icons\fish14.dds]
+   12:15:30: [FishItUp] ITEM DATA [id]=[i055A800062BB2E20]
+   12:15:30: [FishItUp] ITEM DATA [stack]=[6]
+   12:15:30: [FishItUp] ITEM DATA [flavor]=[Found in deep water in Moonshade Highlands.]
+   12:15:30: [FishItUp] ITEM DATA [category]=[crafting material fish]
+   12:15:30: [FishItUp] ITEM DATA [sell]=[82]
+   12:15:30: [FishItUp] ITEM DATA [stackMax]=[99]
+   12:15:30: [FishItUp] ITEM DATA [name]=[Lobster]
+   12:15:30: [FishItUp] ITEM DATA [type]=[I6F1900EAC1E60F32,CFD29DC5A11A34E1,,,,,,]
+   ]]--

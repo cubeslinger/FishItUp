@@ -92,6 +92,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemIcon    =  cD.itemCache[lootOBJ].icon
       itemValue   =  cD.itemCache[lootOBJ].value
       itemZone    =  cD.itemCache[lootOBJ].zone
+      itemFlavor  =  cD.itemCache[lootOBJ].flavor
       if itemValue == nil then itemValue = 0 end
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
@@ -101,6 +102,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       itemCat     =  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue == nil then itemValue = 0 end
    end
