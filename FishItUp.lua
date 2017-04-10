@@ -87,13 +87,13 @@ local function doThings(params)
    end
    if cD.window.infoOBJ:GetVisible() == false then cD.window.totalsOBJ:SetVisible(false) end
 
-   -- Create/Display cacheWindow
-   if cD.window.cacheOBJ  == nil then
-      cD.window.cacheOBJ  =  cD.createCacheWindow()
---       cD.initCacheWindow()
-      cD.window.cacheOBJ:SetVisible(false)
-   end
-   if cD.window.infoOBJ:GetVisible() == false then cD.window.cacheOBJ:SetVisible(false) end
+--    -- Create/Display cacheWindow
+--    if cD.window.cacheOBJ  == nil then
+--       cD.window.cacheOBJ  =  cD.createCacheWindow()
+-- --       cD.initCacheWindow()
+--       cD.window.cacheOBJ:SetVisible(false)
+--    end
+--    if cD.window.infoOBJ:GetVisible() == false then cD.window.cacheOBJ:SetVisible(false) end
 
    return
 end
