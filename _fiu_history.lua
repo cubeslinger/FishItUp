@@ -70,14 +70,14 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
    if newZone  then
       local parent = cD.sTOFrame[table.getn(cD.sTOFrame)]
       if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
-      local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, cD.zoneTotalCnts[zoneID])
+      local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, Inspect.Zone.Detail(zoneOBJ).id, cD.zoneTotalCnts[zoneID])
 
       table.insert(cD.sTOzoneIDs,   zoneID)
       table.insert(cD.sTOFrame,     totalsFrame)
       table.insert(cD.sTOznOBJs,    znOBJ)
       cD.sTOcntOBJs[zoneID] = totOBJs
 
-      cD.window.totalsOBJ:SetHeight((cD.sTOznOBJs[table.getn(cD.sTOznOBJs)]:GetBottom() - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
+--       cD.window.totalsOBJ:SetHeight((cD.sTOznOBJs[table.getn(cD.sTOznOBJs)]:GetBottom() - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
    else
       local cnt = string.format("%3d", cD.zoneTotalCnts[zoneID][idx])
       cD.sTOcntOBJs[zoneID][idx]:SetText(cnt)
