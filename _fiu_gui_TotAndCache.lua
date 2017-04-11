@@ -20,7 +20,7 @@ local tMAXLABELSIZE           =  200
 
 -- Merged _fiu_gui_Cache.lua
 local zlFrames                =  {}
-local znListWIDTH             =  160
+local znListWIDTH             =  158
 local sbWIDTH                 =  8
 local tfScroll                =  nil   -- Totals Frame ScrollBar
 local cfScroll                =  nil   -- Cache Items ScrollBar
@@ -29,7 +29,9 @@ local ilScrollStep            =  1
 local magicNumber             =  7.5
 local ILStock                 =  {}
 local lastZnSelected          =  nil
+local lastBGused              =  {}
 cD.sCACFrames                 =  {}
+local itemsMaxLENGTH          =  40
 
 local function reverseTable(t)
    local reversedTable = {}
@@ -79,11 +81,11 @@ local function multiLineString(s, size)
          i  =  i + size
          S  =  string.sub(S, i)
          i  =  1
-         --          print("split ["..i.."]")
+--          print("split ["..i.."]")
       end
    end
 
-   --    if o then print("o ["..o.."]") end
+--       if o then print("o ["..o.."]") end
 
    return(o)
 end
@@ -92,7 +94,6 @@ local function createZoneItemLine(parent, t)
 
    local first    = true
    local lastobj  =  nil
-   local itemsMaxLENGTH =  math.floor((tWINWIDTH - (znListWIDTH + sbWIDTH + cD.borders.left*2 + cD.borders.right*2)) / magicNumber)
 
    if parent == nil then
       parent = cD.sCACFrames["CACHEITEMSFRAME"]
@@ -107,7 +108,7 @@ local function createZoneItemLine(parent, t)
    if fromStock == nil then
 
       zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
-      zil:SetBackgroundColor(.2, .2, .2, .5)
+      zil:SetBackgroundColor(.2, .2, .2, .6)
       if first then
          first = false
          zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
@@ -118,13 +119,7 @@ local function createZoneItemLine(parent, t)
       end
       zil:SetLayer(3)
 
-      -- setup Loot Item's Icon
-      zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
-      zilIcon:SetTexture("Rift", t.icon)
-      zilIcon:SetHeight(zilIcon:GetHeight())
-      zilIcon:SetWidth(zilIcon:GetWidth())
-      zilIcon:SetPoint("TOPLEFT",      zil, "TOPLEFT",      cD.borders.left, cD.borders.top)
-
+      -- ITEM NAME
       --    { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone }
       zilName = UI.CreateFrame("Text", "Item_name", zil)
       zilName:SetFont(cD.addon, cD.text.base_font_name)
@@ -132,64 +127,40 @@ local function createZoneItemLine(parent, t)
       local txtColor =  cD.rarityColor(t.rarity)
       zilName:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
       zilName:SetText(t.name)
-      zilName:SetPoint("TOPLEFT",  zilIcon, "TOPRIGHT",  cD.borders.left, 0)
+      zilName:SetPoint("TOPLEFT",  zil, "TOPLEFT",  cD.borders.left, 0)
 
-      zilCat = UI.CreateFrame("Text", "Item_name", zil)
-      zilCat:SetFont(cD.addon, cD.text.base_font_name)
-      zilCat:SetFontSize(cD.text.base_font_size -2 )
-      local txtColor =  cD.rarityColor("common")
-      zilCat:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-      zilCat:SetText("("..t.category..")")
-      zilCat:SetPoint("BOTTOMLEFT",  zilIcon, "BOTTOMRIGHT", cD.borders.left, 0)
-      lastobj  =  zilCat
+      -- setup Loot Item's Icon
+      zilIcon =  UI.CreateFrame("Texture", "Item_Icon_" .. t.name, zil)
+      zilIcon:SetTexture("Rift", t.icon)
+      zilIcon:SetHeight(32)
+      zilIcon:SetWidth(32)
+      zilIcon:SetPoint("TOPLEFT",      zilName, "BOTTOMLEFT", 0, 1)
 
-      if t.description ~= nil then
-         zilDesc = UI.CreateFrame("Text", "Item_name", zil)
---          zilDesc:SetLayer(7)
-         zilDesc:SetFont(cD.addon, cD.text.base_font_name)
-         zilDesc:SetFontSize(cD.text.base_font_size -2)
-         local txtColor =  cD.rarityColor("quest")
-         zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-         local dText = multiLineString(t.description, itemsMaxLENGTH)
-         zilDesc:SetText(dText)
-         zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
-         lastobj  =  zilDesc
-      end
+      local flavor   =  t.flavor or "n/a"
+      zilFlav = UI.CreateFrame("Text", "Item_name", zil)
+      zilFlav:SetFont(cD.addon, cD.text.base_font_name)
+      zilFlav:SetFontSize(cD.text.base_font_size -2)
+      local txtColor =  cD.rarityColor("relic")
+      zilFlav:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+      local dText = multiLineString(flavor, itemsMaxLENGTH)
+      zilFlav:SetText(dText)
+      zilFlav:SetPoint("TOPLEFT",  zilIcon, "TOPRIGHT", cD.borders.left, 0)
+      lastobj  =  zilFlav
 
-      if t.flavor ~= nil then
-         zilFlav = UI.CreateFrame("Text", "Item_name", zil)
-         zilFlav:SetFont(cD.addon, cD.text.base_font_name)
-         zilFlav:SetFontSize(cD.text.base_font_size -2)
-         local txtColor =  cD.rarityColor("relic")
-         zilFlav:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
-         local dText = multiLineString(t.flavor, itemsMaxLENGTH)
-         zilFlav:SetText(dText)
-         if zilDesc ~= nil then
-            zilFlav:SetPoint("TOPLEFT",  zilDesc, "BOTTOMLEFT", 0, 2)
-         else
-            zilFlav:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, 2)
-         end
-         lastobj  =  zilFlav
-      end
+      local description =  t.description or "n/a"
+      zilDesc = UI.CreateFrame("Text", "Item_name", zil)
+      zilDesc:SetFont(cD.addon, cD.text.base_font_name)
+      zilDesc:SetFontSize(cD.text.base_font_size -2)
+      local txtColor =  cD.rarityColor("quest")
+      zilDesc:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
+      local dText = multiLineString(description, itemsMaxLENGTH)
+      zilDesc:SetText(dText)
+      zilDesc:SetPoint("TOPLEFT",  zilIcon, "BOTTOMLEFT", 0, cD.borders.top)
+      lastobj  =  zilDesc
 
-      -- HEADER   -- GRPAHIC SEPARATOR CONTAINER Header
-      local zilCont1  =  UI.CreateFrame("Text", "item_list_bottom_separator_container", zil)
-      zilCont1:SetHeight(cD.text.base_font_size)
-      zilCont1:SetPoint("TOPLEFT",  lastobj, "BOTTOMLEFT",  cD.borders.left,  cD.borders.top)
-      zilCont1:SetPoint("TOPRIGHT", lastobj, "BOTTOMRIGHT", 0, cD.borders.top)
-
-      -- HEADER GRAPHIC SEPARATOR
-      local zilGSep1 = UI.CreateFrame("Texture", "item_list_bottom_separator", zil)
-      zilGSep1:SetTexture("Rift", "line_window_break.png.dds")
-      zilGSep1:SetHeight(cD.text.base_font_size)
-      zilGSep1:SetWidth(zilCont1:GetWidth())
-      zilGSep1:SetPoint("CENTER", zilCont1, "CENTER")
-
-      local optional = 0
-      if zilDesc ~= nil then optional = optional + zilDesc:GetHeight() end
-      if zilFlav ~= nil	then optional = optional + zilFlav:GetHeight() end
-
-      zil:SetHeight((zil:GetHeight() + optional + zilCont1:GetHeight()) + 2)
+      local H = zilDesc:GetBottom() - zil:GetTop()
+      zil:SetHeight(H)
+      print("HEIGHT ["..H.."]")
 
       local tmp   =  {}
       tmp         =  {
@@ -251,6 +222,10 @@ local function resetZoneItemsList()
       tbl.zil:SetVisible(false)
    end
 
+   -- reparent itemFrame to MaskFrame to reset ScrollBar movements
+   cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
+
+   return
 end
 
 
@@ -272,8 +247,10 @@ local function populateZoneItemsList(znID, zoneName)
 
    if cnt > 0 then
       frameH   =  frameH + cnt -- there's a 1 pixel separator between items, so be add it
+      print("ITEMS ["..cnt.."]")
       cfScroll:SetRange(1, cnt)
-      ilScrollStep   = math.floor(frameH / cnt) -1
+--       ilScrollStep   = math.floor(frameH / cnt)
+--       print("ScrollSTEP ["..ilScrollStep.."]")
    end
 
    return
@@ -287,7 +264,7 @@ local function selectZone(znID, zoneName)
 
    -- reset last selected elemenent highlight
    if lastZnSelected ~= nil then
-      lastZnSelected:SetFontColor(unsel.r, unsel.g, unsel.b)
+      lastZnSelected:SetBackgroundColor(lastBGused.r, lastBGused.g, lastBGused.b, lastBGused.a)
    end
    --
    -- Highligth selected Zone
@@ -295,7 +272,8 @@ local function selectZone(znID, zoneName)
    -- flip/flop ?
    --
    if lastZnSelected ~= zlFrames[zoneName]   then
-      zlFrames[zoneName]:SetFontColor(sel.r, sel.g, sel.b)
+      lastBGused.r, lastBGused.g, lastBGused.b, lastBGused.a     =  zlFrames[zoneName]:GetBackgroundColor()
+      zlFrames[zoneName]:SetBackgroundColor(.6, .6, .6, .6)
       lastZnSelected =  zlFrames[zoneName]
 
       resetZoneItemsList()
@@ -304,6 +282,7 @@ local function selectZone(znID, zoneName)
    else
       cD.sCACFrames["CACHEITEMSEXTFRAME"]:SetVisible(false)
       lastZnSelected =  nil
+      lastBGused     =  {}
    end
 
    return
@@ -337,7 +316,7 @@ function cD.createTotalsWindow()
    local titleTotalsFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
    titleTotalsFrame:SetPoint("TOPLEFT",     totalsWindow, "TOPLEFT",     cD.borders.left,    cD.borders.top)
    titleTotalsFrame:SetPoint("TOPRIGHT",    totalsWindow, "TOPRIGHT",    - cD.borders.right, cD.borders.top)
-   titleTotalsFrame:SetBackgroundColor(.1, .1, .1, .7)
+   titleTotalsFrame:SetBackgroundColor(.1, .1, .1, .6)
    titleTotalsFrame:SetLayer(1)
    titleTotalsFrame:SetHeight(cD.text.base_font_size + 4)
    cD.sTOFrames[TITLEBARTOTALSFRAME]  =   titleTotalsFrame
@@ -369,7 +348,7 @@ function cD.createTotalsWindow()
    totalsExtFrame:SetPoint("TOPRIGHT",    cD.sTOFrames[TITLEBARTOTALSFRAME], "BOTTOMRIGHT", -(cD.borders.right + sbWIDTH), 1)
    totalsExtFrame:SetPoint("BOTTOMLEFT",  totalsWindow,                      "BOTTOMLEFT",  cD.borders.left,    - cD.borders.bottom)
    totalsExtFrame:SetPoint("BOTTOMRIGHT", totalsWindow,                      "BOTTOMRIGHT", -(cD.borders.right + sbWIDTH), - cD.borders.bottom)
-   totalsExtFrame:SetBackgroundColor(.2, .2, .2, .5)
+   totalsExtFrame:SetBackgroundColor(.2, .2, .2, .6)
    totalsExtFrame:SetLayer(1)
    cD.sTOFrames[EXTERNALTOTALSFRAME]  =   totalsExtFrame
 
@@ -390,8 +369,8 @@ function cD.createTotalsWindow()
    tfScroll:SetEnabled(true)
    tfScroll:SetWidth(sbWIDTH)
    tfScroll:SetOrientation("vertical")
-   tfScroll:SetPoint("TOPLEFT",     cD.sTOFrames[EXTERNALTOTALSFRAME],  "TOPRIGHT",    -(cD.borders.right/2), 0)
-   tfScroll:SetPoint("BOTTOMLEFT",  cD.sTOFrames[EXTERNALTOTALSFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2), 0)
+   tfScroll:SetPoint("TOPLEFT",     cD.sTOFrames[EXTERNALTOTALSFRAME],  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
+   tfScroll:SetPoint("BOTTOMLEFT",  cD.sTOFrames[EXTERNALTOTALSFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
    tfScroll:EventAttach(   Event.UI.Scrollbar.Change,
                            function()
                               cD.sTOFrames[TOTALSFRAME]:SetPoint("TOPLEFT", cD.sTOFrames[TOTALSMASKFRAME], "TOPLEFT", 0, -math.floor(tlScrollStep*tfScroll:GetPosition()) )
@@ -402,7 +381,8 @@ function cD.createTotalsWindow()
 
    -- -----------------------------------------------------------------------------
    local itemsExtFrame = UI.CreateFrame("Frame", "Cache_Items_Excternal_frame", totalsWindow)
-   itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
+--    itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
+   itemsExtFrame:SetBackgroundColor(.2, .2, .2, 1)
    itemsExtFrame:SetVisible(false)
    itemsExtFrame:SetLayer(2)
    local deltaX   =  cD.borders.left + znListWIDTH + 1
@@ -415,8 +395,9 @@ function cD.createTotalsWindow()
    -- CACHE ZONE ITEMS MASK FRAME
    local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", cD.sCACFrames["CACHEITEMSEXTFRAME"])
    itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPLEFT")
-   itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPRIGHT",    -(cD.borders.right + sbWIDTH), 0)
-   itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames["CACHEITEMSEXTFRAME"], "BOTTOMRIGHT", -(cD.borders.right + sbWIDTH), 0)
+   itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPRIGHT")
+   itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames["CACHEITEMSEXTFRAME"], "BOTTOMRIGHT")
+
    itemsMaskFrame:SetLayer(4)
    cD.sCACFrames["CACHEITEMSMASKFRAME"]  = itemsMaskFrame
 
@@ -424,7 +405,7 @@ function cD.createTotalsWindow()
    local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames["CACHEITEMSMASKFRAME"])
    cacheFrame:SetAllPoints(cD.sCACFrames["CACHEITEMSMASKFRAME"])
    cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
-   cacheFrame:SetBackgroundColor(0, 0, 0, .5)   -- GREEN
+   cacheFrame:SetBackgroundColor(0, 0, 0, .6)   -- GREEN
    cacheFrame:SetLayer(4)
    cD.sCACFrames["CACHEITEMSFRAME"]  =   cacheFrame
 
@@ -434,11 +415,11 @@ function cD.createTotalsWindow()
    cfScroll:SetEnabled(true)
    cfScroll:SetWidth(sbWIDTH)
    cfScroll:SetOrientation("vertical")
-   cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],   "TOPRIGHT",    -(cD.borders.right/2), 0)
-   cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSEXTFRAME"],   "BOTTOMRIGHT", -(cD.borders.right/2), 0)
+   cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],   "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
+   cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSEXTFRAME"],   "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
    cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
                               function()
-                                 cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -math.floor(ilScrollStep*cfScroll:GetPosition()) )
+                                 cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*cfScroll:GetPosition() )
                               end,
                               "ItemsFrame_Scrollbar.Change"
                         )
