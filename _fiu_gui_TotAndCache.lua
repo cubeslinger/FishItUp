@@ -15,7 +15,7 @@ local TOTALSFRAME             =  5
 local TOTALSFRAMESCROLL       =  6
 
 local tWINWIDTH               =  516
-local tWINHEIGHT              =  310
+local tWINHEIGHT              =  288
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
@@ -58,14 +58,20 @@ local function buildForStock(parent,t)
    local zil, zilIcon, zilName, zilDesc, zilCat = nil, nil, nil, nil, nil
 
    zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames["CACHEITEMSFRAME"])
-   zil:SetBackgroundColor(.2, .2, .2, .6)
+   zil:SetBackgroundColor(.3, .3, .3, .6) -- HERE
    if first then
       first = false
-      zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
-      zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+--       zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
+--       zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
+      zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  cD.borders.left,  cD.borders.top)
+      zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", -cD.borders.right, cD.borders.bottom)
+
    else
-      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
-      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
+--       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
+--       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
+      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0,  cD.borders.top)
+      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0,  cD.borders.bottom)
+
    end
    zil:SetLayer(3)
 
@@ -401,6 +407,19 @@ local function selectZone(znID, zoneName)
    return
 end
 
+-- local function manageTFScrollBar(min, max)
+--
+--    local pos = cD.sCACFrames["CACHEITEMSSCROLL"]:GetPosition()
+--
+--    if       pos == min  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT",      cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
+--    elseif   pos == max  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("BOTTOMLEFT",   cD.sCACFrames["CACHEITEMSMASKFRAME"], "BOTTOMLEFT")
+--    else
+--       cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -(ilScrollStep*pos) )
+--    end
+--
+--    return
+-- end
+
 
 
 function cD.createTotalsWindow()
@@ -493,9 +512,12 @@ function cD.createTotalsWindow()
    cD.sTOFrames[TOTALSFRAMESCROLL]  =   tfScroll
 
    -- -----------------------------------------------------------------------------
+   -- SECOND PANE - charScore VIEWER
+   -- -----------------------------------------------------------------------------
    local itemsExtFrame = UI.CreateFrame("Frame", "Cache_Items_Excternal_frame", totalsWindow)
 --    itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
-   itemsExtFrame:SetBackgroundColor(.2, .2, .2, 1)
+--    itemsExtFrame:SetBackgroundColor(.2, .2, .2, 1)
+   itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
    itemsExtFrame:SetVisible(false)
    itemsExtFrame:SetLayer(2)
    local deltaX   =  cD.borders.left + znListWIDTH + 1
@@ -518,7 +540,7 @@ function cD.createTotalsWindow()
    local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames["CACHEITEMSMASKFRAME"])
    cacheFrame:SetAllPoints(cD.sCACFrames["CACHEITEMSMASKFRAME"])
    cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
-   cacheFrame:SetBackgroundColor(0, 0, 0, .6)   -- GREEN
+   cacheFrame:SetBackgroundColor(0, 0, 0, .6)
    cacheFrame:SetLayer(4)
    cD.sCACFrames["CACHEITEMSFRAME"]  =   cacheFrame
 
@@ -531,12 +553,26 @@ function cD.createTotalsWindow()
    cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"],   "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
    cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSEXTFRAME"],   "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
    cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
-                              function()
-                                 local pos = cD.round(cfScroll:GetPosition())
-                                 print(string.format("cfScroll:GetPosition() [%s]", pos))
---                                  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*cfScroll:GetPosition() )
-                                 cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*pos )
-                              end,
+--                               function()
+--                                  local pos = cD.round(cfScroll:GetPosition())
+--                                  print(string.format("cfScroll:GetPosition() [%s]", pos))
+-- --                                  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*cfScroll:GetPosition() )
+--                                  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*pos )
+--                               end,
+--                               manageTFScrollBar(),
+
+                                 function()
+                                    local pos = cD.round(cD.sCACFrames["CACHEITEMSSCROLL"]:GetPosition())
+                                    local smin, smax = cD.sCACFrames["CACHEITEMSSCROLL"]:GetRange()
+                                    print(string.format("cfScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
+                                    if       pos == smin  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT",      cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
+                                             print("got TOP")
+                                    elseif   pos == smax  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("BOTTOMLEFT",   cD.sCACFrames["CACHEITEMSMASKFRAME"], "BOTTOMLEFT")
+                                             print("got BOTTOM")
+                                    else
+                                       cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -(ilScrollStep*pos) )
+                                    end
+                                 end,
                               "ItemsFrame_Scrollbar.Change"
                         )
    cD.sCACFrames["CACHEITEMSSCROLL"]  =   cfScroll
