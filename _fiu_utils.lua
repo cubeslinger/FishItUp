@@ -12,6 +12,23 @@ local addon, cD = ...
 local LOOTFRAME         =  3
 local POLECASTBUTTON    =  5
 
+
+local function updateCharScore(itemID, itemZone, lootCount)
+
+   if cD.charScore[itemZone] then
+      local zScore = cD.charScore[itemZone]
+      if zScore[itemID] then
+         zScore[itemID] = zScore[itemID] + lootCount
+      else
+         zScore[itemID] =  lootCount
+      end
+   else
+      cD.charScore[itemZone] = { [itemID] = lootCount }
+   end
+
+   return
+end
+
 function cD.printJunkMoney(money)
    local silver   =  '#c0c0c0'
    local gold     =  '#ffd700'
@@ -328,6 +345,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       if cD.itemCache[lootOBJ]   == nil then
          cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
       end
+      -- Update personal Char Score
+      updateCharScore(itemID, itemZone, lootCount)
    end
 
 
@@ -543,15 +562,17 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
 --    Kraken Hatchling e Coldflare Octopus (Brevane - Tulan)
 
 --    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find( catName, "artifact" )        ~= nil                              then  retval = "Minion_I3C.dds"                          -- artifact icon
-   elseif   string.find( catName, "quest")            ~= nil                              then  retval = "icon_menu_quest.png.dds"                 -- exclamation point
-   elseif   string.find( catName, "dimension")        ~= nil                              then  retval = "Minion_I153.dds"                         -- little key
-   elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
-   elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "btn_bag_(normal).png.dds"             	-- little sack
+   if       string.find( catName, "artifact" )        ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
+   elseif   string.find( catName, "quest")            ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
+   elseif   string.find( catName, "dimension")        ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
+--    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+   elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
+--    elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "btn_bag_(normal).png.dds"             	-- little sack
+   elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "reward_loot.png.dds"             	         -- little sack
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
             string.find(iName, "duskeen eel")         ~= nil   or
             string.find(iName, "kraken hatchling")    ~= nil   or
-            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"   -- quest repeatable
    end
 
   return retval

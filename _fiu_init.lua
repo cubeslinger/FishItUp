@@ -155,6 +155,7 @@ local function _init()
    -- Logs that are permanent
    --
    cD.zoneTotalCnts  =  {}
+   cD.charScore      =  {}
 
    return cD
 end
@@ -185,6 +186,9 @@ function cD.fiuLoadVariables(_, addonName)
             cD.itemCache    = itemCache
          end
       end
+      if charScore ~= nil then
+         cD.charScore   =  charScore
+      end
    end
 
    if cD.text.base_font_name ~= nil then cD.text.base_font_name = "fonts/MonospaceTypewriter.ttf" end
@@ -207,6 +211,7 @@ function cD.fiuSaveVariables(_, addonName)
       guilog            =  a
 --       waterlog          =  cD.history
       itemCache         =  cD.itemCache
+      charScore         =  cD.charScore
       --
       lastZoneLootOBJs  =  cD.lastZoneLootOBJs
       zoneTotalCnts     =  cD.zoneTotalCnts
