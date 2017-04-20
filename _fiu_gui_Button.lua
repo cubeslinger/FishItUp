@@ -116,7 +116,6 @@ function cD.createButtonWindow()
    poleCastTimerOBJ:SetVisible(false)
    cD.poleTimer   =  poleCastTimerOBJ
 
-
    -- assign "use" to Pole object to button action
    if (cD.poleTBL)   then
       if next(cD.poleTBL) ~= nil then
@@ -136,6 +135,11 @@ function cD.createButtonWindow()
                cD.detachLootWatchers()
 --                cD.detachOtherWatchers()
                cD.waitingForTheSunRunning = false
+               --
+               -- Clear eventually pending events in
+               --
+               cD.eventBuffer =  {}
+               --
                --
                -- hide timer on castButton
                --
@@ -168,7 +172,7 @@ function cD.createButtonWindow()
 
                cD.timeRStart  =  nil
 
-               Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent,    "Player in Combat")
+--                Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent,    "Player in Combat")
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,          "Player is Casting")
                Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Event.System.Update.Begin")
             else
@@ -178,6 +182,10 @@ function cD.createButtonWindow()
                cD.detachLootWatchers()
 --                cD.detachOtherWatchers()
                cD.waitingForTheSunRunning =  false
+               --
+               -- Clear eventually pending events in
+               --
+               cD.eventBuffer =  {}
 
                -- hide pole Timer
                cD.poleTimer:SetVisible(false)

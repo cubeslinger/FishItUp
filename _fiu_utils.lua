@@ -135,7 +135,7 @@ function cD.timedEventsManager()
 
             -- remove handlers
             cD.detachLootWatchers()
-            cD.detachOtherWatchers()
+--             cD.detachOtherWatchers()
 
             -- we are done, stop timer/flags
             cD.timeStart               =  nil
@@ -220,19 +220,20 @@ end
 
 
 function cD.detachLootWatchers()
-   Command.Event.Detach(Event.Item.Update,         cD.gotLoot,          "gotLoot_item_update")
-   Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,          "gotLoot_item_slot")
-   Command.Event.Detach(Event.System.Update.Begin, cD.timedEventsManager, "Event.System.Update.Begin")
+   Command.Event.Detach(Event.Item.Update,         cD.gotLoot,             "gotLoot_item_update")
+   Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,             "gotLoot_item_slot")
+   Command.Event.Detach(Event.System.Update.Begin, cD.timedEventsManager,  "Event.System.Update.Begin")
+   Command.Event.Detach(Event.Unit.Castbar,        cD.gotCastBar,          "Player is Casting")
 
    return
 end
 
-function cD.detachOtherWatchers()
-   Command.Event.Detach(Event.Unit.Detail.Combat,  cD.stopFishingEvent, "Player in Combat")
-   Command.Event.Detach(Event.Unit.Castbar,        cD.gotCastBar,       "Player is Casting")
-
-   return
-end
+-- function cD.detachOtherWatchers()
+--    Command.Event.Detach(Event.Unit.Detail.Combat,  cD.stopFishingEvent, "Player in Combat")
+--    Command.Event.Detach(Event.Unit.Castbar,        cD.gotCastBar,       "Player is Casting")
+--
+--    return
+-- end
 
 function cD.stopFishingEvent(h, event)
 
@@ -240,7 +241,7 @@ function cD.stopFishingEvent(h, event)
    for k, v in pairs(event) do print(string.format("Stop EVENT: k[%s] v[%s]", k, v)) end
 
    cD.detachLootWatchers()
-   cD.detachOtherWatchers()
+--    cD.detachOtherWatchers()
 
    -- hide timer on pole casting Button
    cD.poleTimer:SetVisible(false)
@@ -529,6 +530,7 @@ end
 function cD.round(num, digits)
    local floor = math.floor
    local mult = 10^(digits or 0)
+
    return floor(num * mult + .5) / mult
 end
 
@@ -553,26 +555,32 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    local iName    =  itemName       or ""
    local retval   =  nil
 
-   string.lower(catName)
-   string.lower(desc)
-   string.lower(iName)
+   catName  =  string.lower(categoryName)
+   if description then desc     =  string.lower(description)   end
+   iName    =  string.lower(itemName)
+
+--    print(string.format("CategoryName [%s]", categoryName))
+--    print(string.format("CatName      [%s]", catName))
+--    print(string.format("  objID      [%s]", objID))
+--    print(string.format("  description[%s]", description))
+--    print(string.format("  desc       [%s]", desc))
+--    print(string.format("  itemName   [%s]", itemName))
+--    print(string.format("  iName      [%s]", iName))
 
 --    pesci da dailies:
---    Emerald Flytcatcher e Duskeen Eel (Dusken - Tullio Retreat)
---    Kraken Hatchling e Coldflare Octopus (Brevane - Tulan)
+--    Emerald Flytcatcher e Duskeen Eel      (Dusken  - Tullio Retreat)
+--    Kraken Hatchling e Coldflare Octopus   (Brevane - Tulan)
 
 --    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find( catName, "artifact" )        ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
-   elseif   string.find( catName, "quest")            ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
-   elseif   string.find( catName, "dimension")        ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
---    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "NPCDialogIcon_questrepeatable.png.dds"   -- quest repeatable
+   if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
+   elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
+   elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
---    elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "btn_bag_(normal).png.dds"             	-- little sack
-   elseif   desc and (string.find(desc, "chest") or string.find(desc, "treasure") ~= nil) then  retval = "reward_loot.png.dds"             	         -- little sack
+   elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "reward_loot.png.dds"             	         -- little sack
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
             string.find(iName, "duskeen eel")         ~= nil   or
             string.find(iName, "kraken hatchling")    ~= nil   or
-            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"   -- quest repeatable
+            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
    end
 
   return retval

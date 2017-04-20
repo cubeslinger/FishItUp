@@ -12,6 +12,7 @@ local TITLEBARTCONTENTFRAME   =  2
 local EXTERNALTOTALSFRAME     =  3
 local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
+local TOTALSFRAMESCROLL       =  6
 
 local tWINWIDTH               =  516
 local tWINHEIGHT              =  310
@@ -79,7 +80,7 @@ local function buildForStock(parent,t)
       lootCnt:SetFontSize(cD.text.base_font_size -2 )
       lootCnt:SetText(string.format("%5d", t.value))
       lootCnt:SetLayer(3)
-      lootCnt:SetPoint("TOPLEFT",   zil, "TOPLEFT", cD.borders.left, 1)
+      lootCnt:SetPoint("TOPLEFT",   zil, "TOPLEFT", cD.borders.left, cD.borders.top)
 
       -- Item's Icon
       local lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. t.name, zil)
@@ -132,6 +133,19 @@ local function buildForStock(parent,t)
       zilDesc:SetFontColor(objColor.r, objColor.g, objColor.b)
       zilDesc:SetPoint("TOPLEFT",   typeIcon,    "TOPRIGHT", cD.borders.left, 0)
 
+   -- THIRD ROW
+      -- item's Flavor
+      local zilFlavor   =  UI.CreateFrame("Text", "Flavor_" .. t.name, zil)
+      local objColor    =  cD.rarityColor("common")
+      zilFlavor:SetFont(cD.addon, cD.text.base_font_name)
+      zilFlavor:SetFontSize(cD.text.base_font_size -2)
+      zilFlavor:SetHeight(lootCnt:GetHeight())
+      zilFlavor:SetText("")
+      zilFlavor:SetLayer(3)
+      zilFlavor:SetFontColor(objColor.r, objColor.g, objColor.b)
+      zilFlavor:SetPoint("TOPLEFT",   lootVal,    "BOTTOMLEFT", cD.borders.left, 0)
+
+
    -- -------------------------------------------------------------------------------
    local retval=  {}
    retval   =  {
@@ -142,6 +156,7 @@ local function buildForStock(parent,t)
                zilCount =  lootCnt,
                zilName  =  textOBJ,
                zilDesc  =  zilDesc,
+               zilFlav  =  zilFlavor
                }
 
    table.insert(ILStock, retval)
@@ -166,9 +181,9 @@ local function fetchFromILStock(parent,t)
 
    if not retval then
       retval = buildForStock(parent,t)
-      print("CREATING new from Stock")
+--       print("CREATING new from Stock")
    else
-      print("REUSING  old from Stock")
+--       print("REUSING  old from Stock")
    end
 
    return retval
@@ -209,7 +224,7 @@ end
 local function getCharScore(zName, oID)
    local retval   =  0
 
-   print("getCharScore zone["..zName.."] oID["..oID.."]")
+--    print("getCharScore zone["..zName.."] oID["..oID.."]")
 
    if cD.charScore[itemZone] then
       local t = cD.charScore[itemZone]
@@ -232,13 +247,15 @@ local function createZoneItemLine(parent, zoneName, t)
    zilCount =  fromILStock.zilCount
    zilName  =  fromILStock.zilName
    zilDesc  =  fromILStock.zilDesc
+   zilFlavor=  fromILStock.zilFlav
+
    --
    -- FIRST ROW
    -- Item Icon
    zilIIcon:SetTexture("Rift", t.icon)
 
    -- Item Counter
-   print("t.value ["..t.value.."]")
+--    print("t.value ["..t.value.."]")
    local cnt = getCharScore(zoneName, t.id)
    zilCount:SetText(string.format("%5d", cnt))
 
@@ -273,17 +290,33 @@ local function createZoneItemLine(parent, zoneName, t)
          zilDesc:SetText(txtDesc,true)
       end
    else
-      if t.flavor then
-         local objColor =  cD.rarityColor("epic")
-         zilDesc:SetFontColor(objColor.r, objColor.g, objColor.b)
-         zilDesc:SetText(t.flavor,true)
-      else
-         zilDesc:SetText("",true)
-      end
+      zilDesc:SetText("",true)
    end
 
-   zil:SetHeight((zilDesc:GetBottom() + 4 ) - zil:GetTop())
+   --
+   -- SECOND ROW
+   -- Flavor Field
+   if t.flavor then
+      local objColor =  cD.rarityColor("common")
+      zilFlavor:SetFontColor(objColor.r, objColor.g, objColor.b)
+      local flav  =  t.flavor
+      flav        =  flav:gsub("Found in ", "")
+      local zIdx  =  flav:find(" in ")
+      local txt   =  ""
+      if zIdx  then
+         txt = "<font color='#ffd700'>"..flav:sub(1,zIdx-1)..": </font><i>"..flav:sub(zIdx+4).."</i>"
+      else
+         txt = "<i>"..flav.."</i>"
+      end
+      zilFlavor:SetText(txt, true)
+   else
+      zilFlavor:SetText("",true)
+   end
+
+   zil:SetHeight((zilFlavor:GetBottom() + (cD.borders.top*4) ) - zil:GetTop())
    zil:SetVisible(true)
+
+   print("zil HEIGHT ["..zil:GetHeight().."]")
 
    return zil
 
@@ -323,8 +356,11 @@ local function populateZoneItemsList(znID, zoneName)
    end
 
    if cnt > 0 then
-      print("ITEMS ["..cnt.."]")
+      print("ITEMS        ["..cnt.."]")
+      print("HEIGHT       ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
       cfScroll:SetRange(1, cnt)
+      ilScrollStep   =  cD.round(cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight()/cnt)
+      print("ilScrollStep ["..ilScrollStep.."]")
    end
 
    return
@@ -351,9 +387,13 @@ local function selectZone(znID, zoneName)
 
       resetZoneItemsList()
       populateZoneItemsList(znID, zoneName)
+      cD.sTOFrames[TOTALSFRAMESCROLL]:SetVisible(false)
       cD.sCACFrames["CACHEITEMSEXTFRAME"]:SetVisible(true)
+      cD.sCACFrames["CACHEITEMSSCROLL"]:SetVisible(true)
    else
       cD.sCACFrames["CACHEITEMSEXTFRAME"]:SetVisible(false)
+      cD.sCACFrames["CACHEITEMSSCROLL"]:SetVisible(false)
+      cD.sTOFrames[TOTALSFRAMESCROLL]:SetVisible(true)
       lastZnSelected =  nil
       lastBGused     =  {}
    end
@@ -450,7 +490,7 @@ function cD.createTotalsWindow()
                            end,
                            "TotalsFrame_Scrollbar.Change"
                         )
-
+   cD.sTOFrames[TOTALSFRAMESCROLL]  =   tfScroll
 
    -- -----------------------------------------------------------------------------
    local itemsExtFrame = UI.CreateFrame("Frame", "Cache_Items_Excternal_frame", totalsWindow)
@@ -492,10 +532,14 @@ function cD.createTotalsWindow()
    cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames["CACHEITEMSEXTFRAME"],   "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
    cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
                               function()
-                                 cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*cfScroll:GetPosition() )
+                                 local pos = cD.round(cfScroll:GetPosition())
+                                 print(string.format("cfScroll:GetPosition() [%s]", pos))
+--                                  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*cfScroll:GetPosition() )
+                                 cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -ilScrollStep*pos )
                               end,
                               "ItemsFrame_Scrollbar.Change"
                         )
+   cD.sCACFrames["CACHEITEMSSCROLL"]  =   cfScroll
    -- -----------------------------------------------------------------------------
    --[[  ITEM VIEWER ]]-- [[END]]--
 
