@@ -123,6 +123,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
          lootFrame:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
          lootFrame:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
       end
+      
+--       lootFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       --
       -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
@@ -178,6 +180,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetText(lootText, true)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+      textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
       textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT", cD.borders.left, 0)
 
       -- setup Loot Item's Percentage counter
@@ -211,6 +214,9 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       lootCnt        =  fromStock.lootCnt
       textOBJ        =  fromStock.textOBJ
       prcntCnt       =  fromStock.prcntCnt
+      
+      
+--       lootFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       --
       -- Actually we draw Icons for just 2 itemtypes: Quests and Artifacts.
@@ -244,6 +250,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       end
       textOBJ:SetText(lootText, true)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
+      textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       -- setup Loot Item's Percentage counter
       prcntCnt:SetText(string.format("(%d", 0).."%)")

@@ -29,7 +29,8 @@ local function updateCharScore(itemID, itemZone, lootCount)
    return
 end
 
-function cD.printJunkMoney(money)
+-- function cD.printJunkMoney(money, pad)
+function cD.printJunkMoney(money, pad)
    local silver   =  '#c0c0c0'
    local gold     =  '#ffd700'
    local platinum =  '#e5e4e2'
@@ -38,6 +39,7 @@ function cD.printJunkMoney(money)
    local g        =  0
    local p        =  0
    local t        =  ""
+   local size     =  0
 
    if s  == nil   then  s = 0 end
 
@@ -53,14 +55,51 @@ function cD.printJunkMoney(money)
       end
    end
 
+--    -- PAD [-->RIGHT]
+--    -- insert padding in leftmost field
+--    if pad then
+--       if g > 0 then size = 4
+--          size = size + string.len(tostring(g))
+--       end
+--       if p > 0 then size = 7
+--          size = size + string.len(tostring(p))
+--       end
+--    end
+
    -- silver
    t = "<font color=\'"..white.."\'>"..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
+   -- gold
    if g > 0 then
       t = "<font color=\'"..white.."\'>"..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
    end
+   -- platinum
    if p > 0 then
       t = "<font color=\'"..white.."\'>"..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
    end
+
+--    if p > 0 then
+--       if pad and size < pad then
+--          t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
+--       else
+--          t = "<font color=\'"..white.."\'>"..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
+--       end
+--    else
+--       if g > 0 then
+--          if pad and size < pad then
+--             t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
+--          else
+--             t = "<font color=\'"..white.."\'>"..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
+--          end
+--       else
+--          if pad and size < pad then
+--             t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
+--          else
+--             t = "<font color=\'"..white.."\'>"..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
+--          end
+--       end
+--    end
+
+--    print(string.format("[%s]", t))
 
    return(t)
 end
@@ -339,9 +378,17 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
+      print(string.format("[%s] value is [%s]", itemName, itemValue))
       itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end
+      
+      -- debug 
+--       local x,y = nil, nil
+--       for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
+--          print(string.format("[%s]=>[%s]=[%s]", itemName, x, y))
+--       end
+      
 
       if cD.itemCache[lootOBJ]   == nil then
          cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
@@ -505,23 +552,32 @@ function cD.gotLoot(h, eventTable)
 end
 
 function cD.updateGuiCoordinates(win, newX, newY)
+   
    if win ~= nil then
-      if win:GetName() == "Button" then
+      
+      local winName = win:GetName()
+      
+      if winName == "Button" then
          cD.window.buttonX =  newX
          cD.window.buttonY =  newY
       end
-      if win:GetName() == "Info" then
+      if winName == "Info" then
          cD.window.infoX   =  newX
          cD.window.infoY   =  newY
       end
-      if win:GetName() == "Loot" then
+      if winName == "Loot" then
          cD.window.lootX   =  newX
          cD.window.lootY   =  newY
       end
-      if win:GetName() == "Totals" then
+      if winName == "Totals" then
          cD.window.totalsX =  newX
          cD.window.totalsY =  newY
       end
+      if winName == "ItemViewer" then
+         cD.window.ivX =  newX
+         cD.window.ivY =  newY
+      end      
+            
    end
 
    return
@@ -575,6 +631,7 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
    elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
    elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
+   elseif   string.find(catName, "crafting material") ~= nil                              then  retval = "outfitter1.dds"                             -- little sprocket
    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
    elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "reward_loot.png.dds"             	         -- little sack
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
@@ -584,4 +641,36 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    end
 
   return retval
+end
+
+function cD.multiLineString(s, size)
+
+   local o  =  nil   -- output
+
+   if s and size then
+      local S  =  s     -- copy of source
+      local i  =  1     -- position
+      local t  =  nil   -- temp
+
+      while i < string.len(S) do
+
+         t  =  string.sub(S, i, size)
+         if o == nil then
+
+            o = t
+         else
+            o = o .. "\r" .. t
+         end
+
+         t  =  nil
+         i  =  i + size
+         S  =  string.sub(S, i)
+         i  =  1
+--          print("split ["..i.."]")
+      end
+   end
+
+--       if o then print("o ["..o.."]") end
+
+   return(o)
 end

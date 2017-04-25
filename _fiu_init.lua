@@ -99,11 +99,12 @@ end
 local function _init()
 
    cD.window   =  {  width    =  300,  height   =  60,
-                     infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,
-                     buttonOBJ=  nil,  buttonX  =  nil,  buttonY  =  nil,
-                     lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,
-                     totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,
-                     cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil
+                     infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,  -- Info Window & objs
+                     buttonOBJ=  nil,  buttonX  =  nil,  buttonY  =  nil,  -- FishingPole Window & objs
+                     lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,  -- Loot Window & objs
+                     totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,  -- Totals Window & objs
+                     cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil,  -- Cache Window & objs
+                     ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil   -- ItemViewer Window & objs
                   }
    -- loot Tables
    cD.sLTids      =  {}
@@ -126,6 +127,10 @@ local function _init()
    cD.poleTBL     =  {}
    -- pole Timer
    cD.poleTimer   =  nil
+   -- ItemViewer Tables
+   cD.sIVFrames   =  {}
+   cD.ivOBJ       =  {}
+
 
    cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
    cD.text        =  {  base_font_size=14,
@@ -150,7 +155,7 @@ local function _init()
    --
    -- Logs affected by the RESET button
    --
-   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
+   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}   
    --
    -- Logs that are permanent
    --
@@ -170,6 +175,7 @@ function cD.fiuLoadVariables(_, addonName)
          cD.window.buttonOBJ  =  nil
          cD.window.totalsOBJ  =  nil
          cD.window.cacheOBJ   =  nil
+         cD.window.ivOBJ      =  nil
       end
 
       if lastZoneLootOBJs ~= nil and next(lastZoneLootOBJs) ~= nil then
@@ -207,6 +213,7 @@ function cD.fiuSaveVariables(_, addonName)
       a.lootOBJ   =  nil
       a.buttonOBJ =  nil
       a.totalsOBJ =  nil
+      a.ivOBJ     =  nil
 
       guilog            =  a
 --       waterlog          =  cD.history

@@ -15,7 +15,7 @@ local TOTALSFRAME             =  5
 local TOTALSFRAMESCROLL       =  6
 
 local tWINWIDTH               =  516
-local tWINHEIGHT              =  288
+local tWINHEIGHT              =  276
 local tMAXSTRINGSIZE          =  30
 local tMAXLABELSIZE           =  200
 
@@ -34,6 +34,15 @@ local lastBGused              =  {}
 cD.sCACFrames                 =  {}
 local itemsMaxLENGTH          =  40
 local tLOOTNAMESIZE           =  172
+local visibleItems            =  3     -- Number of items details fully displayed in Cache window
+
+
+--- Pads str to length len with char from right
+local function lpad(str, len, char)
+   if char == nil then char = ' ' end
+--    return str .. string.rep(char, len - #str)
+   return string.rep(char, len - #str) .. str
+end
 
 local function reverseTable(t)
    local reversedTable = {}
@@ -61,17 +70,12 @@ local function buildForStock(parent,t)
    zil:SetBackgroundColor(.3, .3, .3, .6) -- HERE
    if first then
       first = false
---       zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  0, 1)
---       zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", 0, 1)
       zil:SetPoint("TOPLEFT",  cD.sCACFrames["CACHEITEMSFRAME"], "TOPLEFT",  cD.borders.left,  cD.borders.top)
       zil:SetPoint("TOPRIGHT", cD.sCACFrames["CACHEITEMSFRAME"], "TOPRIGHT", -cD.borders.right, cD.borders.bottom)
 
    else
---       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0, 2)
---       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 2)
       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0,  cD.borders.top)
       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0,  cD.borders.bottom)
-
    end
    zil:SetLayer(3)
 
@@ -82,17 +86,22 @@ local function buildForStock(parent,t)
    -- FIRST ROW
       -- Item's Counter
       local lootCnt  =  UI.CreateFrame("Text", "Loot_Cnt_" .. t.name, zil)
+      local objColor =  cD.rarityColor("quest")
       lootCnt:SetFont(cD.addon, cD.text.base_font_name)
       lootCnt:SetFontSize(cD.text.base_font_size -2 )
-      lootCnt:SetText(string.format("%5d", t.value))
+--       lootCnt:SetFontSize(cD.text.base_font_size)
+      lootCnt:SetFontColor(objColor.r, objColor.g, objColor.b)
+      lootCnt:SetText(string.format("%10s", ""), true)
+      lootCnt:SetWidth(lootCnt:GetWidth())
+      lootCnt:SetBackgroundColor(0, 0, 0, .6)
       lootCnt:SetLayer(3)
       lootCnt:SetPoint("TOPLEFT",   zil, "TOPLEFT", cD.borders.left, cD.borders.top)
 
       -- Item's Icon
       local lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. t.name, zil)
       lootIcon:SetTexture("Rift", t.icon)
-      lootIcon:SetWidth(cD.text.base_font_size)
-      lootIcon:SetHeight(lootCnt:GetHeight())
+      lootIcon:SetWidth(cD.text.base_font_size+4)
+      lootIcon:SetHeight(cD.text.base_font_size+4)
       lootIcon:SetPoint("TOPLEFT",   lootCnt, "TOPRIGHT", cD.borders.left, 1)
       lootIcon:SetLayer(3)
 
@@ -107,25 +116,27 @@ local function buildForStock(parent,t)
       textOBJ:SetText(t.name)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-      textOBJ:SetPoint("TOPLEFT",   lootIcon,    "TOPRIGHT", cD.borders.left, 0)
+      textOBJ:SetPoint("TOPLEFT",   lootIcon,    "TOPRIGHT", cD.borders.left, -1)
 
    -- SECOND ROW
       -- item's Value
       local lootVal  =  UI.CreateFrame("Text", "Loot_Cnt_" .. t.name, zil)
       lootVal:SetFont(cD.addon, cD.text.base_font_name)
-      lootVal:SetFontSize(cD.text.base_font_size -2 )
-      lootVal:SetText(string.format("%5s", cD.printJunkMoney(t.value)), true)
+      lootVal:SetFontSize(cD.text.base_font_size-2)
+      lootVal:SetText(string.format("%10s", cD.printJunkMoney(t.value)), true)
+      lootVal:SetWidth(lootCnt:GetWidth())
+      lootVal:SetBackgroundColor(0, 0, 0, .6)
       lootVal:SetLayer(3)
-      lootVal:SetPoint("TOPRIGHT", lootCnt, "BOTTOMRIGHT", 0, cD.borders.top)
+      lootVal:SetPoint("TOPLEFT", lootCnt, "BOTTOMLEFT", 0, cD.borders.top)
 
       -- Item's Type Icon
       local categoryIcon  =  nil
       categoryIcon  =  cD.categoryIcon(t.category, t.id, t.description, t.name)
       local typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. t.name, zil)
       if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon)  end
-      typeIcon:SetWidth(cD.text.base_font_size)
-      typeIcon:SetHeight(lootCnt:GetHeight())
-      typeIcon:SetPoint("TOPLEFT",   lootIcon, "BOTTOMLEFT")
+      typeIcon:SetWidth(cD.text.base_font_size+4)
+      typeIcon:SetHeight(cD.text.base_font_size+4)
+      typeIcon:SetPoint("TOPLEFT",   lootVal, "TOPRIGHT", cD.borders.left, 0)
       typeIcon:SetLayer(3)
 
       -- Item's Description (reputation)
@@ -140,6 +151,15 @@ local function buildForStock(parent,t)
       zilDesc:SetPoint("TOPLEFT",   typeIcon,    "TOPRIGHT", cD.borders.left, 0)
 
    -- THIRD ROW
+      local zilMfJ=  UI.CreateFrame("Text", "Loot_Cnt_" .. t.name, zil)
+      zilMfJ:SetFont(cD.addon, cD.text.base_font_name)
+      zilMfJ:SetFontSize(cD.text.base_font_size-2)
+      zilMfJ:SetText(string.format("%10s", ""), true)
+      zilMfJ:SetWidth(lootCnt:GetWidth())
+      zilMfJ:SetBackgroundColor(0, 0, 0, .6)
+      zilMfJ:SetLayer(3)
+      zilMfJ:SetPoint("TOPLEFT",   lootVal,    "BOTTOMLEFT", 0, cD.borders.top)
+
       -- item's Flavor
       local zilFlavor   =  UI.CreateFrame("Text", "Flavor_" .. t.name, zil)
       local objColor    =  cD.rarityColor("common")
@@ -149,7 +169,7 @@ local function buildForStock(parent,t)
       zilFlavor:SetText("")
       zilFlavor:SetLayer(3)
       zilFlavor:SetFontColor(objColor.r, objColor.g, objColor.b)
-      zilFlavor:SetPoint("TOPLEFT",   lootVal,    "BOTTOMLEFT", cD.borders.left, 0)
+      zilFlavor:SetPoint("TOPLEFT",   zilMfJ,    "TOPRIGHT", cD.borders.left, 0)
 
 
    -- -------------------------------------------------------------------------------
@@ -162,6 +182,7 @@ local function buildForStock(parent,t)
                zilCount =  lootCnt,
                zilName  =  textOBJ,
                zilDesc  =  zilDesc,
+               zilMfJ   =  zilMfJ,
                zilFlav  =  zilFlavor
                }
 
@@ -195,54 +216,24 @@ local function fetchFromILStock(parent,t)
    return retval
 end
 
-local function multiLineString(s, size)
-
-   local o  =  nil   -- output
-
-   if s and size then
-      local S  =  s     -- copy of source
-      local i  =  1     -- position
-      local t  =  nil   -- temp
-
-      while i < string.len(S) do
-
-         t  =  string.sub(S, i, size)
-         if o == nil then
-
-            o = t
-         else
-            o = o .. "\r" .. t
-         end
-
-         t  =  nil
-         i  =  i + size
-         S  =  string.sub(S, i)
-         i  =  1
---          print("split ["..i.."]")
-      end
-   end
-
---       if o then print("o ["..o.."]") end
-
-   return(o)
-end
-
-local function getCharScore(zName, oID)
+function cD.getCharScore(zID, oID)
    local retval   =  0
 
---    print("getCharScore zone["..zName.."] oID["..oID.."]")
+   print("cD.getCharScore zone["..zID.."] oID["..oID.."]")
 
-   if cD.charScore[itemZone] then
-      local t = cD.charScore[itemZone]
+   if cD.charScore[zID] then
+      local t = cD.charScore[zID]
       if t[oID] then
          retval = t[oID]
       end
    end
 
+   print("cD.getCharScore retval["..retval.."]")
+
    return retval
 end
 
-local function createZoneItemLine(parent, zoneName, t)
+local function createZoneItemLine(parent, zoneName, zID, t)
 
    local zil, zilTIcon, zilIIcon, zilCount, zilName, zilDesc   =	nil, nil, nil, nil, nil, nil
    local fromILStock = fetchFromILStock(parent,t)
@@ -253,17 +244,17 @@ local function createZoneItemLine(parent, zoneName, t)
    zilCount =  fromILStock.zilCount
    zilName  =  fromILStock.zilName
    zilDesc  =  fromILStock.zilDesc
+   zilMfJ   =  fromILStock.zilMfJ
    zilFlavor=  fromILStock.zilFlav
 
    --
    -- FIRST ROW
+   -- Item Counter
+   local cnt = cD.getCharScore(zID, t.id)
+   zilCount:SetText(string.format("%10s", cnt), true)
+
    -- Item Icon
    zilIIcon:SetTexture("Rift", t.icon)
-
-   -- Item Counter
---    print("t.value ["..t.value.."]")
-   local cnt = getCharScore(zoneName, t.id)
-   zilCount:SetText(string.format("%5d", cnt))
 
    -- Item Name
    local txtColor =  cD.rarityColor(t.rarity)
@@ -273,6 +264,8 @@ local function createZoneItemLine(parent, zoneName, t)
 
    --
    -- SECOND ROW
+   -- Item Value is STATIC, it's value is written at creation
+
    -- Type Icon
    local categoryIcon  =  cD.categoryIcon(t.category, t.id, t.description, t.name)
    if categoryIcon then
@@ -287,7 +280,7 @@ local function createZoneItemLine(parent, zoneName, t)
       local objColor =  cD.rarityColor("quest")
       zilDesc:SetFontColor(objColor.r, objColor.g, objColor.b)
       print("DESC ["..t.description.."]")
-      local repIdx= string.find (t.description, "will exchange this")
+      local repIdx= string.find(t.description, "will exchange this")
       if repIdx then
          local txtDesc = '<i>'..string.sub(t.description, 1, repIdx - 1)..'</i>'
          zilDesc:SetText(txtDesc,true)
@@ -300,7 +293,12 @@ local function createZoneItemLine(parent, zoneName, t)
    end
 
    --
-   -- SECOND ROW
+   -- THIRD ROW
+   -- Money from Junk total counter
+   local cnt = cD.getCharScore(zID, t.id)
+   local mfj = t.value * cnt
+   zilMfJ:SetText(string.format("%10s", cD.printJunkMoney(mfj)), true)
+
    -- Flavor Field
    if t.flavor then
       local objColor =  cD.rarityColor("common")
@@ -319,7 +317,7 @@ local function createZoneItemLine(parent, zoneName, t)
       zilFlavor:SetText("",true)
    end
 
-   zil:SetHeight((zilFlavor:GetBottom() + (cD.borders.top*4) ) - zil:GetTop())
+   zil:SetHeight((zilFlavor:GetBottom() + (cD.borders.top*2) ) - zil:GetTop())
    zil:SetVisible(true)
 
    print("zil HEIGHT ["..zil:GetHeight().."]")
@@ -341,6 +339,8 @@ local function resetZoneItemsList()
    end
 
    -- reparent itemFrame to MaskFrame to reset ScrollBar movements
+   cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("TOPLEFT")
+   cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("BOTTOMLEFT")
    cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
 
    return
@@ -355,18 +355,30 @@ local function populateZoneItemsList(znID, zoneName)
    for iobj, t in pairs(cD.itemCache) do
 
       if t.zone   == znID  then
-         local z  =  createZoneItemLine(parent, zoneName, t)
+         local z  =  createZoneItemLine(parent, zoneName, znID, t)
          parent   =  z
          cnt      =  cnt + 1
       end
    end
 
-   if cnt > 0 then
-      print("ITEMS        ["..cnt.."]")
-      print("HEIGHT       ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
-      cfScroll:SetRange(1, cnt)
+   print("ITEMS        ["..cnt.."]")
+--    if cnt > 0 then
+   if cnt > visibleItems then
+      cfScroll:SetVisible(true)
+      print("PRE HEIGHT   ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
+
+      local baseY =  cD.sCACFrames["CACHEITEMSFRAME"]:GetTop()
+      local maxY  =  parent:GetBottom()
+
+      cD.sCACFrames["CACHEITEMSFRAME"]:SetHeight(cD.round(maxY - baseY))
+      print("POST HEIGHT  ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
+
+      cfScroll:SetRange(1, cnt - visibleItems)
       ilScrollStep   =  cD.round(cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight()/cnt)
+
       print("ilScrollStep ["..ilScrollStep.."]")
+   else
+      cfScroll:SetVisible(false)
    end
 
    return
@@ -406,21 +418,6 @@ local function selectZone(znID, zoneName)
 
    return
 end
-
--- local function manageTFScrollBar(min, max)
---
---    local pos = cD.sCACFrames["CACHEITEMSSCROLL"]:GetPosition()
---
---    if       pos == min  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT",      cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
---    elseif   pos == max  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("BOTTOMLEFT",   cD.sCACFrames["CACHEITEMSMASKFRAME"], "BOTTOMLEFT")
---    else
---       cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -(ilScrollStep*pos) )
---    end
---
---    return
--- end
-
-
 
 function cD.createTotalsWindow()
 
@@ -530,9 +527,8 @@ function cD.createTotalsWindow()
    -- CACHE ZONE ITEMS MASK FRAME
    local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", cD.sCACFrames["CACHEITEMSEXTFRAME"])
    itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPLEFT")
-   itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPRIGHT")
-   itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames["CACHEITEMSEXTFRAME"], "BOTTOMRIGHT")
-
+   itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames["CACHEITEMSEXTFRAME"], "TOPRIGHT",    -cD.borders.right, 0)
+   itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames["CACHEITEMSEXTFRAME"], "BOTTOMRIGHT", -cD.borders.right, 0)
    itemsMaskFrame:SetLayer(4)
    cD.sCACFrames["CACHEITEMSMASKFRAME"]  = itemsMaskFrame
 
@@ -565,11 +561,19 @@ function cD.createTotalsWindow()
                                     local pos = cD.round(cD.sCACFrames["CACHEITEMSSCROLL"]:GetPosition())
                                     local smin, smax = cD.sCACFrames["CACHEITEMSSCROLL"]:GetRange()
                                     print(string.format("cfScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
-                                    if       pos == smin  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT",      cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
+                                    if       pos == smin  then
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("TOPLEFT")
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("BOTTOMLEFT")
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT",      cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT")
                                              print("got TOP")
-                                    elseif   pos == smax  then  cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("BOTTOMLEFT",   cD.sCACFrames["CACHEITEMSMASKFRAME"], "BOTTOMLEFT")
+                                    elseif   pos == smax  then
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("TOPLEFT")
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("BOTTOMLEFT")
+                                             cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("BOTTOMLEFT",   cD.sCACFrames["CACHEITEMSMASKFRAME"], "BOTTOMLEFT")
                                              print("got BOTTOM")
                                     else
+                                       cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("TOPLEFT")
+                                       cD.sCACFrames["CACHEITEMSFRAME"]:ClearPoint("BOTTOMLEFT")
                                        cD.sCACFrames["CACHEITEMSFRAME"]:SetPoint("TOPLEFT", cD.sCACFrames["CACHEITEMSMASKFRAME"], "TOPLEFT", 0, -(ilScrollStep*pos) )
                                     end
                                  end,

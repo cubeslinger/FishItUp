@@ -87,13 +87,16 @@ local function doThings(params)
    end
    if cD.window.infoOBJ:GetVisible() == false then cD.window.totalsOBJ:SetVisible(false) end
 
---    -- Create/Display cacheWindow
---    if cD.window.cacheOBJ  == nil then
---       cD.window.cacheOBJ  =  cD.createCacheWindow()
--- --       cD.initCacheWindow()
---       cD.window.cacheOBJ:SetVisible(false)
---    end
---    if cD.window.infoOBJ:GetVisible() == false then cD.window.cacheOBJ:SetVisible(false) end
+   -- Create/Display ItemViewer Window
+   if cD.window.ivOBJ  == nil then
+      cD.window.ivOBJ  =  cD.createItemViewerWindow()
+      cD.window.ivOBJ:SetVisible(true)
+      print(string.format("NEW IV OBJ [%s]", cD.window.ivOBJ))
+   else
+      print(string.format("OLD IV OBJ [%s]", cD.window.ivOBJ))
+   end
+   
+   if cD.window.infoOBJ:GetVisible() == false then cD.window.ivOBJ:SetVisible(false) end
 
    return
 end
