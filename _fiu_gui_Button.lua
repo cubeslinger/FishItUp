@@ -172,6 +172,8 @@ function cD.createButtonWindow()
 
                cD.timeRStart  =  nil
 
+               cD.itemBase =  cD.scanInventories()
+
 --                Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent,    "Player in Combat")
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,          "Player is Casting")
                Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Event.System.Update.Begin")

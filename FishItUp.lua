@@ -90,13 +90,21 @@ local function doThings(params)
    -- Create/Display ItemViewer Window
    if cD.window.ivOBJ  == nil then
       cD.window.ivOBJ  =  cD.createItemViewerWindow()
-      cD.window.ivOBJ:SetVisible(true)
-      print(string.format("NEW IV OBJ [%s]", cD.window.ivOBJ))
+      cD.window.ivOBJ:SetVisible(false)
+--       print(string.format("NEW IV OBJ [%s]", cD.window.ivOBJ))
    else
-      print(string.format("OLD IV OBJ [%s]", cD.window.ivOBJ))
+--       print(string.format("OLD IV OBJ [%s]", cD.window.ivOBJ))
    end
-   
+
    if cD.window.infoOBJ:GetVisible() == false then cD.window.ivOBJ:SetVisible(false) end
+
+
+--    print("-------------------------------------------------------")
+   cD.itemBase = cD.scanInventories()
+--    for x,y in pairs(cD.itemBase) do
+--       print(string.format("quantity: [%03d] [%s]", y, x))
+--    end
+--    print("-------------------------------------------------------")
 
    return
 end

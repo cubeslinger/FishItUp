@@ -42,29 +42,21 @@ function cD.printJunkMoney(money, pad)
    local size     =  0
 
    if s  == nil   then  s = 0 end
+--    print("["..s.."]s")
 
    if s > 0 then
       while s > 99 do
          s = s -100
          g = g + 1
+--          print("  ["..g.."]g ["..s.."]s")
       end
 
-      while g > 999 do
-         g = g - 1000
+      while g > 99 do
+         g = g - 100
          p = p + 1
+--          print("   ["..s.."]s["..g.."]g["..p.."]p")
       end
    end
-
---    -- PAD [-->RIGHT]
---    -- insert padding in leftmost field
---    if pad then
---       if g > 0 then size = 4
---          size = size + string.len(tostring(g))
---       end
---       if p > 0 then size = 7
---          size = size + string.len(tostring(p))
---       end
---    end
 
    -- silver
    t = "<font color=\'"..white.."\'>"..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
@@ -76,30 +68,6 @@ function cD.printJunkMoney(money, pad)
    if p > 0 then
       t = "<font color=\'"..white.."\'>"..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
    end
-
---    if p > 0 then
---       if pad and size < pad then
---          t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
---       else
---          t = "<font color=\'"..white.."\'>"..tostring(p).."<font color=\'"..platinum.."\'>p</font>"..t
---       end
---    else
---       if g > 0 then
---          if pad and size < pad then
---             t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
---          else
---             t = "<font color=\'"..white.."\'>"..tostring(g).."</font><font color=\'"..gold.."\'>g</font>"..t
---          end
---       else
---          if pad and size < pad then
---             t = "<font color=\'"..white.."\'>"..string.rep(" ",pad - size)..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
---          else
---             t = "<font color=\'"..white.."\'>"..tostring(s).."</font><font color=\'"..silver.."\'>s</font>"
---          end
---       end
---    end
-
---    print(string.format("[%s]", t))
 
    return(t)
 end
@@ -209,14 +177,21 @@ function cD.processEventBuffer()
 
    local LASTTIME, LASTOBJ
    local idx, tbl, t, o
+   local newItemBase  =  cD.scanInventories()
 
    for idx, tbl in pairs(cD.eventBuffer) do
 
       for t, o in pairs(tbl) do
-
 --          print(string.format("Buffer: t[%s] o[%s]", t, o))
+         local i = Inspect.Item.Detail(o)
+--          print(string.format("        [%s]/[%s]", i.stack, i.stackMax))
 
-         cD.updateLootTable( o, 1, false )
+         print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name]))
+         local quantity =  (newItemBase[i.name] or 0) - (cD.itemBase[i.name] or 0)
+         print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]=>(%s)", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name], quantity))
+
+--          cD.updateLootTable( o, 1, false )
+         cD.updateLootTable( o, quantity, false )
 
       end
    end
@@ -382,13 +357,13 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end
-      
-      -- debug 
+
+      -- debug
 --       local x,y = nil, nil
 --       for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
 --          print(string.format("[%s]=>[%s]=[%s]", itemName, x, y))
 --       end
-      
+
 
       if cD.itemCache[lootOBJ]   == nil then
          cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
@@ -552,11 +527,11 @@ function cD.gotLoot(h, eventTable)
 end
 
 function cD.updateGuiCoordinates(win, newX, newY)
-   
+
    if win ~= nil then
-      
+
       local winName = win:GetName()
-      
+
       if winName == "Button" then
          cD.window.buttonX =  newX
          cD.window.buttonY =  newY
@@ -576,8 +551,8 @@ function cD.updateGuiCoordinates(win, newX, newY)
       if winName == "ItemViewer" then
          cD.window.ivX =  newX
          cD.window.ivY =  newY
-      end      
-            
+      end
+
    end
 
    return
@@ -631,9 +606,10 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
    elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
    elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
-   elseif   string.find(catName, "crafting material") ~= nil                              then  retval = "outfitter1.dds"                             -- little sprocket
+--    elseif   string.find(catName, "crafting material") ~= nil                              then  retval = "outfitter1.dds"                             -- little sprocket
    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
-   elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "reward_loot.png.dds"             	         -- little sack
+--    elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "reward_loot.png.dds"             	      -- little sack
+   elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "chest1a.dds"             	                  -- little sack
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
             string.find(iName, "duskeen eel")         ~= nil   or
             string.find(iName, "kraken hatchling")    ~= nil   or
