@@ -186,9 +186,9 @@ function cD.processEventBuffer()
          local i = Inspect.Item.Detail(o)
 --          print(string.format("        [%s]/[%s]", i.stack, i.stackMax))
 
-         print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name]))
+--          print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name]))
          local quantity =  (newItemBase[i.name] or 0) - (cD.itemBase[i.name] or 0)
-         print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]=>(%s)", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name], quantity))
+--          print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]=>(%s)", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name], quantity))
 
 --          cD.updateLootTable( o, 1, false )
          cD.updateLootTable( o, quantity, false )
@@ -353,7 +353,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
-      print(string.format("[%s] value is [%s]", itemName, itemValue))
+--       print(string.format("[%s] value is [%s]", itemName, itemValue))
       itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end

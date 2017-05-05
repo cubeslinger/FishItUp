@@ -11,6 +11,7 @@ Environment =  "4.0"
 RunOnStartup = {
    "_fiu_init.lua",
    "_fiu_utils.lua",
+   "_fiu_utils_sortedtable.lua",
    "_fiu_history.lua",
    "_fiu_inventory.lua",
    "_fiu_gui_ItemViewer.lua",
