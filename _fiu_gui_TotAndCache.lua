@@ -42,6 +42,20 @@ local tITEMNAMESIZE           =  170
 local visibleItems            =  9     -- Number of items details fully displayed in Cache window
 local ivNAMESIZE              =  20
 
+--     1        2        3       4    5      6      7
+-- sellable, common, uncommon, rare, epic, quest, relic
+local txtColors   =  {}
+txtColors[1]   =  { r = .34375, g = .34375, b = .34375 } -- sellable
+txtColors[2]   =  { r = .98,    g = .98,    b = .98 }    -- common / nil
+txtColors[3]   =  { r = 0,      g = .797,   b = 0 }      -- uncommon
+txtColors[4]   =  { r = .148,   g = .496,   b = .977 }   -- rare
+txtColors[5]   =  { r = .676,   g = .281,   b = .98 }    -- epic
+txtColors[6]   =  { r = 1,      g = 1,      b = 0 }      -- quest
+txtColors[7]   =  { r = 1,      g = .5,     b = 0 }      -- relic
+txtColors[8]   =  { r = 1,      g = 1,      b = 0 }      -- MfJ yellow
+txtColors[9]   =  { r = .98,    g = .98,    b = .98 }    -- Totals white
+
+
 
 --- Pads str to length len with char from right
 local function lpad(str, len, char)
@@ -329,47 +343,6 @@ end
 
 --[[ ]]--
 
-
-local function populateZoneItemsList_1(znID, zoneName)
-
-   local parent   =  nil
-   local cnt      =  0
-
-   for iobj, t in pairs(cD.itemCache) do
-      if t.zone   == znID  then
-         local z  =  createZoneItemLine(parent, zoneName, znID, t)
-         parent   =  z
-         cnt      =  cnt + 1
-      end
-   end
-
---    print("ITEMS        ["..cnt.."] visibleItems["..visibleItems.."]")
---    if cnt > 0 then
-   if cnt > visibleItems then
-      cfScroll:SetVisible(true)
-      cfScroll:SetEnabled(true)
---       print("PRE HEIGHT   ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
-
-      local baseY =  cD.sCACFrames["CACHEITEMSFRAME"]:GetTop()
-      local maxY  =  parent:GetBottom()
-
-      cD.sCACFrames["CACHEITEMSFRAME"]:SetHeight(cD.round(maxY - baseY))
---       print("POST HEIGHT  ["..cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight().."]")
-
-      cfScroll:SetRange(1, cnt - visibleItems)
-      ilScrollStep   =  cD.round(cD.sCACFrames["CACHEITEMSFRAME"]:GetHeight()/cnt)
-
---       print("ilScrollStep ["..ilScrollStep.."]")
---       print("SETTING VISIBLE")
-   else
-      cfScroll:SetVisible(false)
-      cfScroll:SetEnabled(false)
---       print("SETTING INVISIBLE")
-   end
-
-   return
-end
-
 local function selectZone(znID, zoneName)
    local unsel =  cD.rarityColor("common")
    local sel   =  cD.rarityColor("relic")
@@ -508,31 +481,104 @@ function cD.createTotalsWindow()
    cD.sTOFrames[STATUSBARTOTALSFRAME]  =   statusBarFrame
 
       -- How many Zones
-      local zonesCnt =  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
+      local zonesCnt =  UI.CreateFrame("Text", "zonesCnt", statusBarFrame)
       zonesCnt:SetFontSize(cD.text.base_font_size)
-      zonesCnt:SetText(string.format("%15d", 0), true)
+      zonesCnt:SetText(string.format("%5d", 0), true)
       zonesCnt:SetFont(cD.addon, cD.text.base_font_name)
       zonesCnt:SetLayer(3)
-      zonesCnt:SetPoint("TOPLEFT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 0)
+      zonesCnt:SetPoint("TOPLEFT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPLEFT", cD.borders.left, -2)
       cD.sTOFrames["SBZONESCOUNTER"]  =   zonesCnt
 
-      -- total of Totals
-      local totOfTot	=  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
-      totOfTot:SetFontSize(cD.text.base_font_size)
-      totOfTot:SetText(string.format("%5d", 0), true)
-      totOfTot:SetFont(cD.addon, cD.text.base_font_name)
-      totOfTot:SetLayer(3)
-      totOfTot:SetPoint("TOPRIGHT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPRIGHT", -(cD.borders.right + sbWIDTH), 0)
-      cD.sTOFrames["SBTOTOFTOT"]  =   totOfTot
+      -- How many sellables/junk
+      local jnkCnt =  UI.CreateFrame("Text", "jnkCnt", statusBarFrame)
+      jnkCnt:SetFontSize(cD.text.base_font_size)
+      jnkCnt:SetText(string.format("%3d", 0), true)
+      jnkCnt:SetFont(cD.addon, cD.text.base_font_name)
+      jnkCnt:SetFontColor(txtColors[1].r, txtColors[1].g, txtColors[1].b)
+      jnkCnt:SetLayer(3)
+      jnkCnt:SetPoint("TOPLEFT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPLEFT", znListWIDTH + cD.borders.left, -2)
+      cD.sTOFrames["SBJNKCOUNTER"]  =   jnkCnt
+
+      -- How many common intems
+      local comCnt =  UI.CreateFrame("Text", "commonCnt", statusBarFrame)
+      comCnt:SetFontSize(cD.text.base_font_size)
+      comCnt:SetText(string.format("%3d", 0), true)
+      comCnt:SetFont(cD.addon, cD.text.base_font_name)
+      comCnt:SetFontColor(txtColors[2].r, txtColors[2].g, txtColors[2].b)
+      comCnt:SetLayer(3)
+      comCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBJNKCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBCOMCOUNTER"]  =   comCnt
+
+      -- How many uncommon intems
+      local uncCnt =  UI.CreateFrame("Text", "uncommonCnt", statusBarFrame)
+      uncCnt:SetFontSize(cD.text.base_font_size)
+      uncCnt:SetText(string.format("%3d", 0), true)
+      uncCnt:SetFont(cD.addon, cD.text.base_font_name)
+      uncCnt:SetFontColor(txtColors[3].r, txtColors[3].g, txtColors[3].b)
+      uncCnt:SetLayer(3)
+      uncCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBCOMCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBUNCCOUNTER"]  =   uncCnt
+
+      -- How many rare intems
+      local rarCnt =  UI.CreateFrame("Text", "rareCnt", statusBarFrame)
+      rarCnt:SetFontSize(cD.text.base_font_size)
+      rarCnt:SetText(string.format("%3d", 0), true)
+      rarCnt:SetFontColor(txtColors[4].r, txtColors[4].g, txtColors[4].b)
+      rarCnt:SetFont(cD.addon, cD.text.base_font_name)
+      rarCnt:SetLayer(3)
+      rarCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBUNCCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBRARCOUNTER"]  =   rarCnt
+
+      -- How many epic intems
+      local epcCnt =  UI.CreateFrame("Text", "epicCnt", statusBarFrame)
+      epcCnt:SetFontSize(cD.text.base_font_size)
+      epcCnt:SetText(string.format("%3d", 0), true)
+      epcCnt:SetFont(cD.addon, cD.text.base_font_name)
+      epcCnt:SetFontColor(txtColors[5].r, txtColors[5].g, txtColors[5].b)
+      epcCnt:SetLayer(3)
+      epcCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBRARCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBEPCCOUNTER"]  =   epcCnt
+
+      -- How many quest intems
+      local qstCnt =  UI.CreateFrame("Text", "questCnt", statusBarFrame)
+      qstCnt:SetFontSize(cD.text.base_font_size)
+      qstCnt:SetText(string.format("%3d", 0), true)
+      qstCnt:SetFontColor(txtColors[6].r, txtColors[6].g, txtColors[6].b)
+      qstCnt:SetFont(cD.addon, cD.text.base_font_name)
+      qstCnt:SetLayer(3)
+      qstCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBEPCCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBQSTCOUNTER"]  =   qstCnt
+
+      -- How many relic intems
+      local rlcCnt =  UI.CreateFrame("Text", "relicCnt", statusBarFrame)
+      rlcCnt:SetFontSize(cD.text.base_font_size)
+      rlcCnt:SetText(string.format("%3d", 0), true)
+      rlcCnt:SetFont(cD.addon, cD.text.base_font_name)
+      rlcCnt:SetFontColor(txtColors[7].r, txtColors[7].g, txtColors[7].b)
+      rlcCnt:SetLayer(3)
+      rlcCnt:SetPoint("TOPLEFT", cD.sTOFrames["SBQSTCOUNTER"], "TOPRIGHT", cD.borders.left, 0)
+      cD.sTOFrames["SBRLCCOUNTER"]  =   rlcCnt
 
       -- total of MfJ
-      local totMfJ	=  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
+      local totMfJ	=  UI.CreateFrame("Text", "mfjCnt", statusBarFrame)
       totMfJ:SetFontSize(cD.text.base_font_size)
       totMfJ:SetText(string.format("%10s", cD.printJunkMoney(0)), true)
       totMfJ:SetFont(cD.addon, cD.text.base_font_name)
+      totMfJ:SetFontColor(txtColors[7].r, txtColors[7].g, txtColors[7].b)
       totMfJ:SetLayer(3)
-      totMfJ:SetPoint("TOPRIGHT", cD.sTOFrames["SBTOTOFTOT"], "TOPLEFT", -cD.borders.right, 0)
+      totMfJ:SetPoint("TOPLEFT", cD.sTOFrames["SBRLCCOUNTER"], "TOPRIGHT", cD.borders.right, 0)
       cD.sTOFrames["SBMFJCOUNTER"]  =   totMfJ
+
+      -- total of Totals
+      local totOfTot	=  UI.CreateFrame("Text", "totOftotCnt", statusBarFrame)
+      totOfTot:SetFontSize(cD.text.base_font_size)
+      totOfTot:SetText(string.format("%5d", 0), true)
+      totOfTot:SetFont(cD.addon, cD.text.base_font_name)
+      totOfTot:SetFontColor(txtColors[2].r, txtColors[2].g, txtColors[2].b)
+      totOfTot:SetLayer(3)
+      totOfTot:SetPoint("TOPRIGHT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPRIGHT", -(cD.borders.right + sbWIDTH + cD.borders.left), -2)
+      cD.sTOFrames["SBTOTOFTOT"]  =   totOfTot
+
    statusBarFrame:SetHeight(cD.text.base_font_size + 6)
    --
    -- STATUS BAR - end ---------------------------------------------------------------------------------------------------------------------------------
@@ -622,20 +668,6 @@ function cD.createTotalsLine(parent, zoneName, znID, zoneTotals, isLegend)
    local parentOBJ   =  nil
    local totOBJs     =  {}
    local legendColor =  1
-
-
-   --     1        2        3       4    5      6      7
-   -- sellable, common, uncommon, rare, epic, quest, relic
-   local txtColors   =  {}
-   txtColors[1]   =  { r = .34375, g = .34375, b = .34375 } -- sellable
-   txtColors[2]   =  { r = .98,    g = .98,    b = .98 }    -- common / nil
-   txtColors[3]   =  { r = 0,      g = .797,   b = 0 }      -- uncommon
-   txtColors[4]   =  { r = .148,   g = .496,   b = .977 }   -- rare
-   txtColors[5]   =  { r = .676,   g = .281,   b = .98 }    -- epic
-   txtColors[6]   =  { r = 1,      g = 1,      b = 0 }      -- quest
-   txtColors[7]   =  { r = 1,      g = .5,     b = 0 }      -- relic
-   txtColors[8]   =  { r = 1,      g = 1,      b = 0 }      -- MfJ yellow
-   txtColors[9]   =  { r = .98,    g = .98,    b = .98 }    -- Totals white
 
    -- setup Totals containing Frame
    totalsFrame =  UI.CreateFrame("Frame", "Totals_line_Container", parent)
@@ -727,44 +759,50 @@ function cD.createTotalsLine(parent, zoneName, znID, zoneTotals, isLegend)
 
 function cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
 
+   local cnts  =  {}
+
    if totOfTot == nil then totOfTot = 0 end
 
-   print(string.format("znTot[%s], totMfJ[%s], totOfTot[%s]", znTot, totMfJ, totOfTot))
+   -- calculate totals
+   for a,b in pairs(cD.zoneTotalCnts) do
+      cnts[10]  =  (cnts[10] or 0) + 1   -- i=10  total number of zones
+      for i=1, 8 do
+         cnts[i]  =  (cnts[i] or 0) +  b[i]
+         -- i=9  is totOfTot so we skip accountig field 8 (i=8 is MfJ)
+         if i  ~= 8 then cnts[9]  =  (cnts[9] or 0) +  b[i] end
+      end
+   end
 
+--    print(string.format("znTot[%s], totMfJ[%s], totOfTot[%s]", znTot, totMfJ, totOfTot))
+
+   -- How Many Zones
    if cD.sTOFrames["SBZONESCOUNTER"] then
-      -- How Many Zones
       if znTot == nil then
-         znTot =  #cD.zoneTotalCnts
-         print(string.format("znTot[%s]", znTot))
+         znTot =  cnts[10]
+--          znTot =  #cD.zoneTotalCnts
+--          print(string.format("znTot[%s]", znTot))
       end
       cD.sTOFrames["SBZONESCOUNTER"]:SetText(string.format("%10d", znTot))
    end
 
+   if cD.sTOFrames["SBJNKCOUNTER"] then cD.sTOFrames["SBJNKCOUNTER"]:SetText(string.format("%3d", cnts[1])) end
+   if cD.sTOFrames["SBCOMCOUNTER"] then cD.sTOFrames["SBCOMCOUNTER"]:SetText(string.format("%3d", cnts[2])) end
+   if cD.sTOFrames["SBUNCCOUNTER"] then cD.sTOFrames["SBUNCCOUNTER"]:SetText(string.format("%3d", cnts[3])) end
+   if cD.sTOFrames["SBRARCOUNTER"] then cD.sTOFrames["SBRARCOUNTER"]:SetText(string.format("%3d", cnts[4])) end
+   if cD.sTOFrames["SBEPCCOUNTER"] then cD.sTOFrames["SBEPCCOUNTER"]:SetText(string.format("%3d", cnts[5])) end
+   if cD.sTOFrames["SBQSTCOUNTER"] then cD.sTOFrames["SBQSTCOUNTER"]:SetText(string.format("%3d", cnts[6])) end
+   if cD.sTOFrames["SBELCCOUNTER"] then cD.sTOFrames["SBRLCCOUNTER"]:SetText(string.format("%3d", cnts[7])) end
+
+   -- Total of Money from Junk
    if cD.sTOFrames["SBMFJCOUNTER"] then
-      -- Total of Money from Junk
-      if totMfJ == nil then
-         totMfJ =  0
-         for a,b in pairs(cD.zoneTotalCnts) do totMfJ = totMfJ + b[8] end
-         print(string.format("totMfJ[%s]", totMfJ))
-      end
+      if totMfJ == nil then totMfJ   =  cnts[8] end
       cD.sTOFrames["SBMFJCOUNTER"]:SetText(string.format("%10s", cD.printJunkMoney(totMfJ)), true)
    end
 
+   -- Total of Totals
    if cD.sTOFrames["SBTOTOFTOT"] then
-      -- Total of Totals
-      if totOfTot == 0 then
 
-         for a,b in pairs(cD.zoneTotalCnts) do
-
-            print(string.format("a[%s], b[%s]", a, b))
-
-            for i=1,7 do
-               totOfTot = totOfTot + b[i]
-               print(string.format("    totOfTot[%s] b[i](%s)", totOfTot, b[i]))
-            end
-         end
-      end
-      print(string.format("  totOfTot[%s]", totOfTot))
+      if totOfTot == 0 then totOfTot =  cnts[9] end
       cD.sTOFrames["SBTOTOFTOT"]:SetText(string.format("%5d", totOfTot))
    end
 
