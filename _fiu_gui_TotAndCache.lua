@@ -245,6 +245,13 @@ local function createZoneItemLine(parent, zoneName, zID, t)
    zilName:SetHeight(cD.text.base_font_size)
    zilName:SetText(t.name:sub(1, ivNAMESIZE))
    zilName:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(t.zone, t.id) end, "Item Selected" )
+   -- ZZZZ  -----------------------------------------------------------------------------------------
+      -- Mouse Hover IN    => show tooltip
+   zilName:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(t.zone, t.id)  end, "Event.UI.Input.Mouse.Cursor.In")
+   -- Mouse Hover OUT   => show tooltip
+   zilName:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
+
+   -- ZZZZ  -----------------------------------------------------------------------------------------
 
    -- Item Value/Total
    local cnt = cD.getCharScore(zID, t.id)
@@ -593,6 +600,7 @@ function cD.createTotalsWindow()
    itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
    itemsExtFrame:SetVisible(false)
    itemsExtFrame:SetLayer(2)
+
    local deltaX   =  cD.borders.left + znListWIDTH + 1
    itemsExtFrame:SetPoint("TOPLEFT",     cD.sTOFrames[TITLEBARTOTALSFRAME],   "BOTTOMLEFT",  deltaX,    1)
    itemsExtFrame:SetPoint("TOPRIGHT",    cD.sTOFrames[TITLEBARTOTALSFRAME],   "BOTTOMRIGHT", -(cD.borders.right + sbWIDTH), 1)

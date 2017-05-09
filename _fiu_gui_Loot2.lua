@@ -182,6 +182,17 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
       textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
+-- ZZZZ  -----------------------------------------------------------------------------------------
+      -- Mouse Hover IN    => show tooltip   -- cD.selectItemtoView(t.zone, t.id)
+--       textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()  Command.Tooltip(lootOBJ) end, "Event.UI.Input.Mouse.Cursor.In")
+      textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(itemZone, lootOBJ)  end, "Event.UI.Input.Mouse.Cursor.In")
+      -- Mouse Hover OUT   => show tooltip
+--       textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() Command.Tooltip(nil) end, "Event.UI.Input.Mouse.Cursor.Out")
+      textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
+
+-- ZZZZ  -----------------------------------------------------------------------------------------
+
+
       textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT", cD.borders.left, 0)
 
       -- setup Loot Item's Percentage counter
