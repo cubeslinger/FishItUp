@@ -97,7 +97,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
       itemName    =  Inspect.Item.Detail(lootOBJ).name
-      itemRarity  =  Inspect.Item.Detail(lootOBJ).rarity
+--       itemRarity  =  Inspect.Item.Detail(lootOBJ).rarity
+      itemRarity  =  (Inspect.Item.Detail(lootOBJ).rarity  or "common") -- Some items don't have a rarity (ex.: Bundles), we default to common
       itemDesc    =  Inspect.Item.Detail(lootOBJ).description
       itemCat     =  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
@@ -123,7 +124,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
          lootFrame:SetPoint("TOPLEFT",    parent, "TOPLEFT",  0, cD.borders.top)
          lootFrame:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
       end
-      
+
 --       lootFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       --
@@ -214,8 +215,8 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       lootCnt        =  fromStock.lootCnt
       textOBJ        =  fromStock.textOBJ
       prcntCnt       =  fromStock.prcntCnt
-      
-      
+
+
 --       lootFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       --

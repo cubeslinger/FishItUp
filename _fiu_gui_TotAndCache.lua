@@ -7,12 +7,16 @@
 
 local addon, cD = ...
 
+cD.sTOFrames                  =  {}
+
 local TITLEBARTOTALSFRAME     =  1
 local TITLEBARTCONTENTFRAME   =  2
 local EXTERNALTOTALSFRAME     =  3
 local TOTALSMASKFRAME         =  4
 local TOTALSFRAME             =  5
 local TOTALSFRAMESCROLL       =  6
+local STATUSBARTOTALSFRAME    =  7
+local STATUSBARTFRAME         =  8
 
 local tWINWIDTH               =  540
 local tWINHEIGHT              =  276
@@ -401,6 +405,7 @@ local function selectZone(znID, zoneName)
    return
 end
 
+
 function cD.createTotalsWindow()
 
    cD.sTOFrames   =  {}
@@ -490,6 +495,49 @@ function cD.createTotalsWindow()
                         )
    cD.sTOFrames[TOTALSFRAMESCROLL]  =   tfScroll
 
+   --
+   -- STATUS BAR - begin -------------------------------------------------------------------------------------------------------------------------------
+   --
+   -- STATUS BAR CONTAINER
+   local statusBarFrame =  UI.CreateFrame("Frame", "External_statusBar_Frame", totalsWindow)
+   statusBarFrame:SetPoint("TOPLEFT",     totalsWindow, "BOTTOMLEFT")
+   statusBarFrame:SetPoint("TOPRIGHT",    totalsWindow, "BOTTOMRIGHT")
+   statusBarFrame:SetBackgroundColor(0, 0, 0, .6)
+   statusBarFrame:SetLayer(1)
+   statusBarFrame:SetHeight(cD.text.base_font_size + 4)
+   cD.sTOFrames[STATUSBARTOTALSFRAME]  =   statusBarFrame
+
+      -- How many Zones
+      local zonesCnt =  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
+      zonesCnt:SetFontSize(cD.text.base_font_size)
+      zonesCnt:SetText(string.format("%15d", 0), true)
+      zonesCnt:SetFont(cD.addon, cD.text.base_font_name)
+      zonesCnt:SetLayer(3)
+      zonesCnt:SetPoint("TOPLEFT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPLEFT", cD.borders.left, 0)
+      cD.sTOFrames["SBZONESCOUNTER"]  =   zonesCnt
+
+      -- total of Totals
+      local totOfTot	=  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
+      totOfTot:SetFontSize(cD.text.base_font_size)
+      totOfTot:SetText(string.format("%5d", 0), true)
+      totOfTot:SetFont(cD.addon, cD.text.base_font_name)
+      totOfTot:SetLayer(3)
+      totOfTot:SetPoint("TOPRIGHT", cD.sTOFrames[STATUSBARTOTALSFRAME], "TOPRIGHT", -(cD.borders.right + sbWIDTH), 0)
+      cD.sTOFrames["SBTOTOFTOT"]  =   totOfTot
+
+      -- total of MfJ
+      local totMfJ	=  UI.CreateFrame("Text", "FIU_Title", statusBarFrame)
+      totMfJ:SetFontSize(cD.text.base_font_size)
+      totMfJ:SetText(string.format("%10s", cD.printJunkMoney(0)), true)
+      totMfJ:SetFont(cD.addon, cD.text.base_font_name)
+      totMfJ:SetLayer(3)
+      totMfJ:SetPoint("TOPRIGHT", cD.sTOFrames["SBTOTOFTOT"], "TOPLEFT", -cD.borders.right, 0)
+      cD.sTOFrames["SBMFJCOUNTER"]  =   totMfJ
+   statusBarFrame:SetHeight(cD.text.base_font_size + 6)
+   --
+   -- STATUS BAR - end ---------------------------------------------------------------------------------------------------------------------------------
+   --
+
    -- -----------------------------------------------------------------------------
    -- SECOND PANE - charScore VIEWER
    -- -----------------------------------------------------------------------------
@@ -557,14 +605,12 @@ function cD.createTotalsWindow()
    -- -----------------------------------------------------------------------------
    --[[  ITEM VIEWER ]]-- [[END]]--
 
-
    -- Enable Dragging
    Library.LibDraggable.draggify(totalsWindow, cD.updateGuiCoordinates)
 
    return totalsWindow
 
 end
-
 
 function cD.createTotalsLine(parent, zoneName, znID, zoneTotals, isLegend)
 
@@ -678,38 +724,104 @@ function cD.createTotalsLine(parent, zoneName, znID, zoneTotals, isLegend)
       return totalsFrame, znOBJ, totOBJs
    end
 
-   function cD.initTotalsWindow()
 
-      local zn, tbl     =  nil, {}
-      local parentOBJ   =  cD.sTOFrames[TOTALSFRAME]
+function cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
 
-      -- Inject Legend into Table 1st row - begin
-      local legendZnName   =  "Zone Name"
-      local legendTbl      =  { "jnk", "Com", "Unc" , "Rar" , "Epi" , "Qst", "Rel", "MfJ", "Total" }
-      local legendFrame, legendZnOBJ, legendTotOBJs = cD.createTotalsLine(parentOBJ, legendZnName, nil, legendTbl, true)
+   if totOfTot == nil then totOfTot = 0 end
 
-      table.insert(cD.sTOzoneIDs,   legendZnName)
-      table.insert(cD.sTOFrame,     legendFrame)
-      table.insert(cD.sTOznOBJs,    legendZnOBJ)
+   print(string.format("znTot[%s], totMfJ[%s], totOfTot[%s]", znTot, totMfJ, totOfTot))
 
-      cD.sTOcntOBJs[legendZnName] = legendTotOBJs
-      parentOBJ   =  legendFrame
-      -- Inject Legend into Table 1st row - end
-
-
-      for zn, tbl in pairs(cD.zoneTotalCnts) do
-
-         local znName   =  Inspect.Zone.Detail(zn).name
-         local znID     =  Inspect.Zone.Detail(zn).id
-         local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(parentOBJ, znName, znID, tbl)
-
-         table.insert(cD.sTOzoneIDs,   zn)
-         table.insert(cD.sTOFrame,     totalsFrame)
-         table.insert(cD.sTOznOBJs,    znOBJ)
-         cD.sTOcntOBJs[znID] = totOBJs
-
-         parentOBJ   =  totalsFrame
+   if cD.sTOFrames["SBZONESCOUNTER"] then
+      -- How Many Zones
+      if znTot == nil then
+         znTot =  #cD.zoneTotalCnts
+         print(string.format("znTot[%s]", znTot))
       end
-
-      return
+      cD.sTOFrames["SBZONESCOUNTER"]:SetText(string.format("%10d", znTot))
    end
+
+   if cD.sTOFrames["SBMFJCOUNTER"] then
+      -- Total of Money from Junk
+      if totMfJ == nil then
+         totMfJ =  0
+         for a,b in pairs(cD.zoneTotalCnts) do totMfJ = totMfJ + b[8] end
+         print(string.format("totMfJ[%s]", totMfJ))
+      end
+      cD.sTOFrames["SBMFJCOUNTER"]:SetText(string.format("%10s", cD.printJunkMoney(totMfJ)), true)
+   end
+
+   if cD.sTOFrames["SBTOTOFTOT"] then
+      -- Total of Totals
+      if totOfTot == 0 then
+
+         for a,b in pairs(cD.zoneTotalCnts) do
+
+            print(string.format("a[%s], b[%s]", a, b))
+
+            for i=1,7 do
+               totOfTot = totOfTot + b[i]
+               print(string.format("    totOfTot[%s] b[i](%s)", totOfTot, b[i]))
+            end
+         end
+      end
+      print(string.format("  totOfTot[%s]", totOfTot))
+      cD.sTOFrames["SBTOTOFTOT"]:SetText(string.format("%5d", totOfTot))
+   end
+
+   return
+end
+
+
+
+function cD.initTotalsWindow()
+
+   local zn, tbl     =  nil, {}
+   local parentOBJ   =  cD.sTOFrames[TOTALSFRAME]
+   local znTot       =  0
+   local totMfJ      =  0
+   local totOfTot    =  0
+
+   -- Inject Legend into Table 1st row - begin
+   local legendZnName   =  "Zone Name"
+   local legendTbl      =  { "jnk", "Com", "Unc" , "Rar" , "Epi" , "Qst", "Rel", "MfJ", "Total" }
+   local legendFrame, legendZnOBJ, legendTotOBJs = cD.createTotalsLine(parentOBJ, legendZnName, nil, legendTbl, true)
+
+   table.insert(cD.sTOzoneIDs,   legendZnName)
+   table.insert(cD.sTOFrame,     legendFrame)
+   table.insert(cD.sTOznOBJs,    legendZnOBJ)
+
+   cD.sTOcntOBJs[legendZnName] = legendTotOBJs
+   parentOBJ   =  legendFrame
+   -- Inject Legend into Table 1st row - end
+
+
+   for zn, tbl in pairs(cD.zoneTotalCnts) do
+
+      local znName   =  Inspect.Zone.Detail(zn).name
+      local znID     =  Inspect.Zone.Detail(zn).id
+      local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(parentOBJ, znName, znID, tbl)
+
+      table.insert(cD.sTOzoneIDs,   zn)
+      table.insert(cD.sTOFrame,     totalsFrame)
+      table.insert(cD.sTOznOBJs,    znOBJ)
+      cD.sTOcntOBJs[znID] = totOBJs
+
+      parentOBJ   =  totalsFrame
+      znTot       =  znTot + 1
+
+      --
+      -- FOR STATUS BAR
+      --
+      -- calculate and add to totMfJ MfJ for this zone
+      totMfJ = totMfJ + tbl[8]   -- field number 8 in MfJ per zone
+
+      -- calculate and add to totOfTot totals for this zone
+      local idx  =  nil
+      for idx=1, 7 do totOfTot = totOfTot + tbl[idx] end
+   end
+
+   cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
+
+   return
+   end
+

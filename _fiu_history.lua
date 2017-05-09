@@ -49,19 +49,34 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
    end
 
    if        rarity == "sellable"   then
-                                       cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1
-                                       idx =  1  -- idx = 1
-                                       if cD.zoneTotalCnts[zoneID][8] == nil   then                                      -- idx = 8  junk money, not a real category
-                                          cD.zoneTotalCnts[zoneID][8] = itemValue
+--                                        cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1
+--                                        idx =  1  -- idx = 1
+--                                        if cD.zoneTotalCnts[zoneID][8] == nil   then                                      -- idx = 8  junk money, not a real category
+--                                           cD.zoneTotalCnts[zoneID][8] = itemValue
+--                                        else
+--                                           cD.zoneTotalCnts[zoneID][8]	=  cD.zoneTotalCnts[zoneID][8]	+  itemValue
+--                                        end
+--       elseif rarity == "common"    then   cD.zoneTotalCnts[zoneID][2]   =  cD.zoneTotalCnts[zoneID][2]   +  1  idx =  2  -- idx = 2
+--       elseif rarity == "uncommon"  then   cD.zoneTotalCnts[zoneID][3]   =  cD.zoneTotalCnts[zoneID][3]	+  1  idx =  3  -- idx = 3
+--       elseif rarity == "rare"      then   cD.zoneTotalCnts[zoneID][4]   =  cD.zoneTotalCnts[zoneID][4]   +  1  idx =  4  -- idx = 4
+--       elseif rarity == "epic"      then   cD.zoneTotalCnts[zoneID][5]   =  cD.zoneTotalCnts[zoneID][5]   +  1  idx =  5  -- idx = 5
+--       elseif rarity == "quest"     then   cD.zoneTotalCnts[zoneID][6]   =  cD.zoneTotalCnts[zoneID][6]   +  1  idx =  6  -- idx = 6
+--       elseif rarity == "relic"     then   cD.zoneTotalCnts[zoneID][7]	=  cD.zoneTotalCnts[zoneID][7]	+	1  idx =  7  -- idx = 7
+
+      cD.zoneTotalCnts[zoneID][1]	=  cD.zoneTotalCnts[zoneID][1]	+  1
+      idx =  1  -- idx = 1
+      if cD.zoneTotalCnts[zoneID][8] == nil   then                                      -- idx = 8  junk money, not a real category
+      cD.zoneTotalCnts[zoneID][8] = itemValue
                                        else
                                           cD.zoneTotalCnts[zoneID][8]	=  cD.zoneTotalCnts[zoneID][8]	+  itemValue
                                        end
-      elseif rarity == "common"    then   cD.zoneTotalCnts[zoneID][2]   =  cD.zoneTotalCnts[zoneID][2]   +  1  idx =  2  -- idx = 2
-      elseif rarity == "uncommon"  then   cD.zoneTotalCnts[zoneID][3]   =  cD.zoneTotalCnts[zoneID][3]	+  1  idx =  3  -- idx = 3
-      elseif rarity == "rare"      then   cD.zoneTotalCnts[zoneID][4]   =  cD.zoneTotalCnts[zoneID][4]   +  1  idx =  4  -- idx = 4
-      elseif rarity == "epic"      then   cD.zoneTotalCnts[zoneID][5]   =  cD.zoneTotalCnts[zoneID][5]   +  1  idx =  5  -- idx = 5
-      elseif rarity == "quest"     then   cD.zoneTotalCnts[zoneID][6]   =  cD.zoneTotalCnts[zoneID][6]   +  1  idx =  6  -- idx = 6
-      elseif rarity == "relic"     then   cD.zoneTotalCnts[zoneID][7]	=  cD.zoneTotalCnts[zoneID][7]	+	1  idx =  7  -- idx = 7
+      elseif rarity == "common"    then   cD.zoneTotalCnts[zoneID][2]   =  cD.zoneTotalCnts[zoneID][2]   +  lootCount  idx =  2  -- idx = 2
+      elseif rarity == "uncommon"  then   cD.zoneTotalCnts[zoneID][3]   =  cD.zoneTotalCnts[zoneID][3]	+  lootCount  idx =  3  -- idx = 3
+      elseif rarity == "rare"      then   cD.zoneTotalCnts[zoneID][4]   =  cD.zoneTotalCnts[zoneID][4]   +  lootCount  idx =  4  -- idx = 4
+      elseif rarity == "epic"      then   cD.zoneTotalCnts[zoneID][5]   =  cD.zoneTotalCnts[zoneID][5]   +  lootCount  idx =  5  -- idx = 5
+      elseif rarity == "quest"     then   cD.zoneTotalCnts[zoneID][6]   =  cD.zoneTotalCnts[zoneID][6]   +  lootCount  idx =  6  -- idx = 6
+      elseif rarity == "relic"     then   cD.zoneTotalCnts[zoneID][7]	=  cD.zoneTotalCnts[zoneID][7]	+	lootCount  idx =  7  -- idx = 7
+
    end
 
    --

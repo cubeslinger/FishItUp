@@ -348,7 +348,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
       itemName    =  Inspect.Item.Detail(lootOBJ).name
-      itemRarity  =  Inspect.Item.Detail(lootOBJ).rarity
+--       itemRarity  =  Inspect.Item.Detail(lootOBJ).rarity
+      itemRarity  =  (Inspect.Item.Detail(lootOBJ).rarity  or "common") -- Some items don't have a rarity (ex.: Bundles), we default to common
       itemDesc    =  Inspect.Item.Detail(lootOBJ).description
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
@@ -480,6 +481,11 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 --          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity, itemValue)
          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, itemRarity, itemValue)
       end
+
+      --
+      --
+      --
+      cD.updateTotalsStatusBar(nil, nil, nil)
       --
       --
       --
