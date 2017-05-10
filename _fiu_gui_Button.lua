@@ -72,9 +72,13 @@ end
 
 
 function cD.createButtonWindow()
+   local poleContext       =  nil
+   local poleCastFrame     =  nil
+   local poleCastButton    =  nil
+   local poleCastTimerOBJ  =  nil
 
    --Global context (parent frame-thing).
-   local poleContext = UI.CreateContext("button_context")
+   poleContext = UI.CreateContext("button_context")
    poleContext:SetSecureMode("restricted")
 
    -- detect Fishing Pole
@@ -84,7 +88,7 @@ function cD.createButtonWindow()
    end
 
    -- Frame Cornice
-   local poleCastFrame  = UI.CreateFrame("Texture", "_poleCastFrame", poleContext)
+   poleCastFrame  = UI.CreateFrame("Texture", "Button", poleContext)
    poleCastFrame:SetSecureMode("restricted")
    poleCastFrame:SetTexture("Rift", "AATree_IF8.dds")
    poleCastFrame:SetLayer(0)
@@ -99,7 +103,7 @@ function cD.createButtonWindow()
    end
 
    -- Pole Icon
-   local poleCastButton = UI.CreateFrame("Texture", poleCastFrame:GetName().."_poleCastIcon", poleCastFrame)
+   poleCastButton = UI.CreateFrame("Texture", poleCastFrame:GetName().."_poleCastIcon", poleCastFrame)
    poleCastButton:SetTexture("Rift", cD.poleTBL.icon)
    poleCastButton:SetPoint("CENTER", poleCastFrame, "CENTER")
    poleCastButton:SetSecureMode("restricted")
@@ -112,6 +116,7 @@ function cD.createButtonWindow()
                                                                      poleCastFrame:SetHeight(poleCastFrame:GetHeight()  - 2)
                                                                      poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
                                                                      poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
+                                                                     if poleCastTimerOBJ then poleCastTimerOBJ:SetFontSize(poleCastTimerOBJ:GetFontSize() + 2) end
 
                                                                   end,
                                                                   "poleCastButton_wheel_back")
@@ -121,6 +126,7 @@ function cD.createButtonWindow()
                                                                      poleCastFrame:SetHeight(poleCastFrame:GetHeight()  + 2)
                                                                      poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
                                                                      poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
+                                                                     if poleCastTimerOBJ then poleCastTimerOBJ:SetFontSize(poleCastTimerOBJ:GetFontSize() - 2) end
 
 
                                                                   end,

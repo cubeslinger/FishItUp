@@ -537,6 +537,7 @@ function cD.updateGuiCoordinates(win, newX, newY)
    if win ~= nil then
 
       local winName = win:GetName()
+--       print("WIN ["..winName.."]")
 
       if winName == "Button" then
          cD.window.buttonX =  newX

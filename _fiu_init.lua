@@ -155,7 +155,7 @@ local function _init()
    --
    -- Logs affected by the RESET button
    --
-   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}   
+   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
    --
    -- Logs that are permanent
    --
@@ -216,7 +216,6 @@ function cD.fiuSaveVariables(_, addonName)
       a.ivOBJ     =  nil
 
       guilog            =  a
---       waterlog          =  cD.history
       itemCache         =  cD.itemCache
       charScore         =  cD.charScore
       --
