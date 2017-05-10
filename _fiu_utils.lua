@@ -559,6 +559,12 @@ function cD.updateGuiCoordinates(win, newX, newY)
          cD.window.ivX =  newX
          cD.window.ivY =  newY
       end
+      if winName == "mmBtnIcon" then
+         cD.window.mmBtnX =  newX
+         cD.window.mmBtnY =  newY
+      end
+
+
 
    end
 
@@ -657,3 +663,68 @@ function cD.multiLineString(s, size)
 
    return(o)
 end
+
+function cD.doThings(params)
+
+   -- Create/Display/Hide minimMapButton Window
+   if cD.window.mmBtnOBJ    == nil then
+      cD.window.mmBtnOBJ    =  cD.createMiniMapButton()
+      cD.window.mmBtnOBJ:SetVisible(true)
+   end
+
+
+   -- Create Display/Hide infoWindow
+   if cD.window.infoOBJ    == nil then
+      cD.window.infoOBJ    =  cD.createInfoWindow()
+      cD.window.infoOBJ:SetVisible(true)
+   else
+      cD.window.infoOBJ:SetVisible(not cD.window.infoOBJ:GetVisible())
+   end
+
+   -- Create/Display lootWindow
+   local filled = false
+   if cD.window.lootOBJ    == nil then
+      cD.window.lootOBJ    =  cD.createLootWindow()
+      filled = cD.loadLastSession()
+   end
+   if filled then
+      cD.window.lootOBJ:SetVisible(cD.window.infoOBJ:GetVisible())
+   else
+      cD.window.lootOBJ:SetVisible(false)
+   end
+
+   -- Create/Display buttonWindow
+   if cD.window.buttonOBJ  == nil then
+      cD.window.buttonOBJ  =  cD.createButtonWindow()
+   end
+   cD.window.buttonOBJ:SetVisible(cD.window.infoOBJ:GetVisible())
+
+   -- Create/Display totalsWindow
+   if cD.window.totalsOBJ  == nil then
+      cD.window.totalsOBJ  =  cD.createTotalsWindow()
+      cD.initTotalsWindow()
+      cD.window.totalsOBJ:SetVisible(false)
+   end
+   if cD.window.infoOBJ:GetVisible() == false then cD.window.totalsOBJ:SetVisible(false) end
+
+   -- Create/Display ItemViewer Window
+   if cD.window.ivOBJ  == nil then
+      cD.window.ivOBJ  =  cD.createItemViewerWindow()
+      cD.window.ivOBJ:SetVisible(false)
+      --       print(string.format("NEW IV OBJ [%s]", cD.window.ivOBJ))
+   else
+      --       print(string.format("OLD IV OBJ [%s]", cD.window.ivOBJ))
+   end
+
+   if cD.window.infoOBJ:GetVisible() == false then cD.window.ivOBJ:SetVisible(false) end
+
+
+   --    print("-------------------------------------------------------")
+   cD.itemBase = cD.scanInventories()
+   --    for x,y in pairs(cD.itemBase) do
+      --       print(string.format("quantity: [%03d] [%s]", y, x))
+      --    end
+      --    print("-------------------------------------------------------")
+
+      return
+   end

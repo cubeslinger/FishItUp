@@ -54,7 +54,7 @@ function cD.createLootWindow()
 
    lootWindow:SetHeight( cD.borders.top + cD.sLTFrames[LOOTFRAME]:GetHeight() + cD.borders.bottom)
 
---    -- Enable Dragging
+   -- Enable Dragging
    Library.LibDraggable.draggify(lootWindow, cD.updateGuiCoordinates)
 
    return lootWindow

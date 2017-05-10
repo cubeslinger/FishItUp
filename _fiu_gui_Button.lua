@@ -92,8 +92,8 @@ function cD.createButtonWindow()
    poleCastFrame:SetSecureMode("restricted")
    poleCastFrame:SetTexture("Rift", "AATree_IF8.dds")
    poleCastFrame:SetLayer(0)
-   poleCastFrame:SetWidth(64)
-   poleCastFrame:SetHeight(64)
+   poleCastFrame:SetWidth(cD.window.buttonW  or 64)
+   poleCastFrame:SetHeight(cD.window.buttonH or 64)
    if cD.window.buttonX == nil or cD.window.buttonY == nil then
       -- first run, we position in the screen center
       poleCastFrame:SetPoint("CENTER", UIParent, "CENTER")
@@ -108,8 +108,11 @@ function cD.createButtonWindow()
    poleCastButton:SetPoint("CENTER", poleCastFrame, "CENTER")
    poleCastButton:SetSecureMode("restricted")
    poleCastButton:SetLayer(1)
-   poleCastButton:SetWidth(42)
-   poleCastButton:SetHeight(42)
+--    poleCastButton:SetWidth(42)
+--    poleCastButton:SetHeight(42)
+   poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
+   poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
+
    poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function()
 --                                                                      print"WHEEL BACK!"
                                                                      poleCastFrame:SetWidth(poleCastFrame:GetWidth()    - 2)
@@ -117,7 +120,9 @@ function cD.createButtonWindow()
                                                                      poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
                                                                      poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
                                                                      if poleCastTimerOBJ then poleCastTimerOBJ:SetFontSize(poleCastTimerOBJ:GetFontSize() + 2) end
-
+                                                                     -- save button scale factor
+                                                                     cD.window.buttonW =  poleCastFrame:GetWidth()
+                                                                     cD.window.buttonH =  poleCastFrame:GetHeight()
                                                                   end,
                                                                   "poleCastButton_wheel_back")
    poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function()
@@ -127,8 +132,9 @@ function cD.createButtonWindow()
                                                                      poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
                                                                      poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
                                                                      if poleCastTimerOBJ then poleCastTimerOBJ:SetFontSize(poleCastTimerOBJ:GetFontSize() - 2) end
-
-
+                                                                     -- save button scale factor
+                                                                     cD.window.buttonW =  poleCastFrame:GetWidth()
+                                                                     cD.window.buttonH =  poleCastFrame:GetHeight()
                                                                   end,
                                                                   "poleCastButton_wheel_forward")
 

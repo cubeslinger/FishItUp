@@ -104,7 +104,9 @@ local function _init()
                      lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,  -- Loot Window & objs
                      totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,  -- Totals Window & objs
                      cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil,  -- Cache Window & objs
-                     ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil   -- ItemViewer Window & objs
+                     ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil,  -- ItemViewer Window & objs
+                     mmBtnOBJ =  nil,  mmBtnX   =  nil,  mmBtnY   =  nil,  -- MiniMapButton
+
                   }
    -- loot Tables
    cD.sLTids      =  {}
@@ -176,6 +178,7 @@ function cD.fiuLoadVariables(_, addonName)
          cD.window.totalsOBJ  =  nil
          cD.window.cacheOBJ   =  nil
          cD.window.ivOBJ      =  nil
+         cD.window.mmBtnOBJ   =  nil
       end
 
       if lastZoneLootOBJs ~= nil and next(lastZoneLootOBJs) ~= nil then
