@@ -127,6 +127,25 @@ function cD.createButtonWindow()
 --    poleCastButton:SetHeight(buttonFrame:GetHeight() - 6)
    poleCastButton:SetWidth(42)
    poleCastButton:SetHeight(42)
+   poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function()
+--                                                                      print"WHEEL BACK!"
+                                                                     poleCastFrame:SetWidth(poleCastFrame:GetWidth()    - 2)
+                                                                     poleCastFrame:SetHeight(poleCastFrame:GetHeight()  - 2)
+                                                                     poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
+                                                                     poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
+
+                                                                  end,
+                                                                  "polceCastButton_wheel_back")
+   poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function()
+--                                                                      print"WHEEL FORWARD!"
+                                                                     poleCastFrame:SetWidth(poleCastFrame:GetWidth()    + 2)
+                                                                     poleCastFrame:SetHeight(poleCastFrame:GetHeight()  + 2)
+                                                                     poleCastButton:SetWidth(cD.round(poleCastFrame:GetWidth()/1.5))
+                                                                     poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
+
+
+                                                                  end,
+                                                                  "polceCastButton_wheel_forward")
 
    -- Fishing Timer
    local tFONTSIZE        =   11
