@@ -246,7 +246,7 @@ local function createZoneItemLine(parent, zoneName, zID, t)
    zilName:SetText(t.name:sub(1, ivNAMESIZE))
    zilName:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(t.zone, t.id) end, "Item Selected" )
    -- ZZZZ  -----------------------------------------------------------------------------------------
-      -- Mouse Hover IN    => show tooltip
+   -- Mouse Hover IN    => show tooltip
    zilName:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(t.zone, t.id)  end, "Event.UI.Input.Mouse.Cursor.In")
    -- Mouse Hover OUT   => show tooltip
    zilName:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
@@ -768,6 +768,10 @@ function cD.createTotalsLine(parent, zoneName, znID, zoneTotals, isLegend)
 function cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
 
    local cnts  =  {}
+   local i     =  0
+
+   -- per-init cnts{}
+   for i=1,9 do cnts[i] = 0 end
 
    if totOfTot == nil then totOfTot = 0 end
 

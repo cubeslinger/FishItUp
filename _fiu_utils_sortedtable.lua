@@ -20,12 +20,12 @@ function cD.spairs(t, order)
 
       -- return the iterator function
       local i = 0
-      return function()
-               i = i + 1
-               if keys[i] then
-                  return keys[i], t[keys[i]]
+      return   function()
+                  i = i + 1
+                  if keys[i] then
+                     return keys[i], t[keys[i]]
+                  end
                end
-            end
 end
 
 
