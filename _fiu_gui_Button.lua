@@ -77,19 +77,6 @@ function cD.createButtonWindow()
    local poleContext = UI.CreateContext("button_context")
    poleContext:SetSecureMode("restricted")
 
---    local buttonFrame    =  UI.CreateFrame("Frame", "Button", context)
---    buttonFrame:SetSecureMode("restricted")
---    buttonFrame:SetLayer(-1)
---    buttonFrame:SetBackgroundColor(0, 0, 0, .5)
---
---    if cD.window.buttonX == nil or cD.window.buttonY == nil then
---       -- first run, we position in the screen center
---       buttonFrame:SetPoint("CENTER", UIParent, "CENTER")
---    else
---       -- we have coordinates
---       buttonFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cD.window.buttonX, cD.window.buttonY)
---    end
-
    -- detect Fishing Pole
    if cD.poleTBL == nil or cD.poleTBL.name == nil then
       cD.poleTBL = getPole()
@@ -97,14 +84,10 @@ function cD.createButtonWindow()
    end
 
    -- Frame Cornice
---    local poleCastFrame  = UI.CreateFrame("Texture", "_poleCastFrame", buttonFrame)
    local poleCastFrame  = UI.CreateFrame("Texture", "_poleCastFrame", poleContext)
    poleCastFrame:SetSecureMode("restricted")
    poleCastFrame:SetTexture("Rift", "AATree_IF8.dds")
---    poleCastFrame:SetPoint("CENTER", buttonFrame, "CENTER")
    poleCastFrame:SetLayer(0)
---    poleCastFrame:SetWidth(buttonFrame:GetWidth() - 6)
---    poleCastFrame:SetHeight(buttonFrame:GetHeight() - 6)
    poleCastFrame:SetWidth(64)
    poleCastFrame:SetHeight(64)
    if cD.window.buttonX == nil or cD.window.buttonY == nil then
@@ -116,15 +99,11 @@ function cD.createButtonWindow()
    end
 
    -- Pole Icon
---    local poleCastButton = UI.CreateFrame("Texture", buttonFrame:GetName().."_poleCastIcon", buttonFrame)
    local poleCastButton = UI.CreateFrame("Texture", poleCastFrame:GetName().."_poleCastIcon", poleCastFrame)
    poleCastButton:SetTexture("Rift", cD.poleTBL.icon)
---    poleCastButton:SetPoint("CENTER", buttonFrame, "CENTER")
    poleCastButton:SetPoint("CENTER", poleCastFrame, "CENTER")
    poleCastButton:SetSecureMode("restricted")
    poleCastButton:SetLayer(1)
---    poleCastButton:SetWidth(buttonFrame:GetWidth() - 6)
---    poleCastButton:SetHeight(buttonFrame:GetHeight() - 6)
    poleCastButton:SetWidth(42)
    poleCastButton:SetHeight(42)
    poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function()
@@ -135,7 +114,7 @@ function cD.createButtonWindow()
                                                                      poleCastButton:SetHeight(cD.round(poleCastFrame:GetHeight()/1.5))
 
                                                                   end,
-                                                                  "polceCastButton_wheel_back")
+                                                                  "poleCastButton_wheel_back")
    poleCastButton:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function()
 --                                                                      print"WHEEL FORWARD!"
                                                                      poleCastFrame:SetWidth(poleCastFrame:GetWidth()    + 2)
@@ -145,11 +124,10 @@ function cD.createButtonWindow()
 
 
                                                                   end,
-                                                                  "polceCastButton_wheel_forward")
+                                                                  "poleCastButton_wheel_forward")
 
    -- Fishing Timer
    local tFONTSIZE        =   11
---    local poleCastTimerOBJ =   UI.CreateFrame("Text", buttonFrame:GetName().."_poleCastTimer", buttonFrame)
    local poleCastTimerOBJ =   UI.CreateFrame("Text", poleCastFrame:GetName().."_poleCastTimer", poleCastFrame)
    poleCastTimerOBJ:SetFont(cD.addon, cD.text.base_font_name)
    poleCastTimerOBJ:SetFontSize(tFONTSIZE+7)
@@ -157,7 +135,6 @@ function cD.createButtonWindow()
    poleCastTimerOBJ:SetLayer(2)
    local objColor  =  cD.rarityColor("common")
    poleCastTimerOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
---    poleCastTimerOBJ:SetPoint("CENTER", buttonFrame, "CENTER")
    poleCastTimerOBJ:SetPoint("CENTER", poleCastFrame, "CENTER")
    poleCastTimerOBJ:SetVisible(false)
    cD.poleTimer   =  poleCastTimerOBJ
@@ -179,7 +156,6 @@ function cD.createButtonWindow()
                -- stop eventually still running loot event monitor
                --
                cD.detachLootWatchers()
---                cD.detachOtherWatchers()
                cD.waitingForTheSunRunning = false
                --
                -- Clear eventually pending events in
@@ -199,7 +175,6 @@ function cD.createButtonWindow()
                -- stored session values or reset the loot window
                --
                if cD.sLThdrs[1]:GetText() ~= zone     then
---                   print(string.format("OLD ZONE[%s] NEWZONE[%s]", cD.sLThdrs[1]:GetText(), zone))
                   cD.sLThdrs[1]:SetText(zone)
                   cD.resetLootWindow()
                   cD.loadLastSession()
@@ -220,7 +195,6 @@ function cD.createButtonWindow()
 
                cD.itemBase =  cD.scanInventories()
 
---                Command.Event.Attach(Event.Unit.Detail.Combat,        cD.stopFishingEvent,    "Player in Combat")
                Command.Event.Attach(Event.Unit.Castbar,              cD.gotCastBar,          "Player is Casting")
                Command.Event.Attach(Event.System.Update.Begin,       cD.timedEventsManager,  "Event.System.Update.Begin")
             else
@@ -228,7 +202,6 @@ function cD.createButtonWindow()
                -- stop eventually still running loot event monitor
                --
                cD.detachLootWatchers()
---                cD.detachOtherWatchers()
                cD.waitingForTheSunRunning =  false
                --
                -- Clear eventually pending events in
@@ -251,7 +224,6 @@ function cD.createButtonWindow()
    cD.sLTFrames[POLECASTBUTTON] = poleCastButton
 
    -- Enable Dragging
---    Library.LibDraggable.draggify(buttonFrame, cD.updateGuiCoordinates)
    Library.LibDraggable.draggify(poleCastFrame, cD.updateGuiCoordinates)
 
 --    return buttonFrame
