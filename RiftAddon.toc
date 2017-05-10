@@ -25,12 +25,12 @@ RunOnStartup = {
 
 Embed = {
   LibDraggable = true,
-  LibAnimate   = true
+--  LibAnimate   = true
 }
 
 Dependencies = {
   LibDraggable = {"required", "before"},
-  LibAnimate   = {"required", "before"}
+--  LibAnimate   = {"required", "before"}
 }
 
 SavedVariables = {
