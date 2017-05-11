@@ -83,21 +83,36 @@ function cD.updateHistory(zoneOBJ, zID, itemOBJ, lootCount, itemRarity, itemValu
    -- update Totals Window Counters
    --
    if newZone  then
-      local parent = cD.sTOFrame[table.getn(cD.sTOFrame)]
-      if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
-      local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrame[table.getn(cD.sTOFrame)], Inspect.Zone.Detail(zoneOBJ).name, Inspect.Zone.Detail(zoneOBJ).id, cD.zoneTotalCnts[zoneID])
+      local parent = cD.sTOFrames[table.getn(cD.sTOFrames)]
+--       if parent == nil then parent = cD.sTOFrames[TOTALSFRAME] end
+      if parent == nil then parent = cD.sTOFrames.totalsframe  end
+--[[
+
+
+      local totalsFrame, znOBJ, totOBJs   = cD.createTotalsLine(cD.sTOFrames[table.getn(cD.sTOFrames)], Inspect.Zone.Detail(zoneOBJ).name, Inspect.Zone.Detail(zoneOBJ).id, cD.zoneTotalCnts[zoneID])
 
       table.insert(cD.sTOzoneIDs,   zoneID)
-      table.insert(cD.sTOFrame,     totalsFrame)
+      table.insert(cD.sTOFrames,     totalsFrame)
       table.insert(cD.sTOznOBJs,    znOBJ)
-      cD.sTOcntOBJs[zoneID] = totOBJs
+      cD.sTOcntOBJs[zoneID] = totOBJs]]
+
+
+      local znName   =  Inspect.Zone.Detail(zoneOBJ).name
+      local znID     =  Inspect.Zone.Detail(zoneOBJ).id
+      --       local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(leftparentOBJ, rightparentOBJ, znName, znID, tbl)
+      local leftItemFrame, rightItemFrame, znOBJ, totOBJs = cD.createTotalsLine(cD.sTOLeftFrames[#cD.sTOLeftFrames], cD.sTORightFrames[#cD.sTORightFrames], znName, znID, cD.zoneTotalCnts[zoneID])
+
+      table.insert(cD.sTOzoneIDs,   zn)
+      table.insert(cD.sTOLeftFrames,     leftItemFrame)
+      table.insert(cD.sTORightFrames,    rightItemFrame)
+      table.insert(cD.sTOznOBJs,    znOBJ)
+      cD.sTOcntOBJs[znID] = totOBJs
 
 --       cD.window.totalsOBJ:SetHeight((cD.sTOznOBJs[table.getn(cD.sTOznOBJs)]:GetBottom() - cD.sTOFrames[TITLEBARTOTALSFRAME]:GetTop()) + cD.borders.top + cD.borders.bottom)
    else
       local cnt = string.format("%3d", cD.zoneTotalCnts[zoneID][idx])
       cD.sTOcntOBJs[zoneID][idx]:SetText(cnt)
    end
-
 
    -- adjust MfJ (Money from Junk) counter
    local j = cD.zoneTotalCnts[zoneID][8] or 0

@@ -8,5 +8,4 @@ local addon, cD = ...
 
 cD.addon =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 table.insert(Command.Slash.Register("fiu"), {function (params) cD.doThings(params)   end, cD.addon, "getpole command"})
-
-
+-- Command.Event.Attach(Event.Unit.Availability.Full,  function(params) cD.doThings(params)  end,  "FIU AutoStart")

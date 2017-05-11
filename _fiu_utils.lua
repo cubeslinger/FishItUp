@@ -540,31 +540,29 @@ function cD.updateGuiCoordinates(win, newX, newY)
 --       print("WIN ["..winName.."]")
 
       if winName == "Button" then
-         cD.window.buttonX =  newX
-         cD.window.buttonY =  newY
+         cD.window.buttonX =  cD.round(newX)
+         cD.window.buttonY =  cD.round(newY)
       end
       if winName == "Info" then
-         cD.window.infoX   =  newX
-         cD.window.infoY   =  newY
+         cD.window.infoX   =  cD.round(newX)
+         cD.window.infoY   =  cD.round(newY)
       end
       if winName == "Loot" then
-         cD.window.lootX   =  newX
-         cD.window.lootY   =  newY
+         cD.window.lootX   =  cD.round(newX)
+         cD.window.lootY   =  cD.round(newY)
       end
       if winName == "Totals" then
-         cD.window.totalsX =  newX
-         cD.window.totalsY =  newY
+         cD.window.totalsX =  cD.round(newX)
+         cD.window.totalsY =  cD.round(newY)
       end
       if winName == "ItemViewer" then
-         cD.window.ivX =  newX
-         cD.window.ivY =  newY
+         cD.window.ivX =  cD.round(newX)
+         cD.window.ivY =  cD.round(newY)
       end
       if winName == "mmBtnIcon" then
-         cD.window.mmBtnX =  newX
-         cD.window.mmBtnY =  newY
+         cD.window.mmBtnX =  cD.round(newX)
+         cD.window.mmBtnY =  cD.round(newY)
       end
-
-
 
    end
 

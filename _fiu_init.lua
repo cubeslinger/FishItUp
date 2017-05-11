@@ -217,6 +217,7 @@ function cD.fiuSaveVariables(_, addonName)
       a.buttonOBJ =  nil
       a.totalsOBJ =  nil
       a.ivOBJ     =  nil
+      a.mmBtnOBJ  =  nil
 
       guilog            =  a
       itemCache         =  cD.itemCache
