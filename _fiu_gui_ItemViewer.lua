@@ -2,7 +2,6 @@
 -- Addon       _fiu_gui_ItemViewer.lua
 -- Author      marcob@marcob.org
 -- StartDate   23/04/2017
--- StartDate   23/04/2017
 --
 local addon, cD = ...
 
@@ -10,7 +9,7 @@ local addon, cD = ...
 local tWINWIDTH   =  300
 local tWINHEIGHT  =  276
 -- local TXTSIZE     =  45
-local TXTSIZE     =  40
+local TXTSIZE     =  39
 local ivNAMESIZE  =  20
 
 local colors      =  {}
@@ -42,23 +41,62 @@ function cD.createItemViewerWindow()
    ivExtFrame:SetLayer(9)
    cD.sIVFrames["EXTERNALIVFRAME"]  =   ivExtFrame
 
-   -- ITEMVIEWER MASK FRAME
-   local ivMaskFrame = UI.CreateFrame("Mask", "ItemViewer_Mask_Frame", cD.sIVFrames["EXTERNALIVFRAME"])
-   ivMaskFrame:SetAllPoints(cD.sIVFrames["EXTERNALIVFRAME"])
-   cD.sIVFrames["IVMASKFRAME"]  = ivMaskFrame
+      -- ITEMVIEWER MASK FRAME
+      local ivMaskFrame = UI.CreateFrame("Mask", "ItemViewer_Mask_Frame", cD.sIVFrames["EXTERNALIVFRAME"])
+      ivMaskFrame:SetAllPoints(cD.sIVFrames["EXTERNALIVFRAME"])
+      cD.sIVFrames["IVMASKFRAME"]  = ivMaskFrame
 
-   -- ITEMVIEWER CONTAINER FRAME
-   local ivFrame =  UI.CreateFrame("Frame", "ItemViewer_frame", cD.sIVFrames["IVMASKFRAME"])
-   ivFrame:SetAllPoints(cD.sIVFrames["IVMASKFRAME"])
-   ivFrame:SetLayer(9)
-   cD.sIVFrames["IVFRAME"]  =   ivFrame
+      -- ITEMVIEWER CONTAINER FRAME
+      local ivFrame =  UI.CreateFrame("Frame", "ItemViewer_frame", cD.sIVFrames["IVMASKFRAME"])
+      ivFrame:SetAllPoints(cD.sIVFrames["IVMASKFRAME"])
+      ivFrame:SetLayer(9)
+      cD.sIVFrames["IVFRAME"]  =   ivFrame
 
-   -- Item's Icon
-   local itemIcon = UI.CreateFrame("Texture", "ItemViewer_Item_Icon", cD.sIVFrames["IVFRAME"])
-   itemIcon:SetTexture("Rift", "")
-   itemIcon:SetPoint("TOPLEFT",   cD.sIVFrames["IVFRAME"], "TOPLEFT", cD.borders.left, cD.borders.top)
-   itemIcon:SetLayer(10)
-   cD.ivOBJ["ITEMICON"] =  itemIcon
+         -- Item's Icon
+         local itemIcon = UI.CreateFrame("Texture", "ItemViewer_Item_Icon", cD.sIVFrames["IVFRAME"])
+         itemIcon:SetTexture("Rift", "")
+         itemIcon:SetPoint("TOPLEFT",   cD.sIVFrames["IVFRAME"], "TOPLEFT", cD.borders.left, cD.borders.top)
+         itemIcon:SetLayer(10)
+         cD.ivOBJ["ITEMICON"] =  itemIcon
+
+         -- Item's Type Icon
+         local typeIcon = UI.CreateFrame("Texture", "Item_Type_Icon", cD.sIVFrames["IVFRAME"])
+         typeIcon:SetWidth(cD.text.base_font_size  + 6)
+         typeIcon:SetHeight(cD.text.base_font_size + 6)
+         typeIcon:SetPoint("TOPLEFT",   itemIcon,    "TOPRIGHT", cD.borders.left, 0)
+         typeIcon:SetLayer(10)
+         cD.ivOBJ["TYPEICON"] =  typeIcon
+
+
+         -- Item's Counter
+         local itemCnt  =  UI.CreateFrame("Text", "ItemViewer_Item_Cnt_", cD.sIVFrames["IVFRAME"])
+         local objColor =  cD.rarityColor("quest")
+         itemCnt:SetFont(cD.addon, cD.text.base_font_name)
+         itemCnt:SetFontSize(cD.text.base_font_size)
+         itemCnt:SetFontColor(objColor.r, objColor.g, objColor.b)
+         itemCnt:SetText(string.format("%5d", 0), true)
+         itemCnt:SetLayer(10)
+         itemCnt:SetPoint("TOPRIGHT",   cD.sIVFrames["IVFRAME"], "TOPRIGHT", -cD.borders.left, cD.borders.top)
+         cD.ivOBJ["ITEMCOUNTER"] =  itemCnt
+
+         -- Item's Type Name
+         local typeOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_Type", cD.sIVFrames["IVFRAME"])
+         typeOBJ:SetFont(cD.addon, cD.text.base_font_name)
+         typeOBJ:SetFontSize(cD.text.base_font_size -2)
+         typeOBJ:SetText("", true)
+         typeOBJ:SetLayer(10)
+--          typeOBJ:SetPoint("BOTTOMLEFT",   typeIcon,    "BOTTOMRIGHT", cD.borders.left, 0)
+         typeOBJ:SetPoint("BOTTOMLEFT",   itemIcon, "BOTTOMRIGHT", cD.borders.left, 0)
+         cD.ivOBJ["ITEMTYPE"] =  typeOBJ
+
+         -- Item's Total Value
+         local totValueOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_Value", cD.sIVFrames["IVFRAME"])
+         totValueOBJ:SetFont(cD.addon, cD.text.base_font_name)
+         totValueOBJ:SetFontSize(cD.text.base_font_size)
+         totValueOBJ:SetText("")
+         totValueOBJ:SetLayer(10)
+         totValueOBJ:SetPoint("TOPRIGHT",   itemCnt,    "BOTTOMRIGHT", 0, cD.borders.top)
+         cD.ivOBJ["ITEMTOTVALUE"] =  totValueOBJ
 
    -- Item's Name
    local nameOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_Name", cD.sIVFrames["IVFRAME"])
@@ -67,46 +105,9 @@ function cD.createItemViewerWindow()
    nameOBJ:SetHeight(cD.text.base_font_size + 4)
    nameOBJ:SetText("")
    nameOBJ:SetLayer(10)
-   nameOBJ:SetPoint("TOPLEFT",   itemIcon,    "TOPRIGHT", cD.borders.left, 0)
+   nameOBJ:SetPoint("TOPLEFT",   itemIcon,    "BOTTOMLEFT", 0, cD.borders.top)
+   nameOBJ:SetPoint("RIGHT",     itemCnt,     "RIGHT")
    cD.ivOBJ["ITEMNAME"] =  nameOBJ
-
-   -- Item's Counter
-   local itemCnt  =  UI.CreateFrame("Text", "ItemViewer_Item_Cnt_", cD.sIVFrames["IVFRAME"])
-   local objColor =  cD.rarityColor("quest")
-   itemCnt:SetFont(cD.addon, cD.text.base_font_name)
-   itemCnt:SetFontSize(cD.text.base_font_size)
-   itemCnt:SetFontColor(objColor.r, objColor.g, objColor.b)
-   itemCnt:SetText(string.format("%5d", 0), true)
-   itemCnt:SetLayer(10)
-   itemCnt:SetPoint("TOPRIGHT",   cD.sIVFrames["IVFRAME"], "TOPRIGHT", -cD.borders.left, cD.borders.top)
-   cD.ivOBJ["ITEMCOUNTER"] =  itemCnt
-
-   -- Item's Type Icon
-   local typeIcon = UI.CreateFrame("Texture", "Item_Type_Icon", cD.sIVFrames["IVFRAME"])
-   typeIcon:SetWidth(cD.text.base_font_size  + 6)
-   typeIcon:SetHeight(cD.text.base_font_size + 6)
-   typeIcon:SetPoint("BOTTOMLEFT",   itemIcon, "BOTTOMRIGHT", cD.borders.left, 0)
-   typeIcon:SetLayer(10)
-   cD.ivOBJ["TYPEICON"] =  typeIcon
-
-   -- Item's Type Name
-   local typeOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_Type", cD.sIVFrames["IVFRAME"])
-   typeOBJ:SetFont(cD.addon, cD.text.base_font_name)
-   typeOBJ:SetFontSize(cD.text.base_font_size -2)
-   typeOBJ:SetText("", true)
-   typeOBJ:SetLayer(10)
-   typeOBJ:SetPoint("BOTTOMLEFT",   typeIcon,    "BOTTOMRIGHT", cD.borders.left, 0)
-   cD.ivOBJ["ITEMTYPE"] =  typeOBJ
-
-   -- Item's Total Value
-   local totValueOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_Value", cD.sIVFrames["IVFRAME"])
-   totValueOBJ:SetFont(cD.addon, cD.text.base_font_name)
-   totValueOBJ:SetFontSize(cD.text.base_font_size)
-   totValueOBJ:SetText("")
-   totValueOBJ:SetLayer(10)
-   totValueOBJ:SetPoint("TOPRIGHT",   itemCnt,    "BOTTOMRIGHT", 0, cD.borders.top)
-   cD.ivOBJ["ITEMTOTVALUE"] =  totValueOBJ
-
 
    -- Item's Description
    local descOBJ     =  UI.CreateFrame("Text", "ItemViewer_Item_desc", cD.sIVFrames["IVFRAME"])
@@ -116,8 +117,9 @@ function cD.createItemViewerWindow()
    descOBJ:SetText("")
    descOBJ:SetLayer(10)
    descOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-   descOBJ:SetPoint("TOPLEFT",   itemIcon,    "BOTTOMLEFT", 0, cD.borders.top)
-   descOBJ:SetPoint("RIGHT",     itemCnt,     "RIGHT")
+   descOBJ:SetPoint("TOPLEFT",   nameOBJ,    "BOTTOMLEFT",  0, cD.borders.top)
+   descOBJ:SetPoint("TOPRIGHT",  nameOBJ,    "BOTTOMRIGHT", 0, cD.borders.top)
+
    cD.ivOBJ["ITEMDESC"] =  descOBJ
 
    -- Item's Flavor
@@ -131,8 +133,6 @@ function cD.createItemViewerWindow()
    flavOBJ:SetPoint("TOPLEFT",   descOBJ,    "BOTTOMLEFT",  0, cD.borders.top)
    flavOBJ:SetPoint("TOPRIGHT",  descOBJ,    "BOTTOMRIGHT", 0, cD.borders.top)
    cD.ivOBJ["ITEMFLAV"] =  flavOBJ
-
---    print("IV Window Created")
 
    -- Enable Dragging
    Library.LibDraggable.draggify(ivWindow, cD.updateGuiCoordinates)
@@ -150,7 +150,7 @@ local function populateItemViewer(zID, t)
    local txtColor =  cD.rarityColor(t.rarity)
    cD.ivOBJ["ITEMNAME"]:SetFontColor(txtColor.r, txtColor.g, txtColor.b)
    cD.ivOBJ["ITEMNAME"]:SetHeight(cD.text.base_font_size + 4)
-   cD.ivOBJ["ITEMNAME"]:SetText(t.name:sub(1,ivNAMESIZE))
+   cD.ivOBJ["ITEMNAME"]:SetText(cD.multiLineString(t.name, TXTSIZE))
 
    -- cD.ivOBJ["TYPEICON"]
    local categoryIcon  =  cD.categoryIcon(t.category, t.id, t.description, t.name)
@@ -202,8 +202,6 @@ function  cD.selectItemtoView(zID, itemID)
    if zID == nil and itemID == nil then
       cD.window.ivOBJ:SetVisible(false)
    else
-   --    print(string.format("cD.selectItemtoView! [%s] [%s]", zID, itemID))
-
       local parent   =  nil
       local cnt      =  0
 
