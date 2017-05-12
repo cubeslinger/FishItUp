@@ -37,9 +37,9 @@ function cD.scanInventories()
 --          print(string.format("  slotId[%s] itemName[%s] itemStack[%s]", slotId, itemName, itemStack))
 
          if itemBase[itemName] then
-            itemBase[itemName]   =  itemBase[itemName] + item.stack
+            itemBase[itemName]   =  itemBase[itemName] + (item.stack or 1)
          else
-            itemBase[itemName]   =  item.stack
+            itemBase[itemName]   =  (item.stack or 1)
          end
       end
    end
@@ -57,9 +57,9 @@ function cD.scanInventories()
 --          print(string.format("  slotId[%s] itemName[%s] itemStack[%s]", slotId, itemName, itemStack))
 
          if itemBase[itemName] then
-            itemBase[itemName]   =  itemBase[itemName] + item.stack
+            itemBase[itemName]   =  itemBase[itemName] + (item.stack or 1)
          else
-            itemBase[itemName]   =  item.stack
+            itemBase[itemName]   =  (item.stack or 1)
          end
       end
    end
