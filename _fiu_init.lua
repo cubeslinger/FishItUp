@@ -96,7 +96,7 @@ end
 
 
 
-local function _init()
+-- local function _init()
 
    cD.window   =  {  width    =  300,  height   =  60,
                      infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,  -- Info Window & objs
@@ -164,12 +164,12 @@ local function _init()
    cD.zoneTotalCnts  =  {}
    cD.charScore      =  {}
 
-   return cD
-end
+--    return cD
+-- end
 
 function cD.fiuLoadVariables(_, addonName)
    if addon.name == addonName then
-      cD = _init()
+--       cD = _init()
 
       if guilog then
          cD.window            =  guilog
@@ -200,7 +200,9 @@ function cD.fiuLoadVariables(_, addonName)
       end
    end
 
-   if cD.text.base_font_name ~= nil then cD.text.base_font_name = "fonts/MonospaceTypewriter.ttf" end
+   if cD.text.base_font_name ~= nil then
+      cD.text.base_font_name = "fonts/MonospaceTypewriter.ttf"
+   end
 
    return
 end
@@ -235,6 +237,7 @@ end
 
 Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   cD.fiuLoadVariables,    "Load FIU Session Variables")
 Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, cD.fiuSaveVariables,    "Save FIU Session Variables")
+-- Command.Event.Attach(Event.Addon.Startup.End, cD.createMiniMapButton(), "FIU AutoStart")
 
 --[[
    1,     -- "Silverwood"
