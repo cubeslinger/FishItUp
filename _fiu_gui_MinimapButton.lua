@@ -10,7 +10,7 @@ function cD.createMiniMapButton()
 
    -- avoid creating multiple minimap buttons...
    if not cD.window.mmBtnOBJ then
-      print(string.format("cD.createMiniMapButton: cD.window.mmBtnOBJ=%s", cD.window.mmBtnOBJ))
+--       print(string.format("cD.createMiniMapButton: cD.window.mmBtnOBJ=%s", cD.window.mmBtnOBJ))
 
       --Global context (parent frame-thing).
       mmBtnContext = UI.CreateContext("button_context")

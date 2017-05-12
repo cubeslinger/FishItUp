@@ -87,22 +87,29 @@ local function buildForStock(parent,t)
    local zil, zilIcon, zilName, zilDesc, zilCat = nil, nil, nil, nil, nil
 
    zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames.cacheitemsframe)
---    zil:SetBackgroundColor(.3, .3, .3, .6) -- HERE
    zil:SetBackgroundColor(.2, .2, .2, .6)
+   if cD.totallineheight then
+--       print("HIT")
+      zil:SetHeight(cD.totallineheight)
+   else
+      zil:SetHeight((lootIcon:GetBottom() + cD.borders.bottom ) - zil:GetTop())
+   end
+--    print("ZIL ["..zil:GetHeight().."]")
+
    if first then
       first = false
---       zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  cD.borders.left,  cD.borders.top)
---       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", -cD.borders.right, cD.borders.bottom)
---       zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  cD.borders.left,   1)
---       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", -cD.borders.right, 1)
-      zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  0,   1)
+--       zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  0, 1)
+--       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", 0, 1)
+      zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  0, 1)
       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", 0, 1)
 
+
    else
---       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0,  cD.borders.top)
---       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0,  cD.borders.top)
-      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  0,  1)
-      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0,  1)
+--       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  1,  1)
+--       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 1,  1)
+      zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
+      zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
+
 
    end
    zil:SetLayer(3)
@@ -114,7 +121,7 @@ local function buildForStock(parent,t)
    lootCnt:SetFontColor(objColor.r, objColor.g, objColor.b)
    lootCnt:SetText(string.format("%3d", 0), true)
    lootCnt:SetLayer(3)
-   lootCnt:SetPoint("TOPLEFT",   zil, "TOPLEFT", cD.borders.left, 0)
+   lootCnt:SetPoint("TOPLEFT",   zil, "TOPLEFT", cD.borders.left, -1)
 
    -- Item's Type Icon
    local typeIcon = UI.CreateFrame("Texture", "Type_Icon_" .. t.name, zil)
@@ -123,7 +130,7 @@ local function buildForStock(parent,t)
    if  categoryIcon ~= nil then typeIcon:SetTexture("Rift", categoryIcon)  end
    typeIcon:SetWidth(cD.text.base_font_size)
    typeIcon:SetHeight(cD.text.base_font_size)
-   typeIcon:SetPoint("TOPLEFT",   lootCnt, "TOPRIGHT", cD.borders.left, 3)
+   typeIcon:SetPoint("TOPLEFT",   lootCnt, "TOPRIGHT", cD.borders.left, 4)
    typeIcon:SetLayer(3)
 
    -- Item's Icon
@@ -172,7 +179,13 @@ local function buildForStock(parent,t)
 
    table.insert(ILStock, retval)
 
-   zil:SetHeight((lootIcon:GetBottom() + cD.borders.bottom ) - zil:GetTop())
+--    if cD.totallineheight then
+--       print("HIT")
+--       zil:SetHeight(cD.totallineheight)
+--    else
+--       zil:SetHeight((lootIcon:GetBottom() + cD.borders.bottom ) - zil:GetTop())
+--    end
+--    print("ZIL ["..zil:GetHeight().."]")
 
    return(retval)
 end
@@ -229,8 +242,6 @@ local function createZoneItemLine(parent, zoneName, zID, t)
    zilName  =  fromILStock.zilName
    zilMfJ   =  fromILStock.zilMfJ
 
-   --
-   -- FIRST ROW
    -- Item Counter
    local cnt = cD.getCharScore(zID, t.id)
    zilCount:SetText(string.format("%3d", cnt), true)
@@ -332,7 +343,7 @@ local function populateZoneItemsList(znID, zoneName)
    end
 
 
-   print("CNT {"..cnt.."}{"..visibleItems.."}")
+--    print("CNT {"..cnt.."}{"..visibleItems.."}")
    if cnt > visibleItems then
       cfScroll:SetVisible(true)
       cfScroll:SetEnabled(true)
@@ -466,35 +477,39 @@ function cD.createTotalsWindow()
    totalsExtFrame:SetLayer(1)
    cD.sTOFrames.externaltotalsframe  =   totalsExtFrame
 
-   -- TOTALS MASK FRAME LEFT
-   local leftMaskFrame = UI.CreateFrame("Mask", "Totals_Left_Mask_Frame", cD.sTOFrames.externaltotalsframe)
-   leftMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT")
-   leftMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.left + znListWIDTH + 1, 0)
-   leftMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT")
-   leftMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.left + znListWIDTH + 1, 0)
-   cD.sTOFrames.totalsleftmaskframe  = leftMaskFrame
+      -- TOTALS MASK FRAME LEFT
+      local leftMaskFrame = UI.CreateFrame("Mask", "Totals_Left_Mask_Frame", cD.sTOFrames.externaltotalsframe)
+      leftMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT")
+--       leftMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.left + znListWIDTH, 0)
+      leftMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPLEFT",    znListWIDTH, 0)
+      leftMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT")
+--       leftMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.left + znListWIDTH, 0)
+      leftMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", znListWIDTH, 0)
+      cD.sTOFrames.totalsleftmaskframe  = leftMaskFrame
 
-   -- TOTALS CONTAINER FRAME LEFT
-   local totalsleftFrame =  UI.CreateFrame("Frame", "left_loot_frame", cD.sTOFrames.totalsleftmaskframe)
-   totalsleftFrame:SetAllPoints(cD.sTOFrames.totalsleftmaskframe)
-   totalsleftFrame:SetLayer(1)
---    totalsleftFrame:SetBackgroundColor(1, 0, 0, .6)
-   cD.sTOFrames.totalsleftframe  =   totalsleftFrame
+      -- TOTALS CONTAINER FRAME LEFT
+      local totalsleftFrame =  UI.CreateFrame("Frame", "left_loot_frame", cD.sTOFrames.totalsleftmaskframe)
+      totalsleftFrame:SetAllPoints(cD.sTOFrames.totalsleftmaskframe)
+      totalsleftFrame:SetLayer(1)
+   --    totalsleftFrame:SetBackgroundColor(1, 0, 0, .6)
+      cD.sTOFrames.totalsleftframe  =   totalsleftFrame
 
-   -- TOTALS MASK FRAME RIGHT
-   local rightMaskFrame = UI.CreateFrame("Mask", "Totals_Right_Mask_Frame", cD.sTOFrames.externaltotalsframe)
-   rightMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.right + znListWIDTH + 1, 0)
-   rightMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPRIGHT")
-   rightMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.right + znListWIDTH + 1, 0)
-   rightMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMRIGHT")
-   cD.sTOFrames.totalsrightmaskframe  = rightMaskFrame
+      -- TOTALS MASK FRAME RIGHT
+      local rightMaskFrame = UI.CreateFrame("Mask", "Totals_Right_Mask_Frame", cD.sTOFrames.externaltotalsframe)
+--       rightMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.right + znListWIDTH + 1, 0)
+      rightMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT",    znListWIDTH, 0)
+      rightMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPRIGHT")
+--       rightMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.right + znListWIDTH + 1, 0)
+      rightMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", znListWIDTH, 0)
+      rightMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMRIGHT")
+      cD.sTOFrames.totalsrightmaskframe  = rightMaskFrame
 
-   -- TOTALS CONTAINER FRAME RIGHT
-   local totalsrightFrame =  UI.CreateFrame("Frame", "right_loot_frame", cD.sTOFrames.totalsrightmaskframe)
-   totalsrightFrame:SetAllPoints(cD.sTOFrames.totalsrightmaskframe)
---    totalsrightFrame:SetBackgroundColor(0, 1, 0, .6)
-   totalsrightFrame:SetLayer(1)
-   cD.sTOFrames.totalsrightframe  =   totalsrightFrame
+      -- TOTALS CONTAINER FRAME RIGHT
+      local totalsrightFrame =  UI.CreateFrame("Frame", "right_loot_frame", cD.sTOFrames.totalsrightmaskframe)
+      totalsrightFrame:SetAllPoints(cD.sTOFrames.totalsrightmaskframe)
+   --    totalsrightFrame:SetBackgroundColor(0, 1, 0, .6)
+      totalsrightFrame:SetLayer(1)
+      cD.sTOFrames.totalsrightframe  =   totalsrightFrame
 
    -- TOTALS ZONE ITEMS SCROLLBAR (BOTH)
    tfScroll = UI.CreateFrame("RiftScrollbar","Totals_Frame_scrollbar", cD.sTOFrames.externaltotalsframe)
@@ -635,7 +650,6 @@ function cD.createTotalsWindow()
    -- -----------------------------------------------------------------------------
    local deltaX   =  cD.borders.left + znListWIDTH + 1
    local itemsExtFrame = UI.CreateFrame("Frame", "Cache_Items_Excternal_frame", totalsWindow)
---    itemsExtFrame:SetBackgroundColor(0, 0, 0, 1)
    itemsExtFrame:SetBackgroundColor(.2, .2, .2, 0)
    itemsExtFrame:SetVisible(false)
    itemsExtFrame:SetLayer(2)
@@ -645,59 +659,56 @@ function cD.createTotalsWindow()
    itemsExtFrame:SetPoint("BOTTOMRIGHT", totalsWindow,                       "BOTTOMRIGHT", -(cD.borders.right + sbWIDTH), -cD.borders.bottom)
    cD.sCACFrames.cacheitemsextframe  = itemsExtFrame
 
-   -- CACHE ZONE ITEMS MASK FRAME
-   local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", cD.sCACFrames.cacheitemsextframe)
-   itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames.cacheitemsextframe, "TOPLEFT")
-   itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames.cacheitemsextframe, "TOPRIGHT",    -cD.borders.right, 0)
-   itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames.cacheitemsextframe, "BOTTOMRIGHT", -cD.borders.right, 0)
-   itemsMaskFrame:SetLayer(4)
-   cD.sCACFrames.cacheitemsmaskframe  = itemsMaskFrame
+      -- CACHE ZONE ITEMS MASK FRAME
+      local itemsMaskFrame = UI.CreateFrame("Mask", "Cache_Items_Mask_Frame", cD.sCACFrames.cacheitemsextframe)
+      itemsMaskFrame:SetPoint("TOPLEFT",     cD.sCACFrames.cacheitemsextframe, "TOPLEFT")
+      itemsMaskFrame:SetPoint("TOPRIGHT",    cD.sCACFrames.cacheitemsextframe, "TOPRIGHT",    -cD.borders.right, 0)
+      itemsMaskFrame:SetPoint("BOTTOMRIGHT", cD.sCACFrames.cacheitemsextframe, "BOTTOMRIGHT", -cD.borders.right, 0)
+      itemsMaskFrame:SetLayer(4)
+      cD.sCACFrames.cacheitemsmaskframe  = itemsMaskFrame
 
-   -- CACHE ZONE ITEMS CONTAINER FRAME
-   local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames.cacheitemsmaskframe)
-   cacheFrame:SetAllPoints(cD.sCACFrames.cacheitemsmaskframe)
-   cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
---    cacheFrame:SetBackgroundColor(0, 0, 0, .6)
-   cacheFrame:SetLayer(4)
-   cD.sCACFrames.cacheitemsframe  =   cacheFrame
+      -- CACHE ZONE ITEMS CONTAINER FRAME
+      local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames.cacheitemsmaskframe)
+      cacheFrame:SetAllPoints(cD.sCACFrames.cacheitemsmaskframe)
+      cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
+   --    cacheFrame:SetBackgroundColor(0, 0, 0, .6)
+      cacheFrame:SetLayer(4)
+      cD.sCACFrames.cacheitemsframe  =   cacheFrame
 
-   -- CACHE ZONE ITEMS SCROLLBAR
---    cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames.cacheitemsextframe)
-   cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sTOFrames.externaltotalsframe)
-   cfScroll:SetVisible(false)
-   cfScroll:SetEnabled(false)
-   cfScroll:SetWidth(sbWIDTH)
-   cfScroll:SetOrientation("vertical")
---    cfScroll:SetPoint("TOPLEFT",     cD.sCACFrames.cacheitemsextframe,   "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
---    cfScroll:SetPoint("BOTTOMLEFT",  cD.sCACFrames.cacheitemsextframe,   "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
-   cfScroll:SetPoint("TOPLEFT",     cD.sTOFrames.externaltotalsframe,  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
-   cfScroll:SetPoint("BOTTOMLEFT",  cD.sTOFrames.externaltotalsframe,  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
-   cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
-                                 function()
-                                    local pos = cD.round(cD.sCACFrames.cacheitemsscroll:GetPosition())
-                                    local smin, smax = cD.sCACFrames.cacheitemsscroll:GetRange()
---                                     print(string.format("cfScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
-                                    if       pos == smin  then
-                                             cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                             cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                             cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT",      cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT")
---                                              print("got TOP")
-                                    elseif   pos == smax  then
-                                             cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                             cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                             cD.sCACFrames.cacheitemsframe:SetPoint("BOTTOMLEFT",   cD.sCACFrames.cacheitemsmaskframe, "BOTTOMLEFT")
---                                              print("got BOTTOM")
-                                    else
-                                       cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                       cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                       cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT", cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT", 0, -(ilScrollStep*pos) )
-                                    end
-                                 end,
-                              "ItemsFrame_Scrollbar.Change"
-                        )
-   cD.sCACFrames.cacheitemsscroll  =   cfScroll
-   -- -----------------------------------------------------------------------------
-   --[[  ITEM VIEWER ]]-- [[END]]--
+      -- CACHE ZONE ITEMS SCROLLBAR
+   --    cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames.cacheitemsextframe)
+      cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sTOFrames.externaltotalsframe)
+      cfScroll:SetVisible(false)
+      cfScroll:SetEnabled(false)
+      cfScroll:SetWidth(sbWIDTH)
+      cfScroll:SetOrientation("vertical")
+      cfScroll:SetPoint("TOPLEFT",     cD.sTOFrames.externaltotalsframe,  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
+      cfScroll:SetPoint("BOTTOMLEFT",  cD.sTOFrames.externaltotalsframe,  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
+      cfScroll:EventAttach(   Event.UI.Scrollbar.Change,
+                                    function()
+                                       local pos = cD.round(cD.sCACFrames.cacheitemsscroll:GetPosition())
+                                       local smin, smax = cD.sCACFrames.cacheitemsscroll:GetRange()
+   --                                     print(string.format("cfScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
+                                       if       pos == smin  then
+                                                cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+                                                cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+                                                cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT",      cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT")
+   --                                              print("got TOP")
+                                       elseif   pos == smax  then
+                                                cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+                                                cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+                                                cD.sCACFrames.cacheitemsframe:SetPoint("BOTTOMLEFT",   cD.sCACFrames.cacheitemsmaskframe, "BOTTOMLEFT")
+   --                                              print("got BOTTOM")
+                                       else
+                                          cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+                                          cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+                                          cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT", cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT", 0, -(ilScrollStep*pos) )
+                                       end
+                                    end,
+                                 "ItemsFrame_Scrollbar.Change"
+                           )
+      cD.sCACFrames.cacheitemsscroll  =   cfScroll
+      -- -----------------------------------------------------------------------------
 
    -- Enable Dragging
    Library.LibDraggable.draggify(totalsWindow, cD.updateGuiCoordinates)
@@ -708,8 +719,8 @@ end
 
 function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals, isLegend)
 
---    if leftparent  == nil then leftparent  = cD.sTOFrames.totalsleftframe   end
---    if rightparent == nil then rightparent = cD.sTOFrames.totalsrightframe  end
+   if leftparent  == nil then leftparent  = cD.sTOFrames.totalsleftframe   end
+   if rightparent == nil then rightparent = cD.sTOFrames.totalsrightframe  end
 
    local leftitemframe  =  nil
    local rightitemframe =  nil
@@ -718,6 +729,7 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
    local parentOBJ      =  nil
    local totOBJs        =  {}
    local legendColor    =  1
+   cD.totallineheight   =  nil
 
    -- setup LEFT Item containing Frame (zone name)
    leftitemframe =  UI.CreateFrame("Frame", "Totals_line_left_Container", leftparent)
@@ -739,7 +751,7 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
    znOBJ:SetFontSize(cD.text.base_font_size)
    znOBJ:SetFont(cD.addon, cD.text.base_font_name)
    znOBJ:SetText(zn)
-   znOBJ:SetPoint("TOPLEFT",   leftitemframe, "TOPLEFT", cD.borders.left, 2)
+   znOBJ:SetPoint("TOPLEFT",   leftitemframe, "TOPLEFT", cD.borders.left, 0)
    znOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() selectZone(znID, zoneName) end, "Zone Selected" )
    zlFrames[zoneName] = znOBJ  -- we save the text frame for highlighting
 
@@ -801,8 +813,12 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
    table.insert(totOBJs, totalsTotal)
    parentOBJ   =  totalsTotal
 
-   rightitemframe:SetHeight(znOBJ:GetHeight() + 1)
-   leftitemframe:SetHeight(znOBJ:GetHeight() + 1)
+   cD.totallineheight   =  znOBJ:GetHeight() + 1
+   rightitemframe:SetHeight(cD.totallineheight)
+   leftitemframe:SetHeight(cD.totallineheight)
+--    print("CREATE: ["..cD.totallineheight.."]")
+--    print("LEFT: ["..leftitemframe:GetHeight().."]")
+--    print("RIGHT: ["..rightitemframe:GetHeight().."]")
 
    return leftitemframe, rightitemframe, znOBJ, totOBJs
 end
@@ -888,9 +904,9 @@ function cD.initTotalsWindow()
 
       table.insert(cD.sTOzoneIDs,   zn)
 --       table.insert(cD.sTOFrames,     totalsFrame)
-      table.insert(cD.sTOLeftFrames,     leftItemFrame)
-      table.insert(cD.sTORightFrames,    rightItemFrame)
-      table.insert(cD.sTOznOBJs,    znOBJ)
+      table.insert(cD.sTOLeftFrames,   leftItemFrame)
+      table.insert(cD.sTORightFrames,  rightItemFrame)
+      table.insert(cD.sTOznOBJs,       znOBJ)
       cD.sTOcntOBJs[znID] = totOBJs
 
 --       parentOBJ   =  totalsFrame
