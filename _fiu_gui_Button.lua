@@ -11,7 +11,31 @@ local addon, cD = ...
 local POLECASTBUTTON    =  5
 local LOOTFRAME         =  3
 
+-- local function getPole()
+--
+--    for bagnumber=1,10 do
+--       for bagslot=1,40 do
+--          itemslot = "si"..string.format("%2.2d",bagnumber).."."..string.format("%3.3d",bagslot)
+--          d = Inspect.Item.Detail(itemslot)
+--          if d then
+--             if d.name then
+--                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole")then
+-- --                   local key   =  nil
+-- --                   local val   =  nil
+-- --                   for key, val in pairs(d) do print(string.format("[%s] = [%s]", key, val)) end
+--                   return d
+--                end
+--             end
+--          end
+--       end
+--    end
+--
+--    return
+-- end
+
 local function getPole()
+
+   local poles =  {}
 
    for bagnumber=1,10 do
       for bagslot=1,40 do
@@ -20,18 +44,28 @@ local function getPole()
          if d then
             if d.name then
                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole")then
---                   local key   =  nil
---                   local val   =  nil
---                   for key, val in pairs(d) do print(string.format("[%s] = [%s]", key, val)) end
-                  return d
+                  table.insert(poles, d)
+--                   for a,b in pairs(d) do print(string.format("running [%s]=[%s]", a, b)) end
                end
             end
          end
       end
    end
 
-   return
+   local bestpole  =  nil
+   for idx, tbl in pairs(poles) do
+
+      if bestpole == nil then
+         bestpole = tbl
+      else
+         if bestpole.requiredSkillLevel < tbl.requiredSkillLevel then   bestpole  =  tbl  end
+      end
+   end
+
+--    print(string.format("Pole [%s] rarity[%s]", bestpole.name, bestpole.rarity))
+   return bestpole
 end
+
 
 function cD.loadLastSession()
    local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
@@ -84,7 +118,7 @@ function cD.createButtonWindow()
    -- detect Fishing Pole
    if cD.poleTBL == nil or cD.poleTBL.name == nil then
       cD.poleTBL = getPole()
-      --       print(string.format("pole [%s]", cD.poleTBL.name))
+      print(string.format("pole [%s]", cD.poleTBL.name))
    end
 
    -- Frame Cornice

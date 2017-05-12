@@ -1,9 +1,7 @@
 --
 -- Addon       _fiu_gui_Loot.lua
--- Version     0.4
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
--- StartDate   13/03/2017
 --
 
 local addon, cD = ...
@@ -13,7 +11,12 @@ local LOOTFRAME         =  3
 local LOOTSCROLLBAR     =  4
 local POLECASTBUTTON    =  5
 local EXTERNALLOOTFRAME =  6
+local SCROLLBAR         =  7
 local tLOOTNAMESIZE     =  172
+local maxListItems      =  3
+local sbWIDTH           =  8
+local ltScrollStep      =  1
+local lootWinHeight     =  110
 
 function cD.createLootWindow()
 
@@ -27,6 +30,7 @@ function cD.createLootWindow()
    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
 
    lootWindow:SetWidth(cD.window.width)
+   lootWindow:SetHeight(lootWinHeight)
    lootWindow:SetLayer(-1)
    lootWindow:SetBackgroundColor(0, 0, 0, .5)
 
@@ -52,7 +56,7 @@ function cD.createLootWindow()
    lootFrame:SetLayer(1)
    cD.sLTFrames[LOOTFRAME]  =   lootFrame
 
-   lootWindow:SetHeight( cD.borders.top + cD.sLTFrames[LOOTFRAME]:GetHeight() + cD.borders.bottom)
+--    lootWindow:SetHeight( cD.borders.top + cD.sLTFrames[LOOTFRAME]:GetHeight() + cD.borders.bottom)
 
    -- Enable Dragging
    Library.LibDraggable.draggify(lootWindow, cD.updateGuiCoordinates)
@@ -397,16 +401,90 @@ function cD.sortLootTable(parent)
       end
    end
 
-   --
-   -- Resize container window, since now we sort the loottable we
-   -- can't trust anymore the last in the array to really be the
-   -- last frame, with the lowest X
-   --
-   local highestX =  0
-   local idx      =  nil
-   -- find the frame with the lowest bottom Y position
-   for idx in pairs(cD.sLTfullOBJs) do if highestX < cD.sLTfullOBJs[idx]:GetBottom() then highestX = cD.sLTfullOBJs[idx]:GetBottom() end end
-   cD.window.lootOBJ:SetHeight((highestX - cD.window.lootOBJ:GetTop() ) + (cD.borders.bottom *3))
+--    -- do we need to pop-out the ScrollBar?
+--    if  #keys <= maxListItems then
+--       --
+--       -- Resize container window, since now we sort the loottable we
+--       -- can't trust anymore the last in the array to really be the
+--       -- last frame, with the lowest X
+--       --
+--       local highestX =  0
+--       local idx      =  nil
+--       -- find the frame with the lowest bottom Y position
+--       for idx in pairs(cD.sLTfullOBJs) do if highestX < cD.sLTfullOBJs[idx]:GetBottom() then highestX = cD.sLTfullOBJs[idx]:GetBottom() end end
+--       cD.window.lootOBJ:SetHeight((highestX - cD.window.lootOBJ:GetTop() ) + (cD.borders.bottom *3))
+--    else
+--       -- TOTALS ZONE ITEMS SCROLLBAR (BOTH)
+--       ltScroll = UI.CreateFrame("RiftScrollbar","Loot_Frame_scrollbar", cD.sLTFrames[EXTERNALLOOTFRAME])
+--       ltScroll:SetVisible(true)
+--       ltScroll:SetEnabled(true)
+--       ltScroll:SetWidth(sbWIDTH)
+--       ltScroll:SetOrientation("vertical")
+--       ltScroll:SetPoint("TOPLEFT",     cD.sLTFrames[EXTERNALLOOTFRAME],  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
+--       ltScroll:SetPoint("BOTTOMLEFT",  cD.sLTFrames[EXTERNALLOOTFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
+--       ltScroll:EventAttach(   Event.UI.Scrollbar.Change,
+--                               function()
+--                                  local pos = ltScroll:GetPosition()
+--                                  cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT", cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -math.floor(ltScrollStep*pos) )
+--                               end,
+--                               "Loot_Scrollbar.Change"
+--                            )
+--
+-- --    cD.sTOFrames.totalsframescroll  =   tfScroll
+--       ltScroll:SetRange(1, #keys - maxListItems)
+--       ltScrollStep   =  cD.round(cD.sLTFrames[LOOTFRAME]:GetHeight()/#keys)
+--
+--
+--       cD.sLTFrames[SCROLLBAR] =  ltScroll
+--    end
+
+   if  #keys > maxListItems then
+      -- TOTALS ZONE ITEMS SCROLLBAR (BOTH)
+      ltScroll = UI.CreateFrame("RiftScrollbar","Loot_Frame_scrollbar", cD.sLTFrames[EXTERNALLOOTFRAME])
+      cD.sLTFrames[SCROLLBAR] =  ltScroll
+      ltScroll:SetVisible(true)
+      ltScroll:SetEnabled(true)
+      ltScroll:SetWidth(sbWIDTH)
+      ltScroll:SetOrientation("vertical")
+      ltScroll:SetPoint("TOPLEFT",     cD.sLTFrames[EXTERNALLOOTFRAME],  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
+      ltScroll:SetPoint("BOTTOMLEFT",  cD.sLTFrames[EXTERNALLOOTFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
+--       ltScroll:EventAttach(   Event.UI.Scrollbar.Change,
+--                                                                function()
+--                                                               local pos = ltScroll:GetPosition()
+--                                                               cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT", cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -math.floor(ltScrollStep*pos) )
+--                                                            end,
+--                                                                "Loot_Scrollbar.Change"
+--                                                         )
+
+      ltScroll:EventAttach(   Event.UI.Scrollbar.Change, function()
+                                                            local pos = cD.round(cD.sLTFrames[SCROLLBAR]:GetPosition())
+                                                            local smin, smax = cD.sLTFrames[SCROLLBAR]:GetRange()
+--                                                             print(string.format("ltScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
+                                                            if pos == smin  then
+                                                               cD.sLTFrames[LOOTFRAME]:ClearPoint("TOPLEFT")
+                                                               cD.sLTFrames[LOOTFRAME]:ClearPoint("BOTTOMLEFT")
+                                                               cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT",  cD.sLTFrames[MASKFRAME], "TOPLEFT")
+--                                                                print("got TOP")
+                                                            else
+                                                               if (cD.sLTFrames[LOOTFRAME]:GetBottom() - ltScrollStep*pos) >= cD.sLTFrames[MASKFRAME]:GetTop() then
+                                                                  cD.sLTFrames[LOOTFRAME]:ClearPoint("TOPLEFT")
+                                                                  cD.sLTFrames[LOOTFRAME]:ClearPoint("BOTTOMLEFT")
+                                                                  cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT",  cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -(ltScrollStep*pos) )
+                                                               else
+--                                                                   print("already at BOTTOM")
+                                                               end
+                                                            end
+                                                         end,
+                                                         "Loot_Scrollbar.Change"
+                           )
+
+
+--    cD.sTOFrames.totalsframescroll  =   tfScroll
+      ltScroll:SetRange(1, #keys - maxListItems)
+--       ltScrollStep   =  cD.round(cD.sLTFrames[LOOTFRAME]:GetHeight()/#keys) + cD.borders.top
+      ltScrollStep   =  cD.sLTfullOBJs[1]:GetHeight() + cD.borders.top
+--       cD.sLTFrames[SCROLLBAR] =  ltScroll
+   end
 
    return
 end

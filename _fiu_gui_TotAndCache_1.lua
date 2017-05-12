@@ -694,15 +694,17 @@ function cD.createTotalsWindow()
                                                 cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
                                                 cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT",      cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT")
    --                                              print("got TOP")
-                                       elseif   pos == smax  then
-                                                cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                                cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                                cD.sCACFrames.cacheitemsframe:SetPoint("BOTTOMLEFT",   cD.sCACFrames.cacheitemsmaskframe, "BOTTOMLEFT")
-   --                                              print("got BOTTOM")
+--                                        elseif   pos == smax  then
+--                                                 cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+--                                                 cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+--                                                 cD.sCACFrames.cacheitemsframe:SetPoint("BOTTOMLEFT",   cD.sCACFrames.cacheitemsmaskframe, "BOTTOMLEFT")
+--    --                                              print("got BOTTOM")
                                        else
-                                          cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                          cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                          cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT", cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT", 0, -(ilScrollStep*pos) )
+                                          if (cD.sCACFrames.cacheitemsframe:GetBottom() - ilScrollStep*pos) >= cD.sCACFrames.cacheitemsmaskframe:GetTop() then
+                                             cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+                                             cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+                                             cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT", cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT", 0, -(ilScrollStep*pos) )
+                                          end
                                        end
                                     end,
                                  "ItemsFrame_Scrollbar.Change"
