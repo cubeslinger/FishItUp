@@ -15,8 +15,8 @@ local SCROLLBAR         =  7
 local tLOOTNAMESIZE     =  172
 local maxListItems      =  3
 local sbWIDTH           =  8
-local ltScrollStep      =  1
-local lootWinHeight     =  110
+-- local ltScrollStep      =  1
+-- local lootWinHeight     =  110
 
 function cD.createLootWindow()
 
@@ -30,7 +30,7 @@ function cD.createLootWindow()
    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
 
    lootWindow:SetWidth(cD.window.width)
-   lootWindow:SetHeight(lootWinHeight)
+--    lootWindow:SetHeight(lootWinHeight)
    lootWindow:SetLayer(-1)
    lootWindow:SetBackgroundColor(0, 0, 0, .5)
 
@@ -129,8 +129,6 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
          lootFrame:SetPoint("TOPRIGHT",   parent, "TOPRIGHT", 0, cD.borders.top)
       end
 
---       lootFrame:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
-
       --
       -- Actually we draw Icons for just 2 itemtypes: Exchangeable Fishes and Artifacts.
       --
@@ -181,22 +179,18 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       if objRarity == "sellable" then
          cD.totJunkMoney = cD.totJunkMoney + itemValue
          lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)
+      else
+         -- IF IT AIN'T JUNK WE ATTACH the TOOLTIP EVENTS!
+         -- ToolTip  -----------------------------------------------------------------------------------------
+               -- Mouse Hover IN    => show tooltip   -- cD.selectItemtoView(t.zone, t.id)
+         textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(itemZone, lootOBJ)  end, "Event.UI.Input.Mouse.Cursor.In")
+         -- Mouse Hover OUT   => show tooltip
+         textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
+         -- ToolTip  -----------------------------------------------------------------------------------------
       end
       textOBJ:SetText(lootText, true)
       textOBJ:SetLayer(3)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-      textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
--- ZZZZ  -----------------------------------------------------------------------------------------
-      -- Mouse Hover IN    => show tooltip   -- cD.selectItemtoView(t.zone, t.id)
---       textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function()  Command.Tooltip(lootOBJ) end, "Event.UI.Input.Mouse.Cursor.In")
-      textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(itemZone, lootOBJ)  end, "Event.UI.Input.Mouse.Cursor.In")
-      -- Mouse Hover OUT   => show tooltip
---       textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() Command.Tooltip(nil) end, "Event.UI.Input.Mouse.Cursor.Out")
-      textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
-
--- ZZZZ  -----------------------------------------------------------------------------------------
-
-
       textOBJ:SetPoint("TOPLEFT",   lootCnt,    "TOPRIGHT", cD.borders.left, 0)
 
       -- setup Loot Item's Percentage counter
@@ -263,10 +257,17 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       if objRarity == "sellable" then
          cD.totJunkMoney = cD.totJunkMoney + itemValue
          lootText  =  "Junk "..cD.printJunkMoney(cD.totJunkMoney)
+      else
+         -- IF IT AIN'T JUNK WE ATTACH the TOOLTIP EVENTS!
+         -- ToolTip  -----------------------------------------------------------------------------------------
+               -- Mouse Hover IN    => show tooltip   -- cD.selectItemtoView(t.zone, t.id)
+         textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(itemZone, lootOBJ)  end, "Event.UI.Input.Mouse.Cursor.In")
+         -- Mouse Hover OUT   => show tooltip
+         textOBJ:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
+         -- ToolTip  -----------------------------------------------------------------------------------------
       end
       textOBJ:SetText(lootText, true)
       textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-      textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(itemZone, itemID) end, "Item Selected" )
 
       -- setup Loot Item's Percentage counter
       prcntCnt:SetText(string.format("(%d", 0).."%)")
@@ -308,7 +309,6 @@ function  cD.resetLootWindow(manual)
       tbl.lootFrame:SetVisible(false)
    end
    --
-   --
    -- Reset the "Junk" releted
    --
    cD.junkOBJ     =  nil
@@ -334,22 +334,46 @@ function fetchFromStock()
 
    for idx, tbl in pairs(cD.Stock) do
       if not tbl.inUse then
-         retval = tbl
          -- set the frame as INUSE
-         cD.Stock[idx].inUse     =  true
+         tbl.inUse     =  true
 
          -- stop rendering of old category icon that keeps re-emerging
-         cD.Stock[idx].typeIcon:SetVisible(false)
+         tbl.typeIcon:SetVisible(false)
 
          -- then we try to dereference it, somehow...
-         cD.Stock[idx].typeIcon  =  nil
+         tbl.typeIcon  =  nil
 
          -- finally we create a new icon and we reference in cD.Stock for future uses
-         cD.Stock[idx].typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, cD.Stock[idx].lootFrame)
-         cD.Stock[idx].typeIcon:SetWidth(cD.text.base_font_size)
-         cD.Stock[idx].typeIcon:SetHeight(cD.text.base_font_size)
-         cD.Stock[idx].typeIcon:SetLayer(3)
-         cD.Stock[idx].typeIcon:SetPoint("TOPLEFT",   cD.Stock[idx].lootFrame, "TOPLEFT", cD.borders.left, 0)
+         tbl.typeIcon  = UI.CreateFrame("Texture", "Type_Icon_fromStock_" .. idx, tbl.lootFrame)
+         tbl.typeIcon:SetWidth(cD.text.base_font_size)
+         tbl.typeIcon:SetHeight(cD.text.base_font_size)
+         tbl.typeIcon:SetLayer(3)
+         tbl.typeIcon:SetPoint("TOPLEFT",   tbl.lootFrame, "TOPLEFT", cD.borders.left, 0)
+
+         --
+         -- reset tooltip mouse events
+         --
+         local a,b,c,d
+         local eventlist =  tbl.textOBJ:EventList(Event.UI.Input.Mouse.Cursor.In)
+--          for a,b in pairs(eventlist) do
+--             for c, d in pairs(b) do
+--                print(string.format("a[%s] c[%s] d[%s]", a, c, d))
+--             end
+--             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.In, b.handler, b.label)
+--          end
+         tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.In, eventlist[1].handler, eventlist[1].label)
+
+         eventlist =  tbl.textOBJ:EventList(Event.UI.Input.Mouse.Cursor.Out)
+--          for a,b in pairs(eventlist) do
+--             for c, d in pairs(b) do
+--                print(string.format("c[%s] d[%s]", c, d))
+--             end
+--             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.Out, b.handler, b.label)
+--          end
+         tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.Out, eventlist[1].handler, eventlist[1].label)
+
+         retval   =  tbl
+
          break
       end
    end
@@ -401,90 +425,15 @@ function cD.sortLootTable(parent)
       end
    end
 
---    -- do we need to pop-out the ScrollBar?
---    if  #keys <= maxListItems then
---       --
---       -- Resize container window, since now we sort the loottable we
---       -- can't trust anymore the last in the array to really be the
---       -- last frame, with the lowest X
---       --
---       local highestX =  0
---       local idx      =  nil
---       -- find the frame with the lowest bottom Y position
---       for idx in pairs(cD.sLTfullOBJs) do if highestX < cD.sLTfullOBJs[idx]:GetBottom() then highestX = cD.sLTfullOBJs[idx]:GetBottom() end end
---       cD.window.lootOBJ:SetHeight((highestX - cD.window.lootOBJ:GetTop() ) + (cD.borders.bottom *3))
---    else
---       -- TOTALS ZONE ITEMS SCROLLBAR (BOTH)
---       ltScroll = UI.CreateFrame("RiftScrollbar","Loot_Frame_scrollbar", cD.sLTFrames[EXTERNALLOOTFRAME])
---       ltScroll:SetVisible(true)
---       ltScroll:SetEnabled(true)
---       ltScroll:SetWidth(sbWIDTH)
---       ltScroll:SetOrientation("vertical")
---       ltScroll:SetPoint("TOPLEFT",     cD.sLTFrames[EXTERNALLOOTFRAME],  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
---       ltScroll:SetPoint("BOTTOMLEFT",  cD.sLTFrames[EXTERNALLOOTFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
---       ltScroll:EventAttach(   Event.UI.Scrollbar.Change,
---                               function()
---                                  local pos = ltScroll:GetPosition()
---                                  cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT", cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -math.floor(ltScrollStep*pos) )
---                               end,
---                               "Loot_Scrollbar.Change"
---                            )
---
--- --    cD.sTOFrames.totalsframescroll  =   tfScroll
---       ltScroll:SetRange(1, #keys - maxListItems)
---       ltScrollStep   =  cD.round(cD.sLTFrames[LOOTFRAME]:GetHeight()/#keys)
---
---
---       cD.sLTFrames[SCROLLBAR] =  ltScroll
---    end
-
-   if  #keys > maxListItems then
-      -- TOTALS ZONE ITEMS SCROLLBAR (BOTH)
-      ltScroll = UI.CreateFrame("RiftScrollbar","Loot_Frame_scrollbar", cD.sLTFrames[EXTERNALLOOTFRAME])
-      cD.sLTFrames[SCROLLBAR] =  ltScroll
-      ltScroll:SetVisible(true)
-      ltScroll:SetEnabled(true)
-      ltScroll:SetWidth(sbWIDTH)
-      ltScroll:SetOrientation("vertical")
-      ltScroll:SetPoint("TOPLEFT",     cD.sLTFrames[EXTERNALLOOTFRAME],  "TOPRIGHT",    -(cD.borders.right/2)+1, 0)
-      ltScroll:SetPoint("BOTTOMLEFT",  cD.sLTFrames[EXTERNALLOOTFRAME],  "BOTTOMRIGHT", -(cD.borders.right/2)+1, 0)
---       ltScroll:EventAttach(   Event.UI.Scrollbar.Change,
---                                                                function()
---                                                               local pos = ltScroll:GetPosition()
---                                                               cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT", cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -math.floor(ltScrollStep*pos) )
---                                                            end,
---                                                                "Loot_Scrollbar.Change"
---                                                         )
-
-      ltScroll:EventAttach(   Event.UI.Scrollbar.Change, function()
-                                                            local pos = cD.round(cD.sLTFrames[SCROLLBAR]:GetPosition())
-                                                            local smin, smax = cD.sLTFrames[SCROLLBAR]:GetRange()
---                                                             print(string.format("ltScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
-                                                            if pos == smin  then
-                                                               cD.sLTFrames[LOOTFRAME]:ClearPoint("TOPLEFT")
-                                                               cD.sLTFrames[LOOTFRAME]:ClearPoint("BOTTOMLEFT")
-                                                               cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT",  cD.sLTFrames[MASKFRAME], "TOPLEFT")
---                                                                print("got TOP")
-                                                            else
-                                                               if (cD.sLTFrames[LOOTFRAME]:GetBottom() - ltScrollStep*pos) >= cD.sLTFrames[MASKFRAME]:GetTop() then
-                                                                  cD.sLTFrames[LOOTFRAME]:ClearPoint("TOPLEFT")
-                                                                  cD.sLTFrames[LOOTFRAME]:ClearPoint("BOTTOMLEFT")
-                                                                  cD.sLTFrames[LOOTFRAME]:SetPoint("TOPLEFT",  cD.sLTFrames[MASKFRAME], "TOPLEFT", 0, -(ltScrollStep*pos) )
-                                                               else
---                                                                   print("already at BOTTOM")
-                                                               end
-                                                            end
-                                                         end,
-                                                         "Loot_Scrollbar.Change"
-                           )
-
-
---    cD.sTOFrames.totalsframescroll  =   tfScroll
-      ltScroll:SetRange(1, #keys - maxListItems)
---       ltScrollStep   =  cD.round(cD.sLTFrames[LOOTFRAME]:GetHeight()/#keys) + cD.borders.top
-      ltScrollStep   =  cD.sLTfullOBJs[1]:GetHeight() + cD.borders.top
---       cD.sLTFrames[SCROLLBAR] =  ltScroll
-   end
+   -- Resize container window, since now we sort the loottable we
+   -- can't trust anymore the last in the array to really be the
+   -- last frame, with the lowest X
+   --
+   local highestX =  0
+   local idx      =  nil
+   -- find the frame with the lowest bottom Y position
+   for idx in pairs(cD.sLTfullOBJs) do if highestX < cD.sLTfullOBJs[idx]:GetBottom() then highestX = cD.sLTfullOBJs[idx]:GetBottom() end end
+   cD.window.lootOBJ:SetHeight((highestX - cD.window.lootOBJ:GetTop() ) + (cD.borders.bottom *3))
 
    return
 end

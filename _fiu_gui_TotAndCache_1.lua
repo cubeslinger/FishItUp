@@ -2,7 +2,6 @@
 -- Addon       _fiu_gui_TotAndcache.lua
 -- Author      marcob@marcob.org
 -- StartDate   08/04/2017
--- StartDate   09/03/2017
 --
 
 local addon, cD = ...
