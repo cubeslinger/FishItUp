@@ -43,7 +43,9 @@ local function getPole()
          d = Inspect.Item.Detail(itemslot)
          if d then
             if d.name then
-               if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole")then
+--                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole") then
+               if ((string.find(d.name, "Fishing Pole") and not string.find(d.name, "Recipe")) or
+                  (string.find(d.name, "Fishin' Pole") and not string.find(d.name, "Recipe"))) then
                   table.insert(poles, d)
 --                   for a,b in pairs(d) do print(string.format("running [%s]=[%s]", a, b)) end
                end
