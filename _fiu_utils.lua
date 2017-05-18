@@ -25,7 +25,6 @@ local function updateCharScore(itemID, itemZone, lootCount)
    return
 end
 
--- function cD.printJunkMoney(money, pad)
 function cD.printJunkMoney(money, pad)
    local silver   =  '#c0c0c0'
    local gold     =  '#ffd700'
@@ -174,7 +173,7 @@ function cD.processEventBuffer()
    local LASTTIME, LASTOBJ
    local idx, tbl, t, o
    local newItemBase  =  cD.scanInventories()
-   
+
    -- reset InfoWindow Loot IconList
    cD.resetIconsList()
 
@@ -241,13 +240,6 @@ function cD.detachLootWatchers()
 
    return
 end
-
--- function cD.detachOtherWatchers()
---    Command.Event.Detach(Event.Unit.Detail.Combat,  cD.stopFishingEvent, "Player in Combat")
---    Command.Event.Detach(Event.Unit.Castbar,        cD.gotCastBar,       "Player is Casting")
---
---    return
--- end
 
 function cD.stopFishingEvent(h, event)
 

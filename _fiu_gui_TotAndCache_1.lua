@@ -445,13 +445,24 @@ function cD.createTotalsWindow()
    titleTotalsFrame:SetHeight(cD.text.base_font_size + 4)
    cD.sTOFrames.titlebartotalsframe  =   titleTotalsFrame
 
+
+      -- HEADER FishItUp! Icon
+      local fiuIcon  = UI.CreateFrame("Texture", "fiuIcon", titleTotalsFrame)
+      fiuIcon:SetTexture("Rift", "Fish_icon.png.dds")
+      fiuIcon:SetHeight(cD.round(cD.text.base_font_size*1.5))
+      fiuIcon:SetWidth(cD.round(cD.text.base_font_size*1.5))
+      fiuIcon:SetLayer(1)
+      fiuIcon:SetPoint("TOPLEFT", cD.sTOFrames.titlebartotalsframe, "TOPLEFT", 0, -2)
+      cD.sTOFrames.titlebarfiuicon  =   fiuIcon
+
       -- TITLE BAR TITLE
       local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleTotalsFrame)
-      titleFIU:SetFontSize(cD.text.base_font_size)
-      titleFIU:SetText("FIU! Lifetime Totals")
+      titleFIU:SetFontSize(cD.text.base_font_size -2)
+      titleFIU:SetText("Waterlog")
       titleFIU:SetFont(cD.addon, cD.text.base_font_name)
       titleFIU:SetLayer(3)
-      titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebartotalsframe, "TOPLEFT", cD.borders.left, 0)
+--       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebartotalsframe, "TOPLEFT", cD.borders.left, 0)
+      titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebarfiuicon, "TOPRIGHT", cD.borders.left, 0)
       cD.sTOFrames.titlebarcontentframe  =   titleFIU
 
 
@@ -459,13 +470,15 @@ function cD.createTotalsWindow()
       lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", cD.sTOFrames.titlebartotalsframe)
 --       lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
       lootIcon:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
-      lootIcon:SetWidth(cD.text.base_font_size)
-      lootIcon:SetHeight(cD.text.base_font_size)
-      lootIcon:SetPoint("TOPRIGHT",   cD.sTOFrames.titlebartotalsframe, "TOPRIGHT", -cD.borders.right, 0)
+--       lootIcon:SetWidth(cD.text.base_font_size)
+--       lootIcon:SetHeight(cD.text.base_font_size)
+      lootIcon:SetWidth(fiuIcon:GetWidth())
+      lootIcon:SetHeight(fiuIcon:GetHeight())
       lootIcon:SetLayer(3)
+      lootIcon:SetPoint("TOPRIGHT",   cD.sTOFrames.titlebartotalsframe, "TOPRIGHT", -cD.borders.right, 0)
       lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end , "Iconize Totals Pressed" )
 
-      titleTotalsFrame:SetHeight(cD.text.base_font_size + 6)
+--       titleTotalsFrame:SetHeight(cD.text.base_font_size + 6)
 
    -- EXTERNAL TOTALS CONTAINER FRAME
    local totalsExtFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)

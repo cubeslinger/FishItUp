@@ -23,13 +23,24 @@ local function createTitleBar(parent)
    titleInfoFrame:SetBackgroundColor(.1, .1, .1, .7)
    titleInfoFrame:SetLayer(1)
 
+      -- HEADER FishItUp! Icon
+      local fiuIcon  = UI.CreateFrame("Texture", "fiuIcon", titleInfoFrame)
+      fiuIcon:SetTexture("Rift", "Fish_icon.png.dds")
+--       fiuIcon:SetHeight(titleFIU:GetHeight())
+--       fiuIcon:SetWidth(titleFIU:GetHeight())
+      fiuIcon:SetHeight(cD.round(cD.text.base_font_size*1.5))
+      fiuIcon:SetWidth(cD.round(cD.text.base_font_size*1.5))
+      fiuIcon:SetLayer(1)
+      fiuIcon:SetPoint("TOPLEFT", titleInfoFrame, "TOPLEFT", 0, -1)
+
       -- TITLE BAR TITLE
       local titleFIU =  UI.CreateFrame("Text", "FIU_Title", titleInfoFrame)
       titleFIU:SetFontSize(cD.text.base_font_size -2)
-      titleFIU:SetText("FishItUp!")
+--       titleFIU:SetText("FishItUp!")
+      titleFIU:SetText(cD.fiuTITLE, true)
       titleFIU:SetFont(cD.addon, cD.text.base_font_name)
       titleFIU:SetLayer(3)
-      titleFIU:SetPoint("TOPLEFT", titleInfoFrame, "TOPLEFT", cD.borders.left, 0)
+      titleFIU:SetPoint("TOPLEFT", fiuIcon, "TOPRIGHT", cD.borders.left, 0)
 
       -- HEADER ICONIZE BUTTON
       local iconizeButton = UI.CreateFrame("Texture", "Iconize Button", titleInfoFrame)
@@ -243,7 +254,7 @@ function cD.createInfoWindow()
 --       lwwidget:SetWidth(titleFIU:GetHeight())
       lwwidget:SetLayer(1)
       lwwidget:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.lootOBJ:SetVisible(not cD.window.lootOBJ:GetVisible()) end, "lootwindow widget pressed" )
-      lwwidget:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", -cD.borders.right, -cD.borders.bottom)
+      lwwidget:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", -(cD.borders.right*2), -cD.borders.bottom)
 
       headerFrame:SetHeight(cD.round(labelTimerOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
 

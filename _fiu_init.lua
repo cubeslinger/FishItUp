@@ -133,11 +133,18 @@ end
    cD.sIVFrames   =  {}
    cD.ivOBJ       =  {}
 
-
+   -- GUI
    cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
    cD.text        =  {  base_font_size=14,
                         base_font_name="fonts/MonospaceTypewriter.ttf"
                      }
+   --
+   local white =  "#FFFFFF"
+   local blue  =  "#00AAFF"
+   local yellow=  "#FFFF00"
+   local cyan  =  "#00FFFF"
+   --
+   cD.fiuTITLE    =  "<font color=\'"..blue.."\'>Fish</font><font color=\'"..cyan.."\'>It</font><font color=\'"..white.."\'>Up</font><font color=\'"..yellow.."\'>!</font>"
    cD.timeStart   =  nil
    cD.time2Wait   =  .5             -- wait .2 more second
    cD.waitingForTheSunRunning =  false
