@@ -26,8 +26,11 @@ function cD.createLootWindow()
    local lootWindow    =  UI.CreateFrame("Frame", "Loot", context)
 
    -- Clamp to InfoWindow Bottom
-   lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT",  0, 1)
-   lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
+--    lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT",  0, 1)
+--    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
+   lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT")
+   lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT")
+
 
    lootWindow:SetWidth(cD.window.width)
 --    lootWindow:SetHeight(lootWinHeight)
@@ -58,8 +61,8 @@ function cD.createLootWindow()
 
 --    lootWindow:SetHeight( cD.borders.top + cD.sLTFrames[LOOTFRAME]:GetHeight() + cD.borders.bottom)
 
-   -- Enable Dragging
-   Library.LibDraggable.draggify(lootWindow, cD.updateGuiCoordinates)
+--    -- Enable Dragging
+--    Library.LibDraggable.draggify(lootWindow, cD.updateGuiCoordinates)
 
    return lootWindow
 

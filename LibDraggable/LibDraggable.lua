@@ -1,5 +1,9 @@
 --[[ LibDraggable
   Library.LibDraggable.draggify(window)
+
+  Notes: modified for FishItUp! by marcob@marcob.org
+         1) moves frames and not windows anymore.
+         2) reacts on RIGHT mouse clicks and not LEFT.
 ]]--
 
 if not Library then Library = {} end
@@ -19,10 +23,10 @@ function Draggable.draggify(window, callback)
   newtab.callback = callback
 --   local border = window:GetBorder()
    local border = window
-  border:EventAttach(Event.UI.Input.Mouse.Left.Down, function(...) Draggable.leftdown(window, ...) end, "draggable_left_down")
+  border:EventAttach(Event.UI.Input.Mouse.Right.Down, function(...) Draggable.leftdown(window, ...) end, "draggable_left_down")
   border:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function(...) Draggable.mousemove(window, ...) end, "draggable_mouse_move")
-  border:EventAttach(Event.UI.Input.Mouse.Left.Up, function(...) Draggable.leftup(window, ...) end, "draggable_left_up")
-  border:EventAttach(Event.UI.Input.Mouse.Left.Upoutside, function(...) Draggable.leftupoutside(window, ...) end, "draggable_left_upoutside")
+  border:EventAttach(Event.UI.Input.Mouse.Right.Up, function(...) Draggable.leftup(window, ...) end, "draggable_left_up")
+  border:EventAttach(Event.UI.Input.Mouse.Right.Upoutside, function(...) Draggable.leftupoutside(window, ...) end, "draggable_left_upoutside")
   Draggable.windows[window] = newtab
 end
 

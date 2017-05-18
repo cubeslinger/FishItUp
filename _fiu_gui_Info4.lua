@@ -31,6 +31,15 @@ local function createTitleBar(parent)
       titleFIU:SetLayer(3)
       titleFIU:SetPoint("TOPLEFT", titleInfoFrame, "TOPLEFT", cD.borders.left, 0)
 
+      -- HEADER ICONIZE BUTTON
+      local iconizeButton = UI.CreateFrame("Texture", "Iconize Button", titleInfoFrame)
+      iconizeButton:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
+      iconizeButton:SetHeight(titleFIU:GetHeight())
+      iconizeButton:SetWidth(titleFIU:GetHeight())
+      iconizeButton:SetLayer(1)
+      iconizeButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.infoOBJ:SetVisible(false) cD.window.lootOBJ:SetVisible(false)end, "Iconize Info Button Pressed" )
+      iconizeButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
+
       -- HEADER RESET BUTTON
       local resetButton = UI.CreateFrame("Texture", "Reset Button", titleInfoFrame)
       resetButton:SetTexture("Rift", "NPCDialogIcon_questrepeatable.png.dds")
@@ -38,7 +47,8 @@ local function createTitleBar(parent)
       resetButton:SetWidth(titleFIU:GetHeight())
       resetButton:SetLayer(1)
       resetButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow(true) end, "Reset Button Pressed" )
-      resetButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
+--       resetButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
+      resetButton:SetPoint("TOPRIGHT", iconizeButton, "TOPLEFT", -2, -1)
 
       -- HEADER SHOW TOTALS WINDOW BUTTON
       local showTotalsButton = UI.CreateFrame("Texture", "totalsButton", titleInfoFrame)
@@ -47,7 +57,8 @@ local function createTitleBar(parent)
       showTotalsButton:SetWidth(titleFIU:GetHeight())
       showTotalsButton:SetLayer(1)
       showTotalsButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end, "Totals Button Pressed" )
-      showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT", -2, 1)
+--       showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT", -2, 1)
+      showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT")
 
    -- re-arrenge title container Height
    titleInfoFrame:SetHeight((titleFIU:GetBottom() - titleInfoFrame:GetTop()))

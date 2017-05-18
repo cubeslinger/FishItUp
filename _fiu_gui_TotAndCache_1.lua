@@ -457,7 +457,8 @@ function cD.createTotalsWindow()
 
       -- TITLE BAR Widgets: setup Icon for Iconize
       lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", cD.sTOFrames.titlebartotalsframe)
-      lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
+--       lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
+      lootIcon:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
       lootIcon:SetWidth(cD.text.base_font_size)
       lootIcon:SetHeight(cD.text.base_font_size)
       lootIcon:SetPoint("TOPRIGHT",   cD.sTOFrames.titlebartotalsframe, "TOPRIGHT", -cD.borders.right, 0)
