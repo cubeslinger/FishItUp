@@ -1,7 +1,7 @@
 Identifier  =  "FishItUp"
 Name        =  { English = "FishItUp" }
 NameShort   =  "FishItUp"
-Version     =  "0.26.08"
+Version     =  "0.26.11"
 Description =  { English = "FishItUp! use /fiu to show or hide fishing window" }
 Author      =  "marcob@marcob.org"
 Website     =  "http://www.fu.bar/"
@@ -16,7 +16,7 @@ RunOnStartup = {
    "_fiu_inventory.lua",
    "_fiu_gui_MinimapButton.lua",
    "_fiu_gui_ItemViewer.lua",
-   "_fiu_gui_Info3.lua",
+   "_fiu_gui_Info4.lua",
    "_fiu_gui_Loot2.lua",
    "_fiu_gui_TotAndCache_1.lua",
    "_fiu_gui_Button.lua",

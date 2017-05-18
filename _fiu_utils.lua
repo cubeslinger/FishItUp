@@ -1,11 +1,7 @@
 --
 -- Addon       _fiu_utils.lua
--- Version     0.8
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
--- StartDate   13/03/2017
---
--- History     0.2   ADDED:   pack all Junk items in one row
 --
 
 local addon, cD = ...
@@ -178,6 +174,9 @@ function cD.processEventBuffer()
    local LASTTIME, LASTOBJ
    local idx, tbl, t, o
    local newItemBase  =  cD.scanInventories()
+   
+   -- reset InfoWindow Loot IconList
+   cD.resetIconsList()
 
    for idx, tbl in pairs(cD.eventBuffer) do
 
@@ -192,6 +191,7 @@ function cD.processEventBuffer()
 
 --          cD.updateLootTable( o, 1, false )
          cD.updateLootTable( o, quantity, false )
+         cD.updateInfoIcons( o, quantity)
 
       end
    end
