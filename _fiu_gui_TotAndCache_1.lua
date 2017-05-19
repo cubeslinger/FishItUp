@@ -444,6 +444,7 @@ function cD.createTotalsWindow()
    titleTotalsFrame:SetLayer(1)
    titleTotalsFrame:SetHeight(cD.text.base_font_size + 4)
    cD.sTOFrames.titlebartotalsframe  =   titleTotalsFrame
+   cD.attachTT(cD.sTOFrames.titlebartotalsframe, "titlebar")
 
 
       -- HEADER FishItUp! Icon
@@ -464,6 +465,7 @@ function cD.createTotalsWindow()
 --       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebartotalsframe, "TOPLEFT", cD.borders.left, 0)
       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebarfiuicon, "TOPRIGHT", cD.borders.left, 0)
       cD.sTOFrames.titlebarcontentframe  =   titleFIU
+      cD.attachTT(titleFIU, "titlebar")
 
 
       -- TITLE BAR Widgets: setup Icon for Iconize
@@ -477,6 +479,7 @@ function cD.createTotalsWindow()
       lootIcon:SetLayer(3)
       lootIcon:SetPoint("TOPRIGHT",   cD.sTOFrames.titlebartotalsframe, "TOPRIGHT", -cD.borders.right, 0)
       lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end , "Iconize Totals Pressed" )
+      cD.attachTT(lootIcon, "minimize")
 
 --       titleTotalsFrame:SetHeight(cD.text.base_font_size + 6)
 

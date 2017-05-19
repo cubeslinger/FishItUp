@@ -1,5 +1,5 @@
 --
--- Addon       _fiu_gui_Info2.lua
+-- Addon       _fiu_gui_Info4.lua
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
 --
@@ -22,6 +22,7 @@ local function createTitleBar(parent)
    titleInfoFrame:SetPoint("TOPRIGHT",    parent, "TOPRIGHT",    - cD.borders.right, cD.borders.top)
    titleInfoFrame:SetBackgroundColor(.1, .1, .1, .7)
    titleInfoFrame:SetLayer(1)
+   cD.attachTT(titleInfoFrame, "titlebar")
 
       -- HEADER FishItUp! Icon
       local fiuIcon  = UI.CreateFrame("Texture", "fiuIcon", titleInfoFrame)
@@ -50,6 +51,7 @@ local function createTitleBar(parent)
       iconizeButton:SetLayer(1)
       iconizeButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.infoOBJ:SetVisible(false) cD.window.lootOBJ:SetVisible(false)end, "Iconize Info Button Pressed" )
       iconizeButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
+      cD.attachTT(iconizeButton, "minimize")
 
       -- HEADER RESET BUTTON
       local resetButton = UI.CreateFrame("Texture", "Reset Button", titleInfoFrame)
@@ -60,6 +62,7 @@ local function createTitleBar(parent)
       resetButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.resetInfoWindow() cD.resetLootWindow(true) end, "Reset Button Pressed" )
 --       resetButton:SetPoint("TOPRIGHT", titleInfoFrame, "TOPRIGHT", - cD.borders.right, 1)
       resetButton:SetPoint("TOPRIGHT", iconizeButton, "TOPLEFT", -2, -1)
+      cD.attachTT(resetButton, "reset")
 
       -- HEADER SHOW TOTALS WINDOW BUTTON
       local showTotalsButton = UI.CreateFrame("Texture", "totalsButton", titleInfoFrame)
@@ -70,6 +73,7 @@ local function createTitleBar(parent)
       showTotalsButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end, "Totals Button Pressed" )
 --       showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT", -2, 1)
       showTotalsButton:SetPoint("TOPRIGHT", resetButton, "TOPLEFT")
+      cD.attachTT(showTotalsButton, "totwin")
 
    -- re-arrenge title container Height
    titleInfoFrame:SetHeight((titleFIU:GetBottom() - titleInfoFrame:GetTop()))
@@ -170,7 +174,8 @@ function cD.createInfoWindow()
          castsOBJ:SetFontSize(cD.text.base_font_size)
          castsOBJ:SetLayer(1)
          castsOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         castsOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "TOPRIGHT", cD.borders.left, 0)
+--          castsOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "TOPRIGHT", cD.borders.left, 0)
+         castsOBJ:SetPoint("TOPLEFT", labelCastsOBJ, "TOPRIGHT")
          table.insert(cD.sLThdrs, castsOBJ )
 
          -- HEADER   -- SEPARATOR Header
@@ -181,7 +186,8 @@ function cD.createInfoWindow()
          sepOBJ:SetFontSize(cD.text.base_font_size)
          sepOBJ:SetLayer(1)
          sepOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         sepOBJ:SetPoint("TOPLEFT", castsOBJ, "TOPRIGHT", cD.borders.right, 0)
+--          sepOBJ:SetPoint("TOPLEFT", castsOBJ, "TOPRIGHT", cD.borders.right, 0)
+         sepOBJ:SetPoint("TOPLEFT", castsOBJ, "TOPRIGHT")
 
          -- HEADER   -- TOTALS Header [idx=4]
          local lineOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_header_totals", headerFrame)
@@ -191,7 +197,8 @@ function cD.createInfoWindow()
          lineOBJ:SetFontSize(cD.text.base_font_size)
          lineOBJ:SetLayer(1)
          lineOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         lineOBJ:SetPoint("TOPLEFT", sepOBJ, "TOPRIGHT", cD.borders.right, 0)
+--          lineOBJ:SetPoint("TOPLEFT", sepOBJ, "TOPRIGHT", cD.borders.right, 0)
+         lineOBJ:SetPoint("TOPLEFT", sepOBJ, "TOPRIGHT")
          table.insert(cD.sLThdrs, lineOBJ )
 
          -- HEADER -- LABEL  -- CAST TIMER Header
@@ -212,7 +219,8 @@ function cD.createInfoWindow()
          timerOBJ:SetFontSize(cD.text.base_font_size)
          timerOBJ:SetLayer(1)
          timerOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT", cD.borders.left, 0)
+--          timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT", cD.borders.left, 0)
+         timerOBJ:SetPoint("TOPLEFT", labelTimerOBJ, "TOPRIGHT")
          table.insert(cD.sLThdrs, timerOBJ )
 
          -- HEADER   -- SEPARATOR Header
@@ -223,7 +231,8 @@ function cD.createInfoWindow()
          sep1OBJ:SetFontSize(cD.text.base_font_size)
          sep1OBJ:SetLayer(1)
          sep1OBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         sep1OBJ:SetPoint("TOPLEFT", timerOBJ, "TOPRIGHT", cD.borders.right, 0)
+--          sep1OBJ:SetPoint("TOPLEFT", timerOBJ, "TOPRIGHT", cD.borders.right, 0)
+         sep1OBJ:SetPoint("TOPLEFT", timerOBJ, "TOPRIGHT")
 
          -- HEADER   -- DAY TIMER Header [idx=6]
          local dayOBJ =  UI.CreateFrame("Text", infoWindow:GetName() .. "_day_timer", headerFrame)
@@ -234,15 +243,16 @@ function cD.createInfoWindow()
 --          dayOBJ:SetHeight(cD.text.base_font_size)
          dayOBJ:SetLayer(1)
          dayOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
-         dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.right, 0)
+--          dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT", cD.borders.right, 0)
+         dayOBJ:SetPoint("TOPLEFT", sep1OBJ, "TOPRIGHT")
          table.insert(cD.sLThdrs, dayOBJ )
 
       -- loot viewer
       local iconsFrame =  UI.CreateFrame("Frame", infoWindow:GetName() .. "_icons_frame", infoWindow)
-      iconsFrame:SetPoint("TOPLEFT",     titleBar,   "BOTTOMRIGHT",  -(iconsize + cD.borders.right),	cD.borders.top)
-      iconsFrame:SetPoint("TOPRIGHT",    titleBar,   "BOTTOMRIGHT", -cD.borders.right,  cD.borders.top)
-      iconsFrame:SetPoint("BOTTOMLEFT",  infoWindow, "BOTTOMRIGHT",  -(iconsize + cD.borders.right),  -cD.borders.bottom)
-      iconsFrame:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", - cD.borders.right,  -cD.borders.bottom)
+      iconsFrame:SetPoint("TOPLEFT",     titleBar,   "BOTTOMRIGHT",  -(iconsize + cD.borders.right*2),	cD.borders.top*2)
+      iconsFrame:SetPoint("TOPRIGHT",    titleBar,   "BOTTOMRIGHT", -cD.borders.right*2,  cD.borders.top*2)
+      iconsFrame:SetPoint("BOTTOMLEFT",  infoWindow, "BOTTOMRIGHT",  -(iconsize + cD.borders.right*2),  -cD.borders.bottom)
+      iconsFrame:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", -cD.borders.right*2,  -cD.borders.bottom)
 --       iconsFrame:SetBackgroundColor(1, 0, 0, 1)
       iconsFrame:SetLayer(2)
       table.insert(cD.sLThdrs, iconsFrame )
@@ -255,6 +265,7 @@ function cD.createInfoWindow()
       lwwidget:SetLayer(1)
       lwwidget:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.lootOBJ:SetVisible(not cD.window.lootOBJ:GetVisible()) end, "lootwindow widget pressed" )
       lwwidget:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", -(cD.borders.right*2), -cD.borders.bottom)
+      cD.attachTT(lwwidget, "lootwin")
 
       headerFrame:SetHeight(cD.round(labelTimerOBJ:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
 
@@ -342,7 +353,8 @@ function buildIconForStock(parent, objID, quantity, zoneID)
       lootIcon:SetHeight(iconsize)
       -- are we second?
       if displayedIcons and displayedIcons[#displayedIcons] then
-         lootIcon:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 1)
+--          lootIcon:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 1)
+         lootIcon:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, cD.borders.top*2)
       else
          lootIcon:SetPoint("TOPLEFT", parent, "TOPLEFT")
       end

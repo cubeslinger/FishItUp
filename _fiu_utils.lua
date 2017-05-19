@@ -555,6 +555,10 @@ function cD.updateGuiCoordinates(win, newX, newY)
          cD.window.mmBtnX =  cD.round(newX)
          cD.window.mmBtnY =  cD.round(newY)
       end
+      if winName == "ToolTip" then
+         cD.window.ttX =  cD.round(newX)
+         cD.window.ttY =  cD.round(newY)
+      end
 
    end
 

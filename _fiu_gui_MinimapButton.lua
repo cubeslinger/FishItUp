@@ -20,6 +20,7 @@ function cD.createMiniMapButton()
       mmButton:SetTexture("Rift", "Fish_icon.png.dds")
       mmButton:SetLayer(1)
       mmButton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.doThings(params) end, "Reset Button Pressed" )
+      cD.attachTT(mmButton, "minimap")
 
       if cD.window.mmBtnX == nil or cD.window.mmBtnY == nil then
          -- first run, we position in the screen center

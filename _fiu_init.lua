@@ -106,6 +106,7 @@ end
                      cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil,  -- Cache Window & objs
                      ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil,  -- ItemViewer Window & objs
                      mmBtnOBJ =  nil,  mmBtnX   =  nil,  mmBtnY   =  nil,  -- MiniMapButton
+                     ttOBJ    =  nil,  ttX      =  nil,  ttY      =  nil,  -- Generic ToolTip Window & objs
 
                   }
    -- loot Tables
@@ -136,6 +137,7 @@ end
    -- GUI
    cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
    cD.text        =  {  base_font_size=14,
+--    cD.text        =  {  base_font_size=16,
                         base_font_name="fonts/MonospaceTypewriter.ttf"
                      }
    --
@@ -186,6 +188,7 @@ function cD.fiuLoadVariables(_, addonName)
          cD.window.cacheOBJ   =  nil
          cD.window.ivOBJ      =  nil
          cD.window.mmBtnOBJ   =  nil
+         cD.window.ttOBJ      =  nil
       end
 
       if lastZoneLootOBJs ~= nil and next(lastZoneLootOBJs) ~= nil then
@@ -227,6 +230,7 @@ function cD.fiuSaveVariables(_, addonName)
       a.totalsOBJ =  nil
       a.ivOBJ     =  nil
       a.mmBtnOBJ  =  nil
+      a.ttOBJ     =  nil
 
       guilog            =  a
       itemCache         =  cD.itemCache
