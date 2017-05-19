@@ -140,6 +140,11 @@ end
 --    cD.text        =  {  base_font_size=16,
                         base_font_name="fonts/MonospaceTypewriter.ttf"
                      }
+   cD.sizes       =  {}
+   cD.sizes.info  =  {}
+   cD.sizes.info[12] =  { iconsize=26, winwidth=257 }
+   cD.sizes.info[14] =  { iconsize=32, winwidth=300 }
+   cD.sizes.info[16] =  { iconsize=36, winwidth=342 }
    --
    local white =  "#FFFFFF"
    local blue  =  "#00AAFF"

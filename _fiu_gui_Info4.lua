@@ -6,11 +6,12 @@
 
 local addon, cD = ...
 
-local HEADERFRAME       =  1
-local tWIDTH            =  355
-local tMAXSTRINGSIZE    =	20
-local tWIDTH				=  200
-local iconsize          =  32
+-- local HEADERFRAME       =  1
+-- local tWIDTH            =  355
+-- local tMAXSTRINGSIZE    =	20
+-- local tWIDTH				=  200
+-- local iconsize          =  32
+
 cD.iconStock            =  {}
 displayedIcons          =  {}
 
@@ -96,7 +97,8 @@ function cD.createInfoWindow()
    end
 
 --    infoWindow:SetWidth(tWIDTH)
-   infoWindow:SetWidth(cD.window.width)
+--    infoWindow:SetWidth(cD.window.width)
+   infoWindow:SetWidth(cD.sizes.info[cD.text.base_font_size].winwidth)
    infoWindow:SetLayer(-1)
    infoWindow:SetBackgroundColor(0, 0, 0, .5)
 
@@ -113,7 +115,7 @@ function cD.createInfoWindow()
       headerFrame:SetPoint("BOTTOMLEFT",  infoWindow, "BOTTOMLEFT",  cD.borders.left,  - cD.borders.bottom)
       headerFrame:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", - cD.borders.right,  - cD.borders.bottom)
       headerFrame:SetLayer(1)
-      cD.sLTFrames[HEADERFRAME]   =  headerFrame
+--       cD.sLTFrames[HEADERFRAME]   =  headerFrame
 
          -- ZONE NAME CONTAINER Header
          local lbl1  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_zone_label", headerFrame)
@@ -249,9 +251,9 @@ function cD.createInfoWindow()
 
       -- loot viewer
       local iconsFrame =  UI.CreateFrame("Frame", infoWindow:GetName() .. "_icons_frame", infoWindow)
-      iconsFrame:SetPoint("TOPLEFT",     titleBar,   "BOTTOMRIGHT",  -(iconsize + cD.borders.right*2),	cD.borders.top*2)
+      iconsFrame:SetPoint("TOPLEFT",     titleBar,   "BOTTOMRIGHT",  -(cD.sizes.info[cD.text.base_font_size].iconsize + cD.borders.right*2),	cD.borders.top*2)
       iconsFrame:SetPoint("TOPRIGHT",    titleBar,   "BOTTOMRIGHT", -cD.borders.right*2,  cD.borders.top*2)
-      iconsFrame:SetPoint("BOTTOMLEFT",  infoWindow, "BOTTOMRIGHT",  -(iconsize + cD.borders.right*2),  -cD.borders.bottom)
+      iconsFrame:SetPoint("BOTTOMLEFT",  infoWindow, "BOTTOMRIGHT",  -(cD.sizes.info[cD.text.base_font_size].iconsize + cD.borders.right*2),  -cD.borders.bottom)
       iconsFrame:SetPoint("BOTTOMRIGHT", infoWindow, "BOTTOMRIGHT", -cD.borders.right*2,  -cD.borders.bottom)
 --       iconsFrame:SetBackgroundColor(1, 0, 0, 1)
       iconsFrame:SetLayer(2)
@@ -291,7 +293,7 @@ function cD.resetIconsList()
          local eventlist =  tbl.lootIcon:EventList(Event.UI.Input.Mouse.Cursor.In)
             for a,b in pairs(eventlist) do
                for c, d in pairs(b) do
-                  print(string.format("a[%s] c[%s] d[%s]", a, c, d))
+--                   print(string.format("a[%s] c[%s] d[%s]", a, c, d))
                end
                tbl.lootIcon:EventDetach(Event.UI.Input.Mouse.Cursor.In, b.handler, b.label)
             end
@@ -300,7 +302,7 @@ function cD.resetIconsList()
          eventlist =  tbl.lootIcon:EventList(Event.UI.Input.Mouse.Cursor.Out)
             for a,b in pairs(eventlist) do
                for c, d in pairs(b) do
-                  print(string.format("c[%s] d[%s]", c, d))
+--                   print(string.format("c[%s] d[%s]", c, d))
                end
                tbl.lootIcon:EventDetach(Event.UI.Input.Mouse.Cursor.Out, b.handler, b.label)
             end
@@ -344,13 +346,13 @@ function buildIconForStock(parent, objID, quantity, zoneID)
 
 
    if parent and objID then
-      print(string.format("parent[%s] objID[%s]", parent, objID))
+--       print(string.format("parent[%s] objID[%s]", parent, objID))
       local o  =  Inspect.Item.Detail(objID)
       -- setup Loot Item's Icon
       lootIcon = UI.CreateFrame("Texture", "Loot_Icon_" .. o.name, parent)
       lootIcon:SetTexture("Rift", o.icon)
-      lootIcon:SetWidth(iconsize)
-      lootIcon:SetHeight(iconsize)
+      lootIcon:SetWidth(cD.sizes.info[cD.text.base_font_size].iconsize)
+      lootIcon:SetHeight(cD.sizes.info[cD.text.base_font_size].iconsize)
       -- are we second?
       if displayedIcons and displayedIcons[#displayedIcons] then
 --          lootIcon:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, 1)
@@ -402,7 +404,7 @@ function buildIconForStock(parent, objID, quantity, zoneID)
 
 --       retval   =  lootIcon
    else
-      print(string.format("buildIconForStock: parent[%s] objID[%s]", parent, objID))
+--       print(string.format("buildIconForStock: parent[%s] objID[%s]", parent, objID))
    end
 
    return lootIcon, lootCatIcon, lootQuantity
@@ -462,7 +464,7 @@ function cD.updateInfoIcons(o, quantity)
 
    if o  then
       local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
-      local oo = Inspect.Item.Detail(o) print(string.format("o[%s] o.name[%s]", o, oo.name))
+      local oo = Inspect.Item.Detail(o) -- print(string.format("o[%s] o.name[%s]", o, oo.name))
 
 --       if cD.iconStock and cD.iconStock[#cD.iconStock] then
 --          parent = cD.iconStock[#cD.iconStock].lootIcon
@@ -472,8 +474,8 @@ function cD.updateInfoIcons(o, quantity)
 
       local lootIcon =  fetchIconFromStock(o, quantity, zoneID)
       table.insert(displayedIcons, lootIcon)
-      print("ADDED")
-      print(string.format("loot Icon [%s]", lootIcon))
+--       print("ADDED")
+--       print(string.format("loot Icon [%s]", lootIcon))
 --       lootIcon:SetTexture("Rift", oo.icon)
    end
 

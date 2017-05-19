@@ -5,10 +5,8 @@
 --
 local addon, cD = ...
 
--- local tWINWIDTH   =  355
 local tWINWIDTH   =  300
 local tWINHEIGHT  =  276
--- local TXTSIZE     =  45
 local TXTSIZE     =  39
 local ivNAMESIZE  =  20
 
