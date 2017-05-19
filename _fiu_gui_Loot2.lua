@@ -1,5 +1,5 @@
 --
--- Addon       _fiu_gui_Loot.lua
+-- Addon       _fiu_gui_Loot2.lua
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
 --
@@ -12,9 +12,10 @@ local LOOTSCROLLBAR     =  4
 local POLECASTBUTTON    =  5
 local EXTERNALLOOTFRAME =  6
 local SCROLLBAR         =  7
-local tLOOTNAMESIZE     =  172
-local maxListItems      =  3
-local sbWIDTH           =  8
+--
+-- local tLOOTNAMESIZE     =  172
+-- local maxListItems      =  3
+-- local sbWIDTH           =  8
 -- local ltScrollStep      =  1
 -- local lootWinHeight     =  110
 
@@ -32,7 +33,7 @@ function cD.createLootWindow()
    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT")
 
 
-   lootWindow:SetWidth(cD.window.width)
+--    lootWindow:SetWidth(cD.window.width)
 --    lootWindow:SetHeight(lootWinHeight)
    lootWindow:SetLayer(-1)
    lootWindow:SetBackgroundColor(0, 0, 0, .5)
@@ -177,7 +178,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       lootText =  string.sub(lootText, 1, 20)
       textOBJ:SetFontSize(cD.text.base_font_size )
       textOBJ:SetHeight(cD.text.base_font_size)
-      textOBJ:SetWidth(tLOOTNAMESIZE)
+      textOBJ:SetWidth(cD.sizes.loot[cD.text.base_font_size].lootnamesize)
       -- we pack Junk/Sellable Items
       if objRarity == "sellable" then
          cD.totJunkMoney = cD.totJunkMoney + itemValue

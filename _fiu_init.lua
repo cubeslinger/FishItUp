@@ -136,15 +136,24 @@ end
 
    -- GUI
    cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
-   cD.text        =  {  base_font_size=14,
---    cD.text        =  {  base_font_size=16,
+--    cD.text        =  {  base_font_size=14,
+   cD.text        =  {  base_font_size=16,
                         base_font_name="fonts/MonospaceTypewriter.ttf"
                      }
-   cD.sizes       =  {}
-   cD.sizes.info  =  {}
+   cD.sizes          =  {}
+   cD.sizes.info     =  {}
    cD.sizes.info[12] =  { iconsize=26, winwidth=257 }
    cD.sizes.info[14] =  { iconsize=32, winwidth=300 }
    cD.sizes.info[16] =  { iconsize=36, winwidth=342 }
+
+--    local tLOOTNAMESIZE     =  172
+--    local maxListItems      =  3
+--    local sbWIDTH           =  8
+   cD.sizes.loot     =  {}
+   cD.sizes.loot[12] =  {  lootnamesize=172  }
+   cD.sizes.loot[14] =  {  lootnamesize=172  }
+   cD.sizes.loot[16] =  {  lootnamesize=196  }
+
    --
    local white =  "#FFFFFF"
    local blue  =  "#00AAFF"
