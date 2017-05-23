@@ -1,4 +1,4 @@
-FishItUp! aims to track you fishing activities.
+FishItUp! is a RIFT addon that aims to track you fishing activities.
 
 How To Use:
 -----------
