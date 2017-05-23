@@ -280,7 +280,7 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
       -- finally we set the whole container Frame visible but
       -- only in infoWindow is visible too.
       --
-      if cD.window.infoOBJ:GetVisible() == true then lootFrame:SetVisible(true) end
+--       if cD.window.infoOBJ:GetVisible() == true then lootFrame:SetVisible(true) end
 
    end
 

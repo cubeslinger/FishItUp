@@ -485,7 +485,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       print("ERROR in updateLootTable, lootOBJ.id is nil")
    end
 
-   if not cD.window.lootOBJ:GetVisible() then cD.window.lootOBJ:SetVisible(true) end
+--    if not cD.window.lootOBJ:GetVisible() then cD.window.lootOBJ:SetVisible(true) end
 
    return retval
 end

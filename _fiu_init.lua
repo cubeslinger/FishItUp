@@ -1,9 +1,7 @@
 --
 -- Addon       _fiu_init.lua
--- Version     0.8
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
--- StartDate   13/03/2017
 --
 
 local addon, cD = ...
@@ -94,101 +92,101 @@ function cD.getZoneMinSkill(zoneID)
    return   retval
 end
 
+cD.window   =  {  width    =  300,  height   =  60,
+                  infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,  -- Info Window & objs
+                  buttonOBJ=  nil,  buttonX  =  nil,  buttonY  =  nil,  -- FishingPole Window & objs
+                  lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,  -- Loot Window & objs
+                  totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,  -- Totals Window & objs
+                  cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil,  -- Cache Window & objs
+                  ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil,  -- ItemViewer Window & objs
+                  mmBtnOBJ =  nil,  mmBtnX   =  nil,  mmBtnY   =  nil,  -- MiniMapButton
+                  ttOBJ    =  nil,  ttX      =  nil,  ttY      =  nil,  -- Generic ToolTip Window & objs
 
+               }
+-- loot Tables
+cD.sLTids      =  {}
+cD.sLTnames    =  {}
+cD.sLTcnts     =  {}
+cD.sLTprcnts   =  {}
+cD.sLThdrs     =  {}
+cD.sLTFrames   =  {}
+cD.sLTtextOBJs =  {}
+cD.sLTcntsOBJs =  {}
+cD.sLTfullOBJs =  {}
+cD.sLTprcntOBJs=  {}
+cD.sLTrarity   =  {}
+-- totals Tables
+cD.sTOzoneIDs  =  {}
+cD.sTOFrame    =  {}
+cD.sTOznOBJs   =  {}
+cD.sTOcntOBJs  =  {}
 
--- local function _init()
+-- pole Table
+cD.poleTBL     =  {}
 
-   cD.window   =  {  width    =  300,  height   =  60,
-                     infoOBJ  =  nil,  infoX    =  nil,  infoY    =  nil,  -- Info Window & objs
-                     buttonOBJ=  nil,  buttonX  =  nil,  buttonY  =  nil,  -- FishingPole Window & objs
-                     lootOBJ  =  nil,  lootX    =  nil,  lootY    =  nil,  -- Loot Window & objs
-                     totalsOBJ=  nil,  totalsX  =  nil,  totalsY  =  nil,  -- Totals Window & objs
-                     cacheOBJ =  nil,  cacheX   =  nil,  cacheY   =  nil,  -- Cache Window & objs
-                     ivOBJ    =  nil,  ivX      =  nil,  ivY      =  nil,  -- ItemViewer Window & objs
-                     mmBtnOBJ =  nil,  mmBtnX   =  nil,  mmBtnY   =  nil,  -- MiniMapButton
-                     ttOBJ    =  nil,  ttX      =  nil,  ttY      =  nil,  -- Generic ToolTip Window & objs
+-- pole Timer
+cD.poleTimer   =  nil
 
+-- ItemViewer Tables
+cD.sIVFrames   =  {}
+cD.ivOBJ       =  {}
+
+-- GUI
+cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
+-- cD.text        =  {  base_font_size=12,   
+cD.text        =  {  base_font_size=14,
+-- cD.text        =  {  base_font_size=16,
+                     base_font_name="fonts/MonospaceTypewriter.ttf"
                   }
-   -- loot Tables
-   cD.sLTids      =  {}
-   cD.sLTnames    =  {}
-   cD.sLTcnts     =  {}
-   cD.sLTprcnts   =  {}
-   cD.sLThdrs     =  {}
-   cD.sLTFrames   =  {}
-   cD.sLTtextOBJs =  {}
-   cD.sLTcntsOBJs =  {}
-   cD.sLTfullOBJs =  {}
-   cD.sLTprcntOBJs=  {}
-   cD.sLTrarity   =  {}
-   -- totals Tables
-   cD.sTOzoneIDs  =  {}
-   cD.sTOFrame    =  {}
-   cD.sTOznOBJs   =  {}
-   cD.sTOcntOBJs  =  {}
-   -- pole Table
-   cD.poleTBL     =  {}
-   -- pole Timer
-   cD.poleTimer   =  nil
-   -- ItemViewer Tables
-   cD.sIVFrames   =  {}
-   cD.ivOBJ       =  {}
+cD.sizes          =  {}
+cD.sizes.info     =  {}
+cD.sizes.info[12] =  { iconsize=26, winwidth=257 }
+cD.sizes.info[14] =  { iconsize=32, winwidth=300 }
+cD.sizes.info[16] =  { iconsize=36, winwidth=342 }
+cD.sizes.loot     =  {}
+cD.sizes.loot[12] =  {  lootnamesize=172  }
+cD.sizes.loot[14] =  {  lootnamesize=172  }
+cD.sizes.loot[16] =  {  lootnamesize=196  }
+cD.sizes.toca     =  {}
+cD.sizes.toca[12] =  { winwidth=464, winheight=236, maxstringsize=26, znlistwidth=136, sbwidth=7, lootnamesize=148, visibleitems=7, ivnamesize=17 }
+cD.sizes.toca[14] =  { winwidth=540, winheight=276, maxstringsize=30, znlistwidth=158, sbwidth=8, lootnamesize=172, visibleitems=9, ivnamesize=20 }
+cD.sizes.toca[16] =  { winwidth=618, winheight=316, maxstringsize=34, znlistwidth=180, sbwidth=9, lootnamesize=196, visibleitems=10, ivnamesize=23 }
+--
+local white =  "#FFFFFF"
+local blue  =  "#00AAFF"
+local yellow=  "#FFFF00"
+local cyan  =  "#00FFFF"
+--
+cD.fiuTITLE    =  "<font color=\'"..blue.."\'>Fish</font><font color=\'"..cyan.."\'>It</font><font color=\'"..white.."\'>Up</font><font color=\'"..yellow.."\'>!</font>"
+cD.timeStart   =  nil
+cD.time2Wait   =  .5             -- wait .2 more second
+cD.waitingForTheSunRunning =  false
+cD.timeRStart  =  0
+cD.history     =  {}
+cD.today       =  {  casts=0, }
+cD.time        =  {  hour=0, mins=0, secs=0 }
+cD.infoOBJ     =  nil
+cD.buttonOBJ   =  nil
+cD.addon       =  addon.toc.Identifier
 
-   -- GUI
-   cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
---    cD.text        =  {  base_font_size=14,
-   cD.text        =  {  base_font_size=16,
-                        base_font_name="fonts/MonospaceTypewriter.ttf"
-                     }
-   cD.sizes          =  {}
-   cD.sizes.info     =  {}
-   cD.sizes.info[12] =  { iconsize=26, winwidth=257 }
-   cD.sizes.info[14] =  { iconsize=32, winwidth=300 }
-   cD.sizes.info[16] =  { iconsize=36, winwidth=342 }
+-- Junk
+cD.junkOBJ     =  nil
+cD.totJunkMoney=  0
+cD.Stock       =  {}
+cD.itemCache   =  {}
+cD.eventBuffer =  {}
 
---    local tLOOTNAMESIZE     =  172
---    local maxListItems      =  3
---    local sbWIDTH           =  8
-   cD.sizes.loot     =  {}
-   cD.sizes.loot[12] =  {  lootnamesize=172  }
-   cD.sizes.loot[14] =  {  lootnamesize=172  }
-   cD.sizes.loot[16] =  {  lootnamesize=196  }
+--
+-- Logs affected by the RESET button
+--
+cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
 
-   --
-   local white =  "#FFFFFF"
-   local blue  =  "#00AAFF"
-   local yellow=  "#FFFF00"
-   local cyan  =  "#00FFFF"
-   --
-   cD.fiuTITLE    =  "<font color=\'"..blue.."\'>Fish</font><font color=\'"..cyan.."\'>It</font><font color=\'"..white.."\'>Up</font><font color=\'"..yellow.."\'>!</font>"
-   cD.timeStart   =  nil
-   cD.time2Wait   =  .5             -- wait .2 more second
-   cD.waitingForTheSunRunning =  false
-   cD.timeRStart  =  0
---    cD.history     =  {}
-   cD.today       =  {  casts=0, }
-   cD.time        =  {  hour=0, mins=0, secs=0 }
-   cD.infoOBJ     =  nil
-   cD.buttonOBJ   =  nil
-   cD.addon       =  addon.toc.Identifier
-   -- Junk
-   cD.junkOBJ     =  nil
-   cD.totJunkMoney=  0
-   cD.Stock       =  {}
-   cD.itemCache   =  {}
-   cD.eventBuffer =  {}
-   --
-   -- Logs affected by the RESET button
-   --
-   cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed by ZoneID: [zoneID] = {objID_1, objID_2, ...}
-   --
-   -- Logs that are permanent
-   --
-   cD.zoneTotalCnts  =  {}
-   cD.charScore      =  {}
+--
+-- Logs that are permanent
+--
+cD.zoneTotalCnts  =  {}
+cD.charScore      =  {}
 
---    return cD
--- end
 
 function cD.fiuLoadVariables(_, addonName)
    if addon.name == addonName then

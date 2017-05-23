@@ -15,12 +15,10 @@ colors.black      =  {  r=0,    g=0,  b=0   }
 colors.grey1      =  {  r=.1,   g=.1, b=.1  }
 colors.grey2      =  {  r=.2,   g=.2, b=.2  }
 
-
-
 function cD.createItemViewerWindow()
 
    -- ITEMVIEWER
-   --Global context (parent frame-thing).
+   -- Global context (parent frame-thing).
    local ivContext = UI.CreateContext("ItemViewer_context")
    ivContext:SetStrata("topmost")
 
@@ -64,6 +62,15 @@ function cD.createItemViewerWindow()
          typeIcon:SetPoint("TOPLEFT",   itemIcon,    "TOPRIGHT", cD.borders.left, 0)
          typeIcon:SetLayer(10)
          cD.ivOBJ["TYPEICON"] =  typeIcon
+
+         -- Item's Object ID
+         local itemOBJ  = UI.CreateFrame("Text", "Item_objct_id", cD.sIVFrames["IVFRAME"])
+         itemOBJ:SetFont(cD.addon, cD.text.base_font_name)
+         itemOBJ:SetFontSize(cD.text.base_font_size -2)
+         itemOBJ:SetText("")
+         itemOBJ:SetPoint("TOPLEFT",   typeIcon,    "TOPRIGHT", cD.borders.left, 0)
+         itemOBJ:SetLayer(10)
+         cD.ivOBJ["OBJID"] =  itemOBJ
 
 
          -- Item's Counter
@@ -158,6 +165,8 @@ local function populateItemViewer(zID, t)
    else
       cD.ivOBJ["TYPEICON"]:SetVisible(false)
    end
+
+   cD.ivOBJ["OBJID"]:SetText("<i>("..t.id..")</i>", true)
 
    -- cD.ivOBJ["ITEMTYPE"]
    local cat = t.category
