@@ -1,5 +1,7 @@
 FishItUp! is a RIFT addon that aims to track you fishing activities.
 
+!!! ACTUALLY THIS ADDON IS IN ALPHA STAGE AND HASN'T YET BEEN APPROVED BY TRION !!!
+
 How To Use:
 -----------
 As long you have autoloot enabled, you start casting using the icon showing you detected pole, then reel up as usual, but you HAVE TO cast with FishiItUp! icon button.
