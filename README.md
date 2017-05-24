@@ -4,7 +4,7 @@ FishItUp! is a RIFT addon that aims to track your fishing activities.
 
 Prerequisites:
 --------------
-- Auto Loot MUST be activatated. (Rift Menu->Interface->Misc->Auto Loot).
+- Auto Loot MUST be activatated. (Rift Menu->Settings->Interface->Misc->Auto Loot).
 - The Player MUST HAVE a fishing pole in his bags, if more then one is present the one requiring the highest skill will be choosen.
 - To cast the Player HAS TO use FishItUps!'s CAST button/icon, otherwise it wont track anything.
 - To move windows around the screen you have to RIGHT-click and drag windows.
@@ -16,7 +16,7 @@ As long as autoloot is enabled, you start casting using the icon showing you det
 Windows Explanation:
 --------------------
 - Cast Window: 
-  It shows the icon of the highest skill requiring Fishinh Pole you have in your inventory, it is used to begin fishing and 
+  It shows the icon of the highest skill requiring Fishing Pole you have in your inventory, it is used to begin fishing and 
   casting the fishing target. If you stop fishing and FishItUp! doesn't track it, you can click this icon again to force it 
   to stop tracking.
 
