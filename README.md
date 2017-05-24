@@ -39,13 +39,13 @@ saved file in its saved data directory holding session and totals data store int
 
 Font:
 -----
-I use a custom monospaced font taken from https://www.fontsquirrel.com/fonts/monospacetypewriter, it should be free for anyone to use
-as long as there is no money involed. The reason why it's used is to try to align text in columns.
+I use a custom monospaced font by Manfred Klein taken from https://www.fontsquirrel.com/fonts/monospacetypewriter, it should be free for anyone to use as long as there is no money involed. The reason why it's used is to try to align text in columns.
 
 Disclaimer:
 -----------
 - !!! ACTUALLY THIS ADDON IS IN ALPHA STAGE AND HASN'T YET BEEN APPROVED BY TRION !!!
-- I use a custom monospaced font taken from https://www.fontsquirrel.com/fonts/monospacetypewriter, it should be free for anyone to use.
+- I use a custom monospaced font by Manfred Klein taken from https://www.fontsquirrel.com/fonts/monospacetypewriter, it should be free for
+  anyone to use.
 - I use and slightly modified LibDraggable by Peter Seebach.
 - I would like to thank Fennec@Typhiria for helping me out in testing this since the very early beginnings. 
 
