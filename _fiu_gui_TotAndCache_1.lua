@@ -17,17 +17,8 @@ local lastZnSelected          =  nil
 local tlScrollStep            =  1
 local ilScrollStep            =  1
 
--- local tWINWIDTH               =  540
--- local tWINHEIGHT              =  276
--- local tMAXSTRINGSIZE          =  30
--- local znListWIDTH             =  158
--- local sbWIDTH                 =  8
--- local tLOOTNAMESIZE           =  172
--- local visibleItems            =  9     -- Number of items details fully displayed in Cache window
--- local ivNAMESIZE              =  20
-
---     1        2        3       4    5      6      7
--- sellable, common, uncommon, rare, epic, quest, relic
+--     1        2        3       4    5      6      7     8    9
+-- sellable, common, uncommon, rare, epic, quest, relic, MfJ, Totals
 local txtColors   =  {}
 txtColors[1]   =  { r = .34375, g = .34375, b = .34375 } -- sellable
 txtColors[2]   =  { r = .98,    g = .98,    b = .98 }    -- common / nil
@@ -38,24 +29,6 @@ txtColors[6]   =  { r = 1,      g = 1,      b = 0 }      -- quest
 txtColors[7]   =  { r = 1,      g = .5,     b = 0 }      -- relic
 txtColors[8]   =  { r = 1,      g = 1,      b = 0 }      -- MfJ yellow
 txtColors[9]   =  { r = .98,    g = .98,    b = .98 }    -- Totals white
-
-
-
---- Pads str to length len with char from right
-local function lpad(str, len, char)
-   if char == nil then char = ' ' end
---    return str .. string.rep(char, len - #str)
-   return string.rep(char, len - #str) .. str
-end
-
-local function reverseTable(t)
-   local reversedTable = {}
-   local itemCount = #t
-   for k, v in ipairs(t) do
-      reversedTable[itemCount + 1 - k] = v
-   end
-   return reversedTable
-end
 
 local function buildForStock(parent,t)
 
@@ -73,28 +46,18 @@ local function buildForStock(parent,t)
    zil =  UI.CreateFrame("Frame", "Zone_item_Frame", cD.sCACFrames.cacheitemsframe)
    zil:SetBackgroundColor(.2, .2, .2, .6)
    if cD.totallineheight then
---       print("HIT")
       zil:SetHeight(cD.totallineheight)
    else
       zil:SetHeight((lootIcon:GetBottom() + cD.borders.bottom ) - zil:GetTop())
    end
---    print("ZIL ["..zil:GetHeight().."]")
 
    if first then
       first = false
---       zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  0, 1)
---       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", 0, 1)
       zil:SetPoint("TOPLEFT",  cD.sCACFrames.cacheitemsframe, "TOPLEFT",  0, 1)
       zil:SetPoint("TOPRIGHT", cD.sCACFrames.cacheitemsframe, "TOPRIGHT", 0, 1)
-
-
    else
---       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT",  1,  1)
---       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 1,  1)
       zil:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
       zil:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
-
-
    end
    zil:SetLayer(3)
 
@@ -137,18 +100,14 @@ local function buildForStock(parent,t)
    textOBJ:SetLayer(3)
    textOBJ:SetFontColor(objColor.r, objColor.g, objColor.b)
    textOBJ:SetPoint("TOPLEFT",   lootIcon,    "TOPRIGHT", cD.borders.left, -4)
---    textOBJ:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(t.zone, t.id) end, "Item Selected" )
 
    -- Item's Value/Total
-   -- item's Value
    local zilMfJ  =  UI.CreateFrame("Text", "Loot_Cnt_" .. t.name, zil)
    zilMfJ:SetFont(cD.addon, cD.text.base_font_name)
    zilMfJ:SetFontSize(cD.text.base_font_size - 2)
    zilMfJ:SetText(string.format("%s/%s", cD.printJunkMoney(t.value), cD.printJunkMoney(0)), true)
---    zilMfJ:SetWidth(lootCnt:GetWidth())
    zilMfJ:SetLayer(3)
    zilMfJ:SetPoint("TOPLEFT", textOBJ, "TOPRIGHT", cD.borders.left, 1)
---    zilMfJ:SetPoint("RIGHT", zil, "RIGHT")
 
    local retval=  {}
    retval   =  {
@@ -162,14 +121,6 @@ local function buildForStock(parent,t)
                }
 
    table.insert(ILStock, retval)
-
---    if cD.totallineheight then
---       print("HIT")
---       zil:SetHeight(cD.totallineheight)
---    else
---       zil:SetHeight((lootIcon:GetBottom() + cD.borders.bottom ) - zil:GetTop())
---    end
---    print("ZIL ["..zil:GetHeight().."]")
 
    return(retval)
 end
@@ -189,9 +140,6 @@ local function fetchFromILStock(parent,t)
 
    if not retval then
       retval = buildForStock(parent,t)
---       print("CREATING new from Stock")
-   else
---       print("REUSING  old from Stock")
    end
 
    return retval
@@ -200,16 +148,12 @@ end
 function cD.getCharScore(zID, oID)
    local retval   =  0
 
---    print("cD.getCharScore zone["..zID.."] oID["..oID.."]")
-
    if cD.charScore[zID] then
       local t = cD.charScore[zID]
       if t[oID] then
          retval = t[oID]
       end
    end
-
---    print("cD.getCharScore retval["..retval.."]")
 
    return retval
 end
@@ -250,27 +194,21 @@ local function createZoneItemLine(parent, zoneName, zID, t)
    zilName:EventAttach(Event.UI.Input.Mouse.Left.Click, function() cD.selectItemtoView(t.zone, t.id) end, "Item Selected" )
    -- ZZZZ  -----------------------------------------------------------------------------------------
    -- Mouse Hover IN    => show tooltip
-   zilName:EventAttach(Event.UI.Input.Mouse.Cursor.In, function() cD.selectItemtoView(t.zone, t.id)  end, "Event.UI.Input.Mouse.Cursor.In")
+   zilName:EventAttach(Event.UI.Input.Mouse.Cursor.In,  function() cD.selectItemtoView(t.zone, t.id)  end, "Event.UI.Input.Mouse.Cursor.In")
    -- Mouse Hover OUT   => show tooltip
    zilName:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
-
    -- ZZZZ  -----------------------------------------------------------------------------------------
 
    -- Item Value/Total
    local cnt = cD.getCharScore(zID, t.id)
    local mfj = t.value * cnt
---    print("MFJ 1 ["..cD.printJunkMoney(t.value).."]")
---    print("MFJ 2 ["..cD.printJunkMoney(mfj).."]")
    zilMfJ:SetText(string.format("%s/%s", cD.printJunkMoney(t.value), cD.printJunkMoney(mfj)), true)
 
    zil:SetHeight(cD.round(cD.borders.top + cD.borders.bottom + cD.text.base_font_size))
    zil:SetVisible(true)
 
---    print("zil HEIGHT ["..zil:GetHeight().."]")
-
    return zil
 end
-
 
 local function resetZoneItemsList()
    --
@@ -292,31 +230,24 @@ local function resetZoneItemsList()
    return
 end
 
---[[ ]]--
 local function populateZoneItemsList(znID, zoneName)
    local parent   =  nil
    local cnt      =  0
    local iobj     =  nil
    local base     =  cD.charScore[znID]
 
---    for x,y in pairs(base) do print(string.format("++x[%s] y[%s]", x, y)) end
-
    for k,v in cD.spairs(base,
                         function(t,a,b)
                            local retval = nil
---                            print("--["..a.."]["..b.."]")
                            if b == "__orderedIndex" then
                               b = 0
                               a = 0
---                               print("skipping")
                               retval   =  nil
                            else
---                               print("//["..t[a].."]["..t[b].."]")
                               retval   =  t[b] < t[a]
                            end
                            return retval
                         end) do
---       print(k,v)
 
       if k ~= "__orderedIndex" then
          local tbl=  cD.itemCache[k]
@@ -326,34 +257,24 @@ local function populateZoneItemsList(znID, zoneName)
       end
    end
 
-
---    print("CNT {"..cnt.."}{"..cD.sizes.toca[cD.text.base_font_size].visibleitems.."}")
    if cnt > cD.sizes.toca[cD.text.base_font_size].visibleitems then
       cfScroll:SetVisible(true)
       cfScroll:SetEnabled(true)
-      --       print("PRE HEIGHT   ["..cD.sCACFrames.cacheitemsframe:GetHeight().."]")
 
       local baseY =  cD.sCACFrames.cacheitemsframe:GetTop()
       local maxY  =  parent:GetBottom()
 
       cD.sCACFrames.cacheitemsframe:SetHeight(cD.round(maxY - baseY))
-      --       print("POST HEIGHT  ["..cD.sCACFrames.cacheitemsframe:GetHeight().."]")
 
       cfScroll:SetRange(1, cnt - cD.sizes.toca[cD.text.base_font_size].visibleitems)
       ilScrollStep   =  cD.round(cD.sCACFrames.cacheitemsframe:GetHeight()/cnt)
-
-      --       print("ilScrollStep ["..ilScrollStep.."]")
-      --       print("SETTING VISIBLE")
    else
       cfScroll:SetVisible(false)
       cfScroll:SetEnabled(false)
-      --       print("SETTING INVISIBLE")
    end
 
    return
 end
-
---[[ ]]--
 
 local function selectZone(znID, zoneName)
    local unsel =  cD.rarityColor("common")
@@ -398,7 +319,6 @@ local function selectZone(znID, zoneName)
    return
 end
 
-
 function cD.createTotalsWindow()
 
    cD.sTOFrames   =  {}
@@ -416,8 +336,6 @@ function cD.createTotalsWindow()
       totalsWindow:SetPoint("TOPLEFT", UIParent, "TOPLEFT", cD.window.totalsX or 0, cD.window.totalsY or 0)
    end
 
---    totalsWindow:SetWidth(tWINWIDTH)
---    totalsWindow:SetHeight(tWINHEIGHT)
    totalsWindow:SetWidth(cD.sizes.toca[cD.text.base_font_size].winwidth)
    totalsWindow:SetHeight(cD.sizes.toca[cD.text.base_font_size].winheight)
    totalsWindow:SetLayer(-1)
@@ -432,7 +350,6 @@ function cD.createTotalsWindow()
    titleTotalsFrame:SetHeight(cD.text.base_font_size + 4)
    cD.sTOFrames.titlebartotalsframe  =   titleTotalsFrame
    cD.attachTT(cD.sTOFrames.titlebartotalsframe, "titlebar")
-
 
       -- HEADER FishItUp! Icon
       local fiuIcon  = UI.CreateFrame("Texture", "fiuIcon", titleTotalsFrame)
@@ -449,7 +366,6 @@ function cD.createTotalsWindow()
       titleFIU:SetText("Waterlog")
       titleFIU:SetFont(cD.addon, cD.text.base_font_name)
       titleFIU:SetLayer(3)
---       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebartotalsframe, "TOPLEFT", cD.borders.left, 0)
       titleFIU:SetPoint("TOPLEFT", cD.sTOFrames.titlebarfiuicon, "TOPRIGHT", cD.borders.left, 0)
       cD.sTOFrames.titlebarcontentframe  =   titleFIU
       cD.attachTT(titleFIU, "titlebar")
@@ -457,10 +373,7 @@ function cD.createTotalsWindow()
 
       -- TITLE BAR Widgets: setup Icon for Iconize
       lootIcon = UI.CreateFrame("Texture", "Title_Icon_1", cD.sTOFrames.titlebartotalsframe)
---       lootIcon:SetTexture("Rift", "arrow_dropdown.png.dds")
       lootIcon:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
---       lootIcon:SetWidth(cD.text.base_font_size)
---       lootIcon:SetHeight(cD.text.base_font_size)
       lootIcon:SetWidth(fiuIcon:GetWidth())
       lootIcon:SetHeight(fiuIcon:GetHeight())
       lootIcon:SetLayer(3)
@@ -468,25 +381,20 @@ function cD.createTotalsWindow()
       lootIcon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() cD.window.totalsOBJ:SetVisible(not cD.window.totalsOBJ:GetVisible()) end , "Iconize Totals Pressed" )
       cD.attachTT(lootIcon, "minimize")
 
---       titleTotalsFrame:SetHeight(cD.text.base_font_size + 6)
-
    -- EXTERNAL TOTALS CONTAINER FRAME
    local totalsExtFrame =  UI.CreateFrame("Frame", "External_Totals_Frame", totalsWindow)
    totalsExtFrame:SetPoint("TOPLEFT",     cD.sTOFrames.titlebartotalsframe, "BOTTOMLEFT",  cD.borders.left,    1)
    totalsExtFrame:SetPoint("TOPRIGHT",    cD.sTOFrames.titlebartotalsframe, "BOTTOMRIGHT", -(cD.borders.right + cD.sizes.toca[cD.text.base_font_size].sbwidth), 1)
    totalsExtFrame:SetPoint("BOTTOMLEFT",  totalsWindow,                      "BOTTOMLEFT",  cD.borders.left,    - cD.borders.bottom)
    totalsExtFrame:SetPoint("BOTTOMRIGHT", totalsWindow,                      "BOTTOMRIGHT", -(cD.borders.right + cD.sizes.toca[cD.text.base_font_size].sbwidth), - cD.borders.bottom)
---    totalsExtFrame:SetBackgroundColor(.2, .2, .2, .6)
    totalsExtFrame:SetLayer(1)
    cD.sTOFrames.externaltotalsframe  =   totalsExtFrame
 
       -- TOTALS MASK FRAME LEFT
       local leftMaskFrame = UI.CreateFrame("Mask", "Totals_Left_Mask_Frame", cD.sTOFrames.externaltotalsframe)
       leftMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT")
---       leftMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.left + cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       leftMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       leftMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT")
---       leftMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.left + cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       leftMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       cD.sTOFrames.totalsleftmaskframe  = leftMaskFrame
 
@@ -494,15 +402,12 @@ function cD.createTotalsWindow()
       local totalsleftFrame =  UI.CreateFrame("Frame", "left_loot_frame", cD.sTOFrames.totalsleftmaskframe)
       totalsleftFrame:SetAllPoints(cD.sTOFrames.totalsleftmaskframe)
       totalsleftFrame:SetLayer(1)
-   --    totalsleftFrame:SetBackgroundColor(1, 0, 0, .6)
       cD.sTOFrames.totalsleftframe  =   totalsleftFrame
 
       -- TOTALS MASK FRAME RIGHT
       local rightMaskFrame = UI.CreateFrame("Mask", "Totals_Right_Mask_Frame", cD.sTOFrames.externaltotalsframe)
---       rightMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.borders.right + cD.sizes.toca[cD.text.base_font_size].znlistwidth + 1, 0)
       rightMaskFrame:SetPoint("TOPLEFT",      cD.sTOFrames.externaltotalsframe, "TOPLEFT",    cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       rightMaskFrame:SetPoint("TOPRIGHT",     cD.sTOFrames.externaltotalsframe, "TOPRIGHT")
---       rightMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.borders.right + cD.sizes.toca[cD.text.base_font_size].znlistwidth + 1, 0)
       rightMaskFrame:SetPoint("BOTTOMLEFT",   cD.sTOFrames.externaltotalsframe, "BOTTOMLEFT", cD.sizes.toca[cD.text.base_font_size].znlistwidth, 0)
       rightMaskFrame:SetPoint("BOTTOMRIGHT",  cD.sTOFrames.externaltotalsframe, "BOTTOMRIGHT")
       cD.sTOFrames.totalsrightmaskframe  = rightMaskFrame
@@ -510,7 +415,6 @@ function cD.createTotalsWindow()
       -- TOTALS CONTAINER FRAME RIGHT
       local totalsrightFrame =  UI.CreateFrame("Frame", "right_loot_frame", cD.sTOFrames.totalsrightmaskframe)
       totalsrightFrame:SetAllPoints(cD.sTOFrames.totalsrightmaskframe)
-   --    totalsrightFrame:SetBackgroundColor(0, 1, 0, .6)
       totalsrightFrame:SetLayer(1)
       cD.sTOFrames.totalsrightframe  =   totalsrightFrame
 
@@ -674,12 +578,10 @@ function cD.createTotalsWindow()
       local cacheFrame =  UI.CreateFrame("Frame", "Cache_Items_frame", cD.sCACFrames.cacheitemsmaskframe)
       cacheFrame:SetAllPoints(cD.sCACFrames.cacheitemsmaskframe)
       cacheFrame:SetPoint("TOPLEFT", itemsMaskFrame, "TOPLEFT")
-   --    cacheFrame:SetBackgroundColor(0, 0, 0, .6)
       cacheFrame:SetLayer(4)
       cD.sCACFrames.cacheitemsframe  =   cacheFrame
 
       -- CACHE ZONE ITEMS SCROLLBAR
-   --    cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sCACFrames.cacheitemsextframe)
       cfScroll = UI.CreateFrame("RiftScrollbar","item_list_scrollbar", cD.sTOFrames.externaltotalsframe)
       cfScroll:SetVisible(false)
       cfScroll:SetEnabled(false)
@@ -691,17 +593,10 @@ function cD.createTotalsWindow()
                                     function()
                                        local pos = cD.round(cD.sCACFrames.cacheitemsscroll:GetPosition())
                                        local smin, smax = cD.sCACFrames.cacheitemsscroll:GetRange()
-   --                                     print(string.format("cfScroll:GetPosition() [%s] min[%s] max[%s]", pos, smin, smax))
-                                       if       pos == smin  then
-                                                cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
-                                                cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
-                                                cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT",      cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT")
-   --                                              print("got TOP")
---                                        elseif   pos == smax  then
---                                                 cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
---                                                 cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
---                                                 cD.sCACFrames.cacheitemsframe:SetPoint("BOTTOMLEFT",   cD.sCACFrames.cacheitemsmaskframe, "BOTTOMLEFT")
---    --                                              print("got BOTTOM")
+                                       if pos == smin  then
+                                          cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
+                                          cD.sCACFrames.cacheitemsframe:ClearPoint("BOTTOMLEFT")
+                                          cD.sCACFrames.cacheitemsframe:SetPoint("TOPLEFT",      cD.sCACFrames.cacheitemsmaskframe, "TOPLEFT")
                                        else
                                           if (cD.sCACFrames.cacheitemsframe:GetBottom() - ilScrollStep*pos) >= cD.sCACFrames.cacheitemsmaskframe:GetTop() then
                                              cD.sCACFrames.cacheitemsframe:ClearPoint("TOPLEFT")
@@ -719,7 +614,6 @@ function cD.createTotalsWindow()
    Library.LibDraggable.draggify(totalsWindow, cD.updateGuiCoordinates)
 
    return totalsWindow
-
 end
 
 function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals, isLegend)
@@ -751,7 +645,6 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
 
    -- Zone Name
    znOBJ       =  UI.CreateFrame("Text", "Totals_" ..zoneName, leftitemframe)
---    local zn    =  string.sub(zoneName, 1, tMAXSTRINGSIZE)
    local zn    =  string.sub(zoneName, 1, cD.sizes.toca[cD.text.base_font_size].maxstringsize)
    znOBJ:SetWidth(150)
    znOBJ:SetFontSize(cD.text.base_font_size)
@@ -767,11 +660,9 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
    rightitemframe:SetLayer(1)
    rightitemframe:SetBackgroundColor(.2, .2, .2, .6)
    if table.getn(cD.sTORightFrames) > 0 then
---       print("cD.createTotalsLine: > 0")
       rightitemframe:SetPoint("TOPLEFT",    cD.sTORightFrames[#cD.sTORightFrames], "BOTTOMLEFT",  0, 1)
       rightitemframe:SetPoint("TOPRIGHT",   cD.sTORightFrames[#cD.sTORightFrames], "BOTTOMRIGHT", 0, 1)
    else
---       print("cD.createTotalsLine: < 0")
       rightitemframe:SetPoint("TOPLEFT",    rightparent, "TOPLEFT")
       rightitemframe:SetPoint("TOPRIGHT",   rightparent, "TOPRIGHT")
    end
@@ -784,7 +675,6 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
       totalsCnt:SetFont(cD.addon, cD.text.base_font_name)
       totalsCnt:SetFontSize(cD.text.base_font_size)
       totalsCnt:SetFontColor(txtColors[idx].r, txtColors[idx].g, txtColors[idx].b)
---       totalsCnt:SetBackgroundColor(txtColors[idx].r, txtColors[idx].g, txtColors[idx].b)
       totalsCnt:SetText(string.format("%3d", zoneTotals[idx]))
       if idx==1 then
          totalsCnt:SetPoint("TOPLEFT",   parentOBJ, "TOPLEFT", cD.borders.left, 0)
@@ -795,7 +685,6 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
       table.insert(totOBJs, totalsCnt)
 
       total = total + zoneTotals[idx]
---       print(string.format("cD.createTotalsLine: idx=%s total=%s parent=%s", idx, total, parentOBJ))
    end
 
    -- This field is the MfJ (Money from Junk)
@@ -822,14 +711,9 @@ function cD.createTotalsLine(leftparent, rightparent, zoneName, znID, zoneTotals
    cD.totallineheight   =  znOBJ:GetHeight() + 1
    rightitemframe:SetHeight(cD.totallineheight)
    leftitemframe:SetHeight(cD.totallineheight)
---    print("CREATE: ["..cD.totallineheight.."]")
---    print("LEFT: ["..leftitemframe:GetHeight().."]")
---    print("RIGHT: ["..rightitemframe:GetHeight().."]")
 
    return leftitemframe, rightitemframe, znOBJ, totOBJs
 end
-
-
 
 function cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
 
@@ -850,18 +734,6 @@ function cD.updateTotalsStatusBar(znTot, totMfJ, totOfTot)
          if i  ~= 8 then cnts[9]  =  (cnts[9] or 0) +  b[i] end
       end
    end
-
---    print(string.format("znTot[%s], totMfJ[%s], totOfTot[%s]", znTot, totMfJ, totOfTot))
-
---    -- How Many Zones
---    if cD.sTOFrames.sbzonescounter then
---       if znTot == nil then
---          znTot =  cnts[10]
--- --          znTot =  #cD.zoneTotalCnts
--- --          print(string.format("znTot[%s]", znTot))
---       end
---       cD.sTOFrames.sbzonescounter:SetText(string.format("%10d", znTot))
---    end
 
    if cD.sTOFrames.sbjnkcounter then cD.sTOFrames.sbjnkcounter:SetText(string.format("%3d", cnts[1])) end
    if cD.sTOFrames.sbcomcounter then cD.sTOFrames.sbcomcounter:SetText(string.format("%3d", cnts[2])) end
@@ -905,17 +777,14 @@ function cD.initTotalsWindow()
 
       local znName   =  Inspect.Zone.Detail(zn).name
       local znID     =  Inspect.Zone.Detail(zn).id
---       local totalsFrame, znOBJ, totOBJs = cD.createTotalsLine(leftparentOBJ, rightparentOBJ, znName, znID, tbl)
       local leftItemFrame, rightItemFrame, znOBJ, totOBJs = cD.createTotalsLine(leftparentOBJ, rightparentOBJ, znName, znID, tbl)
 
       table.insert(cD.sTOzoneIDs,   zn)
---       table.insert(cD.sTOFrames,     totalsFrame)
       table.insert(cD.sTOLeftFrames,   leftItemFrame)
       table.insert(cD.sTORightFrames,  rightItemFrame)
       table.insert(cD.sTOznOBJs,       znOBJ)
       cD.sTOcntOBJs[znID] = totOBJs
 
---       parentOBJ   =  totalsFrame
       leftparentOBJ  =  leftItemFrame
       rightparentOBJ =  rightItemFrame
 
@@ -945,4 +814,3 @@ function cD.initTotalsWindow()
 
    return
 end
-
