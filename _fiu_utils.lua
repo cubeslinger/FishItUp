@@ -5,7 +5,7 @@
 --
 
 local addon, cD = ...
-local LOOTFRAME         =  3
+-- local LOOTFRAME         =  3
 
 local function updateCharScore(itemID, itemZone, lootCount)
 
@@ -386,7 +386,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          --
          -- NEW - we create
          --
-         local lineOBJ, lootFrame, lootCnt, prcntCnt =  cD.createLootLine(cD.sLTFrames[LOOTFRAME], lootCount, lootOBJ, fromHistory)
+--          local lineOBJ, lootFrame, lootCnt, prcntCnt =  cD.createLootLine(cD.sLTFrames[LOOTFRAME], lootCount, lootOBJ, fromHistory)
+         local lineOBJ, lootFrame, lootCnt, prcntCnt =  cD.createLootLine(cD.sLTFrames.lootframe, lootCount, lootOBJ, fromHistory)
 
          -- highlight last created row
          if not fromHistory then lootCnt:SetBackgroundColor(.6, .6, .6, .5) end
@@ -402,7 +403,7 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
 
          cD.updatePercents(cD.get_totals())
 
-         cD.sortLootTable(cD.sLTFrames[LOOTFRAME])
+         cD.sortLootTable(cD.sLTFrames.lootframe)
 
          retval	=	true
       end
