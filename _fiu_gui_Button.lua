@@ -1,37 +1,10 @@
 --
 -- Addon       _fiu_gui_Button.lua
--- Version     0.5
 -- Author      marcob@marcob.org
 -- StartDate   27/02/2017
--- StartDate   14/03/2017
 --
 
 local addon, cD = ...
-
-local POLECASTBUTTON    =  5
-local LOOTFRAME         =  3
-
--- local function getPole()
---
---    for bagnumber=1,10 do
---       for bagslot=1,40 do
---          itemslot = "si"..string.format("%2.2d",bagnumber).."."..string.format("%3.3d",bagslot)
---          d = Inspect.Item.Detail(itemslot)
---          if d then
---             if d.name then
---                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole")then
--- --                   local key   =  nil
--- --                   local val   =  nil
--- --                   for key, val in pairs(d) do print(string.format("[%s] = [%s]", key, val)) end
---                   return d
---                end
---             end
---          end
---       end
---    end
---
---    return
--- end
 
 local function getPole()
 
@@ -269,12 +242,11 @@ function cD.createButtonWindow()
       end
    end
 
-   cD.sLTFrames[POLECASTBUTTON] = poleCastButton
+   cD.sLTFrames.polecastbutton   =  poleCastButton
 
    -- Enable Dragging
    Library.LibDraggable.draggify(poleCastFrame, cD.updateGuiCoordinates)
 
---    return buttonFrame
    return poleCastFrame
 end
 

@@ -6,8 +6,6 @@
 
 local addon, cD = ...
 local LOOTFRAME         =  3
-local POLECASTBUTTON    =  5
-
 
 local function updateCharScore(itemID, itemZone, lootCount)
 
@@ -145,7 +143,8 @@ function cD.timedEventsManager()
 
             -- hide timer on pole cast Button
             cD.poleTimer:SetVisible(false)
-            cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
+--             cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
+            cD.sLTFrames.polecastbutton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
 
             -- let's update lootTable
             cD.processEventBuffer()

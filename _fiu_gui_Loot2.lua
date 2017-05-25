@@ -6,19 +6,6 @@
 
 local addon, cD = ...
 
-local MASKFRAME         =  2
-local LOOTFRAME         =  3
-local LOOTSCROLLBAR     =  4
-local POLECASTBUTTON    =  5
-local EXTERNALLOOTFRAME =  6
-local SCROLLBAR         =  7
---
--- local tLOOTNAMESIZE     =  172
--- local maxListItems      =  3
--- local sbWIDTH           =  8
--- local ltScrollStep      =  1
--- local lootWinHeight     =  110
-
 function cD.createLootWindow()
 
    --Global context (parent frame-thing).
@@ -27,14 +14,10 @@ function cD.createLootWindow()
    local lootWindow    =  UI.CreateFrame("Frame", "Loot", context)
 
    -- Clamp to InfoWindow Bottom
---    lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT",  0, 1)
---    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT", 0, 1)
    lootWindow:SetPoint("TOPLEFT",   cD.window.infoOBJ, "BOTTOMLEFT")
    lootWindow:SetPoint("TOPRIGHT",  cD.window.infoOBJ, "BOTTOMRIGHT")
 
 
---    lootWindow:SetWidth(cD.window.width)
---    lootWindow:SetHeight(lootWinHeight)
    lootWindow:SetLayer(-1)
    lootWindow:SetBackgroundColor(0, 0, 0, .5)
 
@@ -44,26 +27,20 @@ function cD.createLootWindow()
    externaLootFrame:SetPoint("TOPRIGHT",    lootWindow, "TOPRIGHT",    - cD.borders.right, cD.borders.top)
    externaLootFrame:SetPoint("BOTTOMLEFT",  lootWindow, "BOTTOMLEFT",  cD.borders.left,    - cD.borders.bottom)
    externaLootFrame:SetPoint("BOTTOMRIGHT", lootWindow, "BOTTOMRIGHT", - cD.borders.right, - cD.borders.bottom)
-   --    externaLootFrame:SetBackgroundColor(.6, .6, .6, .3)
    externaLootFrame:SetBackgroundColor(.2, .2, .2, .5)
    externaLootFrame:SetLayer(1)
-   cD.sLTFrames[EXTERNALLOOTFRAME]  =   externaLootFrame
+   cD.sLTFrames.externallootframe   =  externaLootFrame
 
    -- MASK FRAME
-   local maskFrame = UI.CreateFrame("Mask", "Loot_Mask_Frame", cD.sLTFrames[EXTERNALLOOTFRAME])
-   maskFrame:SetAllPoints(cD.sLTFrames[EXTERNALLOOTFRAME])
-   cD.sLTFrames[MASKFRAME]  = maskFrame
+   local maskFrame = UI.CreateFrame("Mask", "Loot_Mask_Frame", cD.sLTFrames.externallootframe)
+   maskFrame:SetAllPoints(cD.sLTFrames.externallootframe)
+   cD.sLTFrames.maskframe  = maskFrame
 
    -- LOOT CONTAINER FRAME
-   local lootFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sLTFrames[MASKFRAME])
-   lootFrame:SetAllPoints(cD.sLTFrames[MASKFRAME])
+   local lootFrame =  UI.CreateFrame("Frame", "loot_frame", cD.sLTFrames.maskframe)
+   lootFrame:SetAllPoints(cD.sLTFrames.maskframe)
    lootFrame:SetLayer(1)
-   cD.sLTFrames[LOOTFRAME]  =   lootFrame
-
---    lootWindow:SetHeight( cD.borders.top + cD.sLTFrames[LOOTFRAME]:GetHeight() + cD.borders.bottom)
-
---    -- Enable Dragging
---    Library.LibDraggable.draggify(lootWindow, cD.updateGuiCoordinates)
+   cD.sLTFrames.lootframe  =  lootFrame
 
    return lootWindow
 
@@ -275,13 +252,6 @@ function cD.createLootLine(parent, txtCnt, lootOBJ, fromHistory)
 
       -- setup Loot Item's Percentage counter
       prcntCnt:SetText(string.format("(%d", 0).."%)")
-
-      --
-      -- finally we set the whole container Frame visible but
-      -- only in infoWindow is visible too.
-      --
---       if cD.window.infoOBJ:GetVisible() == true then lootFrame:SetVisible(true) end
-
    end
 
    return   textOBJ, lootFrame, lootCnt, prcntCnt
@@ -365,7 +335,6 @@ function fetchFromStock()
             end
             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.In, b.handler, b.label)
          end
---          tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.In, eventlist[1].handler, eventlist[1].label)
 
          eventlist =  tbl.textOBJ:EventList(Event.UI.Input.Mouse.Cursor.Out)
          for a,b in pairs(eventlist) do
@@ -374,7 +343,6 @@ function fetchFromStock()
             end
             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.Out, b.handler, b.label)
          end
---          tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.Out, eventlist[1].handler, eventlist[1].label)
 
          retval   =  tbl
 
