@@ -35,19 +35,16 @@ function cD.printJunkMoney(money, pad)
    local size     =  0
 
    if s  == nil   then  s = 0 end
---    print("["..s.."]s")
 
    if s > 0 then
       while s > 99 do
          s = s -100
          g = g + 1
---          print("  ["..g.."]g ["..s.."]s")
       end
 
       while g > 99 do
          g = g - 100
          p = p + 1
---          print("   ["..s.."]s["..g.."]g["..p.."]p")
       end
    end
 
@@ -135,7 +132,6 @@ function cD.timedEventsManager()
 
             -- remove handlers
             cD.detachLootWatchers()
---             cD.detachOtherWatchers()
 
             -- we are done, stop timer/flags
             cD.timeStart               =  nil
@@ -143,7 +139,6 @@ function cD.timedEventsManager()
 
             -- hide timer on pole cast Button
             cD.poleTimer:SetVisible(false)
---             cD.sLTFrames[POLECASTBUTTON]:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
             cD.sLTFrames.polecastbutton:EventMacroSet(Event.UI.Input.Mouse.Left.Click, "use" .. " " .. cD.poleTBL.name)
 
             -- let's update lootTable
@@ -179,18 +174,11 @@ function cD.processEventBuffer()
    for idx, tbl in pairs(cD.eventBuffer) do
 
       for t, o in pairs(tbl) do
---          print(string.format("Buffer: t[%s] o[%s]", t, o))
          local i = Inspect.Item.Detail(o)
---          print(string.format("        [%s]/[%s]", i.stack, i.stackMax))
-
---          print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name]))
          local quantity =  (newItemBase[i.name] or 0) - (cD.itemBase[i.name] or 0)
---          print(string.format("newItemBase[%s]=[%s] - cD.itemBase[%s]=[%s]=>(%s)", i.name, newItemBase[i.name], i.name, cD.itemBase[i.name], quantity))
 
---          cD.updateLootTable( o, 1, false )
          cD.updateLootTable( o, quantity, false )
          cD.updateInfoIcons( o, quantity)
-
       end
    end
 
@@ -229,8 +217,6 @@ function cD.updatePercents(totals)
    return(totals)
 end
 
-
-
 function cD.detachLootWatchers()
    Command.Event.Detach(Event.Item.Update,         cD.gotLoot,             "gotLoot_item_update")
    Command.Event.Detach(Event.Item.Slot,           cD.gotLoot,             "gotLoot_item_slot")
@@ -246,7 +232,6 @@ function cD.stopFishingEvent(h, event)
    for k, v in pairs(event) do print(string.format("Stop EVENT: k[%s] v[%s]", k, v)) end
 
    cD.detachLootWatchers()
---    cD.detachOtherWatchers()
 
    -- hide timer on pole casting Button
    cD.poleTimer:SetVisible(false)
@@ -273,17 +258,8 @@ function cD.gotCastBar(_, info)
                for kk, vv in pairs(ability) do
                   print(string.format("ability kk[%s] vv[%s]", kk, vv))
                end
-               --                print "Castbar data ----- ABILITY end"
-            else
-               --                print "Castbar data ----- EVENT begin"
---                for kk, vv in pairs(castDetails) do
---                   print(string.format("ability kk[%s] vv[%s]", kk, vv))
---                end
---                --                print "Castbar data ----- EVENT end"
             end
          else
---             print("CASTBAR EVENT: castDetails is nil, we wait for the sun.")
-
             Command.Event.Attach(Event.Item.Update,               cD.gotLoot,          "gotLoot_item_update")
             Command.Event.Attach(Event.Item.Slot,                 cD.gotLoot,          "gotLoot_item_slot")
 
@@ -291,22 +267,11 @@ function cD.gotCastBar(_, info)
          end
       end
    end
-   --    print "Castbar data ----- end"
 
    return
-
 end
 
 function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
-
-   -- debug
---    if not fromHistory then
---       local x, y = nil, nil
---       for x,y in pairs(Inspect.Item.Detail(lootOBJ)) do
---          print(string.format("ITEM DATA [%s]=[%s]", x,y))
---       end
---    end
-
 
    if lootCount   == nil   then  lootCount   = 1      end
    if fromHistory == nil   then  fromHistory = false  end
@@ -339,23 +304,14 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
    else
       itemID      =  Inspect.Item.Detail(lootOBJ).id
       itemName    =  Inspect.Item.Detail(lootOBJ).name
---       itemRarity  =  Inspect.Item.Detail(lootOBJ).rarity
       itemRarity  =  (Inspect.Item.Detail(lootOBJ).rarity  or "common") -- Some items don't have a rarity (ex.: Bundles), we default to common
       itemDesc    =  Inspect.Item.Detail(lootOBJ).description
       itemCategory=  Inspect.Item.Detail(lootOBJ).category
       itemIcon    =  Inspect.Item.Detail(lootOBJ).icon
       itemValue   =  Inspect.Item.Detail(lootOBJ).sell
---       print(string.format("[%s] value is [%s]", itemName, itemValue))
       itemFlavor  =  Inspect.Item.Detail(lootOBJ).flavor
       itemZone    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       if itemValue   == nil   then itemValue = 0 end
-
-      -- debug
---       local x,y = nil, nil
---       for x, y in pairs(Inspect.Item.Detail(lootOBJ)) do
---          print(string.format("[%s]=>[%s]=[%s]", itemName, x, y))
---       end
-
 
       if cD.itemCache[lootOBJ]   == nil then
          cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
@@ -377,7 +333,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
             cD.junkOBJ  =  lootOBJ
          else
             -- we add the REAL value of this item
---             cD.totJunkMoney = cD.totJunkMoney + itemValue
             -- then we set up the fake/static Junk target
             lootOBJ     =  cD.junkOBJ
             itemID      =  cD.itemCache[lootOBJ].id
@@ -405,8 +360,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          for key, val in pairs(cD.sLTnames) do
             if val == itemName then
                idx = key
---                print(string.format("ITEM MATCH by NAME: _ITEM [%s][%s]", itemID,itemName))
---                print(string.format("ITEM MATCH by NAME: MATCH [%s][%s]", cD.sLTids[idx], cD.sLTnames[idx]))
             end
          end
       end
@@ -458,7 +411,6 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       -- Adjust Totals Header
       --
       local totN  =  cD.get_totals()
---       local totS  =  string.format("Totals : %5d", totN)
       local totS  =  string.format("%5d", totN)
       cD.sLThdrs[4]:SetText(totS)
       cD.timeRStart  =  nil
@@ -467,24 +419,14 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
       --
       if fromHistory == false then
          local zoneOBJ  =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
---          local rarity   =  Inspect.Item.Detail(lootOBJ).rarity
          local zoneID   =  Inspect.Zone.Detail(zoneOBJ).id
---          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, rarity, itemValue)
          cD.updateHistory(zoneOBJ, zoneID, lootOBJ, lootCount, itemRarity, itemValue)
       end
 
-      --
-      --
-      --
       cD.updateTotalsStatusBar(nil, nil, nil)
-      --
-      --
-      --
    else
       print("ERROR in updateLootTable, lootOBJ.id is nil")
    end
-
---    if not cD.window.lootOBJ:GetVisible() then cD.window.lootOBJ:SetVisible(true) end
 
    return retval
 end
@@ -506,16 +448,12 @@ function cD.gotLoot(h, eventTable)
             if itemName ~= cD.poleTBL.name then
                local now = Inspect.Time.Frame()
                table.insert( cD.eventBuffer, { [now] = itemOBJ } )
-
                --
                -- we will wait 1 more second (cD.time2Wait=1) Event.Item.Update and
                -- Event.Item.Slot to trigger for multiple fishing catches to be detected.
                --
                if not cD.waitingForTheSunRunning then cD.waitingForTheSunRunning =  true end
             end
-         else
-            --             print("Skipping event, for slot ["..slot.."]")
-            -- [sqst.006]
          end
       end
    else
@@ -526,9 +464,7 @@ end
 function cD.updateGuiCoordinates(win, newX, newY)
 
    if win ~= nil then
-
       local winName = win:GetName()
---       print("WIN ["..winName.."]")
 
       if winName == "Button" then
          cD.window.buttonX =  cD.round(newX)
@@ -558,7 +494,6 @@ function cD.updateGuiCoordinates(win, newX, newY)
          cD.window.ttX =  cD.round(newX)
          cD.window.ttY =  cD.round(newY)
       end
-
    end
 
    return
@@ -573,7 +508,6 @@ end
 
 function cD.rarityColor(rarityName)
    ret = {}
---    if        rarityName == "sellable"  then ret.r = .34375; ret.g = .34375; ret.b = .34375;
    if        rarityName == "sellable"  then ret.r = .35375; ret.g = .35375; ret.b = .35375;
       elseif rarityName == "common"    then ret.r = .98;    ret.g = .98     ret.b = .98;
       elseif rarityName == "uncommon"  then ret.r = 0;      ret.g = .797;   ret.b = 0;
@@ -596,30 +530,24 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    if description then desc     =  string.lower(description)   end
    iName    =  string.lower(itemName)
 
---    print(string.format("CategoryName [%s]", categoryName))
---    print(string.format("CatName      [%s]", catName))
---    print(string.format("  objID      [%s]", objID))
---    print(string.format("  description[%s]", description))
---    print(string.format("  desc       [%s]", desc))
---    print(string.format("  itemName   [%s]", itemName))
---    print(string.format("  iName      [%s]", iName))
-
---    pesci da dailies:
+--    Daily Fishes w/o the right property:
 --    Emerald Flytcatcher e Duskeen Eel      (Dusken  - Tullio Retreat)
 --    Kraken Hatchling e Coldflare Octopus   (Brevane - Tulan)
 
---    if desc ~= nil then print(string.format("DESC [%s]", desc)) end
-   if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                             -- artifact icon
-   elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"                    -- exclamation point
-   elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            -- little key
---    elseif   string.find(catName, "crafting material") ~= nil                              then  retval = "outfitter1.dds"                             -- little sprocket
-   elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
---    elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "reward_loot.png.dds"             	      -- little sack
+   -- artifact icon
+   if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                       
+   -- exclamation point   
+   elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"              
+   -- little key   
+   elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            
+ -- repeatable
+   elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- repeatable quest
+ -- little chest
    elseif   string.find(iName, "chest") or string.find(iName, "treasure")                 then  retval = "chest1a.dds"             	                  -- little sack
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
             string.find(iName, "duskeen eel")         ~= nil   or
             string.find(iName, "kraken hatchling")    ~= nil   or
-            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- quest repeatable
+            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         
    end
 
   return retval
@@ -648,11 +576,8 @@ function cD.multiLineString(s, size)
          i  =  i + size
          S  =  string.sub(S, i)
          i  =  1
---          print("split ["..i.."]")
       end
    end
-
---       if o then print("o ["..o.."]") end
 
    return(o)
 end
@@ -704,20 +629,11 @@ function cD.doThings(params)
    if cD.window.ivOBJ  == nil then
       cD.window.ivOBJ  =  cD.createItemViewerWindow()
       cD.window.ivOBJ:SetVisible(false)
-      --       print(string.format("NEW IV OBJ [%s]", cD.window.ivOBJ))
-   else
-      --       print(string.format("OLD IV OBJ [%s]", cD.window.ivOBJ))
    end
 
    if cD.window.infoOBJ:GetVisible() == false then cD.window.ivOBJ:SetVisible(false) end
 
 
-   --    print("-------------------------------------------------------")
    cD.itemBase = cD.scanInventories()
-   --    for x,y in pairs(cD.itemBase) do
-      --       print(string.format("quantity: [%03d] [%s]", y, x))
-      --    end
-      --    print("-------------------------------------------------------")
-
-      return
-   end
+   return
+end

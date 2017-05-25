@@ -63,10 +63,6 @@ end
 
 local function showTT(o, tt)
 
---    if o then   print(string.format("showTT(%s,%s)=%s", o:GetName(), tt, tts[tt]))
---    else        print(string.format("showTT(%s,%s)=%s", o, tt, tts[tt]))
---    end
-
    if o and tt and tts[tt] then
 
       -- update tooltip
@@ -75,13 +71,11 @@ local function showTT(o, tt)
 
       -- resize tooltip
       cD.window.ttOBJ:SetVisible(true)
---       cD.window.ttOBJ:SetHeight((cD.ttFrames.textFrame:GetBottom() + cD.borders.top + cD.borders.bottom) - cD.window.ttOBJ:GetTop() )
       cD.window.ttOBJ:SetHeight((cD.ttFrames.textFrame:GetBottom() - cD.ttFrames.textFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
 
       -- re-position tooltip
       local mouseData   =   Inspect.Mouse()
       cD.window.ttOBJ:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mouseData.x + 10, mouseData.y + 10)
-
    else
       cD.window.ttOBJ:SetVisible(false)
    end
@@ -92,8 +86,6 @@ end
 function cD.attachTT(o, tt)
 
    if o and tt then
-
---       print(string.format("attachTT(%s,%s)", o:GetName(), tt))
 
       if not cD.window.ttOBJ then cD.window.ttOBJ   =  _newTT() end
 
