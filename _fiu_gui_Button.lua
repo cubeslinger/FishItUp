@@ -93,7 +93,7 @@ function cD.createButtonWindow()
    -- detect Fishing Pole
    if cD.poleTBL == nil or cD.poleTBL.name == nil then
       cD.poleTBL = getPole()
-      print(string.format("pole [%s]", cD.poleTBL.name))
+--       print(string.format("pole [%s]", cD.poleTBL.name))
    end
 
    -- Frame Cornice

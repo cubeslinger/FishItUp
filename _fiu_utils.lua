@@ -7,6 +7,35 @@
 local addon, cD = ...
 -- local LOOTFRAME         =  3
 
+function cD.searchloottable(itemID, itemName)
+
+   local idx   =  nil
+
+   -- search by object ID
+   if itemID then
+      -- is it already in lootTable?
+      -- search by itemID
+      for key, val in pairs(cD.sLTids) do
+         if val == itemID then
+            idx = key
+         end
+      end
+   end
+
+   -- search by name
+   if not idx and itemName then
+      -- search by itemName
+      for key, val in pairs(cD.sLTnames) do
+         if val == itemName then
+            idx = key
+         end
+      end
+   end
+
+   return idx
+end
+
+
 local function updateCharScore(itemID, itemZone, lootCount)
 
    if cD.charScore[itemZone] then
@@ -347,23 +376,24 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          end
       end
 
-      -- is it already in lootTable?
-      -- search by itemID
-      for key, val in pairs(cD.sLTids) do
-         if val == itemID then
-            idx = key
-         end
-      end
+--       -- is it already in lootTable?
+--       -- search by itemID
+--       for key, val in pairs(cD.sLTids) do
+--          if val == itemID then
+--             idx = key
+--          end
+--       end
+--
+--       if not idx then
+--          -- search by itemName
+--          for key, val in pairs(cD.sLTnames) do
+--             if val == itemName then
+--                idx = key
+--             end
+--          end
+--       end
 
-      if not idx then
-         -- search by itemName
-         for key, val in pairs(cD.sLTnames) do
-            if val == itemName then
-               idx = key
-            end
-         end
-      end
-
+      idx   =  cD.searchloottable(itemID, itemName)
 
       if idx then
          --
@@ -509,7 +539,8 @@ end
 
 function cD.rarityColor(rarityName)
    ret = {}
-   if        rarityName == "sellable"  then ret.r = .35375; ret.g = .35375; ret.b = .35375;
+--    if        rarityName == "sellable"  then ret.r = .35375; ret.g = .35375; ret.b = .35375;
+   if        rarityName == "sellable"  then ret.r = .55375; ret.g = .55375; ret.b = .55375;
       elseif rarityName == "common"    then ret.r = .98;    ret.g = .98     ret.b = .98;
       elseif rarityName == "uncommon"  then ret.r = 0;      ret.g = .797;   ret.b = 0;
       elseif rarityName == "rare"      then ret.r = .148;   ret.g = .496;   ret.b = .977;
@@ -536,11 +567,11 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
 --    Kraken Hatchling e Coldflare Octopus   (Brevane - Tulan)
 
    -- artifact icon
-   if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"                       
-   -- exclamation point   
-   elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"              
-   -- little key   
-   elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"                            
+   if       string.find(catName, "artifact" )         ~= nil                              then  retval = "Minion_I3C.dds"
+   -- exclamation point
+   elseif   string.find(catName, "quest")             ~= nil                              then  retval = "icon_menu_quest.png.dds"
+   -- little key
+   elseif   string.find(catName, "dimension")         ~= nil                              then  retval = "Minion_I153.dds"
  -- repeatable
    elseif   desc and string.find(desc, "exchange")    ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         -- repeatable quest
  -- little chest
@@ -548,7 +579,7 @@ function cD.categoryIcon(categoryName, objID, description, itemName)
    elseif   string.find(iName, "emerald flytcatcher") ~= nil   or
             string.find(iName, "duskeen eel")         ~= nil   or
             string.find(iName, "kraken hatchling")    ~= nil   or
-            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"         
+            string.find(iName, "coldflare octopus")   ~= nil                              then  retval = "LFP_BonusReward_iconRepeat.png.dds"
    end
 
   return retval

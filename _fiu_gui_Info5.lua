@@ -256,7 +256,7 @@ function cD.createInfoWindow()
       headerFrame:SetHeight(cD.round(iconsFrame:GetBottom() - headerFrame:GetTop()) + cD.borders.top + cD.borders.bottom)
 
       local bottom = infoWindow:GetTop() + titleBar:GetHeight() + headerFrame:GetHeight()
-      infoWindow:SetHeight( bottom - infoWindow:GetTop() + cD.borders.top + cD.borders.bottom*2)
+      infoWindow:SetHeight( bottom - infoWindow:GetTop() + cD.borders.top + cD.borders.bottom*3)
 
    -- Enable Dragging
    Library.LibDraggable.draggify(infoWindow, cD.updateGuiCoordinates)
@@ -274,17 +274,11 @@ function cD.resetIconsList()
          local a,b,c,d
          local eventlist =  tbl.lootIcon:EventList(Event.UI.Input.Mouse.Cursor.In)
             for a,b in pairs(eventlist) do
---                for c, d in pairs(b) do
--- --                   print(string.format("a[%s] c[%s] d[%s]", a, c, d))
---                end
                tbl.lootIcon:EventDetach(Event.UI.Input.Mouse.Cursor.In, b.handler, b.label)
             end
 
          eventlist =  tbl.lootIcon:EventList(Event.UI.Input.Mouse.Cursor.Out)
             for a,b in pairs(eventlist) do
---                for c, d in pairs(b) do
--- --                   print(string.format("c[%s] d[%s]", c, d))
---                end
                tbl.lootIcon:EventDetach(Event.UI.Input.Mouse.Cursor.Out, b.handler, b.label)
             end
       end
@@ -293,6 +287,7 @@ function cD.resetIconsList()
       tbl.lootIcon:SetVisible(false)
       tbl.lootQuantity:SetVisible(false)
       tbl.lootCatIcon:SetVisible(false)
+      tbl.lootTotal:SetVisible(false)
    end
 
    displayedIcons =  {}
@@ -319,7 +314,7 @@ function  cD.resetInfoWindow()
    return
 end
 
-function buildIconForStock(parent, objID, quantity, zoneID, category)
+function buildIconForStock(parent, objID, quantity, zoneID, category, total)
 
    local lootIcon    =  nil
    local lciFrame    =  nil
@@ -337,7 +332,7 @@ function buildIconForStock(parent, objID, quantity, zoneID, category)
 
       -- are we second?
       if displayedIcons and displayedIcons[#displayedIcons] then
-         lootIcon:SetPoint("TOPLEFT", parent, "TOPRIGHT", cD.borders.left*2, 0)
+         lootIcon:SetPoint("TOPLEFT", parent, "TOPRIGHT", cD.borders.left, 0)
       else
          lootIcon:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 2)
       end
@@ -373,28 +368,38 @@ function buildIconForStock(parent, objID, quantity, zoneID, category)
       lootQuantity:SetFont(cD.addon, cD.text.base_font_name)
       lootQuantity:SetFontSize(cD.text.base_font_size -2)
       local col =   cD.rarityColor(category)
-      print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
-      lootQuantity:SetFontColor(col.r, col.g, col.b)      
+--       print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
+      lootQuantity:SetFontColor(col.r, col.g, col.b)
       lootQuantity:SetBackgroundColor(0, 0, 0, .7)
       lootQuantity:SetText(string.format("<b>%d</b>", quantity), true)
       lootQuantity:SetLayer(4)
       lootQuantity:SetPoint("BOTTOMRIGHT",  lootIcon, "BOTTOMRIGHT")
 
-      table.insert(cD.iconStock, { inUse=true, lootIcon=lootIcon, lootQuantity=lootQuantity, lootCatIcon=lootCatIcon })
+      -- loot total
+      lootTotal  =  UI.CreateFrame("Text", "Loot_total_" .. o.name, parent)
+      lootTotal:SetFont(cD.addon, cD.text.base_font_name)
+      lootTotal:SetFontSize(cD.text.base_font_size -2)
+--       local col =   cD.rarityColor("common")
+      --       print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
+      lootTotal:SetFontColor(col.r, col.g, col.b)
+      lootTotal:SetText(string.format("%d", total), true)
+      lootTotal:SetLayer(4)
+      lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER", 0, -2)
+
+      table.insert(cD.iconStock, { inUse=true, lootIcon=lootIcon, lootQuantity=lootQuantity, lootCatIcon=lootCatIcon, lootTotal=lootTotal })
    end
 
-   return lootIcon, lootCatIcon, lootQuantity
+   return lootIcon, lootCatIcon, lootQuantity, lootTotal
 end
 
-local function fetchIconFromStock(obj, quantity, zoneID, category)
+local function fetchIconFromStock(obj, quantity, zoneID, category, total)
 
    local retval   =  {}
    local gotStock =  nil
 
-   if displayedIcons and displayedIcons[#displayedIcons] then
-      parent = displayedIcons[#displayedIcons]
-   else
-      parent = cD.sLThdrs[7]
+
+   if displayedIcons and displayedIcons[#displayedIcons] then  parent = displayedIcons[#displayedIcons]
+                                                         else  parent = cD.sLThdrs[7]
    end
 
    for idx, tbl in pairs(cD.iconStock) do
@@ -408,8 +413,8 @@ local function fetchIconFromStock(obj, quantity, zoneID, category)
    end
 
    if not gotStock then
-      local lootIcon, lootCatIcon, lootQuantity =  buildIconForStock(parent, obj, quantity, zoneID, category)
-      retval   =  { lootIcon, lootCatIcon, lootQuantity }
+      local lootIcon, lootCatIcon, lootQuantity, lootTotal =  buildIconForStock(parent, obj, quantity, zoneID, category, total)
+      retval   =  { lootIcon, lootCatIcon, lootQuantity, lootTotal }
    else
       local o  =  Inspect.Item.Detail(obj)
       gotStock.lootIcon:SetTexture("Rift", o.icon)
@@ -425,9 +430,13 @@ local function fetchIconFromStock(obj, quantity, zoneID, category)
 
       gotStock.lootQuantity:SetText(string.format("<b>%d</b>", quantity), true)
       local col =   cD.rarityColor(category)
-      print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
+--       print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
       gotStock.lootQuantity:SetFontColor(col.r, col.g, col.b)
       gotStock.lootQuantity:SetVisible(true)
+
+      gotStock.lootTotal:SetText(string.format("%d", total), true)
+      gotStock.lootTotal:SetFontColor(col.r, col.g, col.b)
+      gotStock.lootTotal:SetVisible(true)
 
       -- IF IT AIN'T JUNK WE ATTACH the TOOLTIP EVENTS!
       -- Mouse Hover IN    => show tooltip
@@ -435,7 +444,7 @@ local function fetchIconFromStock(obj, quantity, zoneID, category)
       -- Mouse Hover OUT   => hide tooltip
       gotStock.lootIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function() cD.selectItemtoView(nil, nil) end, "Event.UI.Input.Mouse.Cursor.Out")
 
-      retval   =  { gotStock.lootIcon, gotStock.lootQuantity, gotStock.lootCatIcon }
+      retval   =  { gotStock.lootIcon, gotStock.lootQuantity, gotStock.lootCatIcon, gotStock.lootTotal }
    end
 
    return retval
@@ -449,8 +458,23 @@ function cD.updateInfoIcons(o, quantity)
       local zoneID   =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
       local oo = Inspect.Item.Detail(o) -- print(string.format("o[%s] o.name[%s]", o, oo.name))
 
-      local retval = fetchIconFromStock(o, quantity, zoneID, oo.rarity)
-      local lootIcon, lootQuantity, lootCatIcon = unpack(retval)
+      -- get session quantity for this item
+      -- is it junk?
+      local idx
+      if oo.rarity == "sellable" then
+         local jnkName  =  Inspect.Item.Detail(cD.junkOBJ).name
+         idx   =  cD.searchloottable(cD.junkOBJ, Inspect.Item.Detail(cD.junkOBJ).name)
+      else
+         idx   =  cD.searchloottable(o, oo.name)
+      end
+
+      local total =  0
+      if idx   then  total =  cD.sLTcnts[idx] end
+
+--       print(string.format("o[%s] oo.name[%s] idx[%s] total=[%s]", o, oo.name, idx, idx, total))
+
+      local retval = fetchIconFromStock(o, quantity, zoneID, oo.rarity, total)
+      local lootIcon, lootQuantity, lootCatIcon, lootTotal = unpack(retval)
       table.insert(displayedIcons, lootIcon)
    end
 
