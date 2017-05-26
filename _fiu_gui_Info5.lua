@@ -378,13 +378,15 @@ function buildIconForStock(parent, objID, quantity, zoneID, category, total)
       -- loot total
       lootTotal  =  UI.CreateFrame("Text", "Loot_total_" .. o.name, parent)
       lootTotal:SetFont(cD.addon, cD.text.base_font_name)
-      lootTotal:SetFontSize(cD.text.base_font_size -2)
+      lootTotal:SetFontSize(cD.text.base_font_size -4)
 --       local col =   cD.rarityColor("common")
       --       print(string.format("category[%s] col [%s] r[%s] g[%s] b[%s]", category, col, col.r, col.g, col.b))
       lootTotal:SetFontColor(col.r, col.g, col.b)
-      lootTotal:SetText(string.format("%d", total), true)
+--       lootTotal:SetBackgroundColor(0, 0, 0, .7)
+      lootTotal:SetText(string.format("<b>%d</b>", total), true)
       lootTotal:SetLayer(4)
-      lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER", 0, -2)
+--       lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER", 0, -2)
+      lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER")
 
       table.insert(cD.iconStock, { inUse=true, lootIcon=lootIcon, lootQuantity=lootQuantity, lootCatIcon=lootCatIcon, lootTotal=lootTotal })
    end
@@ -434,7 +436,7 @@ local function fetchIconFromStock(obj, quantity, zoneID, category, total)
       gotStock.lootQuantity:SetFontColor(col.r, col.g, col.b)
       gotStock.lootQuantity:SetVisible(true)
 
-      gotStock.lootTotal:SetText(string.format("%d", total), true)
+      gotStock.lootTotal:SetText(string.format("<b>%d</b>", total), true)
       gotStock.lootTotal:SetFontColor(col.r, col.g, col.b)
       gotStock.lootTotal:SetVisible(true)
 

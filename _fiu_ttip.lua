@@ -87,7 +87,7 @@ function cD.attachTT(o, tt)
 
    if o and tt then
 
-      if not cD.window.ttOBJ then cD.window.ttOBJ   =  _newTT() end
+      if not cD.window.ttOBJ then cD.window.ttOBJ   =  _newTT() cD.window.ttOBJ:SetVisible(false)  end
 
       -- Mouse Hover IN    => show tooltip
       o:EventAttach(Event.UI.Input.Mouse.Cursor.In,   function() showTT(o, tt)      end, "Event.UI.Input.Mouse.Cursor.In_"  .. o:GetName())
