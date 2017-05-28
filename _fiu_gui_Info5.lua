@@ -385,8 +385,8 @@ function buildIconForStock(parent, objID, quantity, zoneID, category, total)
 --       lootTotal:SetBackgroundColor(0, 0, 0, .7)
       lootTotal:SetText(string.format("<b>%d</b>", total), true)
       lootTotal:SetLayer(4)
---       lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER", 0, -2)
-      lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER")
+      lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER", 0, -2)
+--       lootTotal:SetPoint("TOPCENTER",  lootIcon, "BOTTOMCENTER")
 
       table.insert(cD.iconStock, { inUse=true, lootIcon=lootIcon, lootQuantity=lootQuantity, lootCatIcon=lootCatIcon, lootTotal=lootTotal })
    end
@@ -464,8 +464,10 @@ function cD.updateInfoIcons(o, quantity)
       -- is it junk?
       local idx
       if oo.rarity == "sellable" then
-         local jnkName  =  Inspect.Item.Detail(cD.junkOBJ).name
-         idx   =  cD.searchloottable(cD.junkOBJ, Inspect.Item.Detail(cD.junkOBJ).name)
+--          print(string.format("1 cD.junkOBJ=[%s]", cD.junkOBJ))         
+         if not cD.junkOBJ then  cD.junkOBJ = o   end
+--          print(string.format("2 cD.junkOBJ=[%s]", cD.junkOBJ))
+         idx   =  cD.searchloottable(cD.junkOBJ, nil)
       else
          idx   =  cD.searchloottable(o, oo.name)
       end
