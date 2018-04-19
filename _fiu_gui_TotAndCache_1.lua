@@ -267,23 +267,23 @@ local function populateZoneItemsList(znID, zoneName)
    -- re-aggregate the "base" list by item
    -- name.
    --
-   local basebyname  =  {}
-   for k, v in pairs(base) do
-      if basebyname[cD.itemCache[k].name] then
---          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score.." v="..v)
-         basebyname[cD.itemCache[k].name] = { id=k, score=(basebyname[cD.itemCache[k].name].score + v) }
---          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score)
-      else
---          print("new["..cD.itemCache[k].name.."]: "..v)
-         basebyname[cD.itemCache[k].name] = { id=k, score=v }
-      end
-   end
+--    local basebyname  =  {}
+--    for k, v in pairs(base) do
+--       if basebyname[cD.itemCache[k].name] then
+-- --          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score.." v="..v)
+--          basebyname[cD.itemCache[k].name] = { id=k, score=(basebyname[cD.itemCache[k].name].score + v) }
+-- --          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score)
+--       else
+-- --          print("new["..cD.itemCache[k].name.."]: "..v)
+--          basebyname[cD.itemCache[k].name] = { id=k, score=v }
+--       end
+--    end
 
+
+   local basebyname  =  cD.charScorebyName[znID]
    local newbase     =  {}
    local t           =  {}
-   for k, t in pairs(basebyname) do
-      newbase[t.id] = t.score
-   end
+   for k, t in pairs(basebyname) do newbase[t.id] = t.score  end
    -- End - manipulation to list by name
 
 
