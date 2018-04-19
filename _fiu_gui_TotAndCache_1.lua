@@ -145,18 +145,41 @@ local function fetchFromILStock(parent,t)
    return retval
 end
 
-function cD.getCharScore(zID, oID)
-   local retval   =  0
+-- function cD.getCharScore_ORIG(zID, oID)
+--    local retval   =  0
+--
+--    if cD.charScore[zID] then
+--       local t = cD.charScore[zID]
+--       if t[oID] then
+--          retval = t[oID]
+--       end
+--    end
+--
+--    return retval
+-- end
 
-   if cD.charScore[zID] then
-      local t = cD.charScore[zID]
-      if t[oID] then
-         retval = t[oID]
+-- -----------------------------------
+
+function cD.getCharScore(zID, oID)
+
+   local retval   =  0
+   local name     =  cD.itemCache[oID].name
+
+   if cD.charScorebyName[zID] then
+      local t = cD.charScorebyName[zID]
+      if t[name] then
+         retval = t[name].score
+--          print(string.format("charScore: t[%s]=score[%s]", name, t[name].score))
+      else
+--          print("ERROR: can't find t["..name.."]")
       end
+   else
+--       print("ERROR: can't find cD.charScorebyName["..zID.."]")
    end
 
    return retval
 end
+
 
 local function createZoneItemLine(parent, zoneName, zID, t)
 
@@ -235,8 +258,37 @@ local function populateZoneItemsList(znID, zoneName)
    local cnt      =  0
    local iobj     =  nil
    local base     =  cD.charScore[znID]
+   local k        =  nil
+   local v        =  nil
 
-   for k,v in cD.spairs(base,
+   -- begin -  manipulation to list by name
+   --
+   -- Item Ids aren't unique, so i need to
+   -- re-aggregate the "base" list by item
+   -- name.
+   --
+   local basebyname  =  {}
+   for k, v in pairs(base) do
+      if basebyname[cD.itemCache[k].name] then
+--          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score.." v="..v)
+         basebyname[cD.itemCache[k].name] = { id=k, score=(basebyname[cD.itemCache[k].name].score + v) }
+--          print("old ["..cD.itemCache[k].name.."]: "..basebyname[cD.itemCache[k].name].score)
+      else
+--          print("new["..cD.itemCache[k].name.."]: "..v)
+         basebyname[cD.itemCache[k].name] = { id=k, score=v }
+      end
+   end
+
+   local newbase     =  {}
+   local t           =  {}
+   for k, t in pairs(basebyname) do
+      newbase[t.id] = t.score
+   end
+   -- End - manipulation to list by name
+
+
+--    for k,v in cD.spairs(base,
+      for k,v in cD.spairs(newbase,
                         function(t,a,b)
                            local retval = nil
                            if b == "__orderedIndex" then

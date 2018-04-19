@@ -35,8 +35,7 @@ function cD.searchloottable(itemID, itemName)
    return idx
 end
 
-
-local function updateCharScore(itemID, itemZone, lootCount)
+local function updateCharScore_ORIG(itemID, itemZone, lootCount)
 
    if cD.charScore[itemZone] then
       local zScore = cD.charScore[itemZone]
@@ -47,6 +46,38 @@ local function updateCharScore(itemID, itemZone, lootCount)
       end
    else
       cD.charScore[itemZone] = { [itemID] = lootCount }
+   end
+
+   return
+end
+
+
+local function updateCharScore(itemID, itemZone, lootCount, itemName)
+
+   if cD.charScore[itemZone] then
+
+      local zScore = cD.charScore[itemZone]
+
+      if zScore[itemID] then
+         zScore[itemID] = zScore[itemID] + lootCount
+      else
+         zScore[itemID] =  lootCount
+      end
+   else
+      cD.charScore[itemZone] = { [itemID] = lootCount }
+   end
+
+   if cD.charScorebyName[itemZone] then
+
+      local zScore = cD.charScorebyName[itemZone]
+
+      if zScore[itemName] then
+         zScore[itemName] = { id=itemID, score=(zScore[itemName] + lootCount) }
+      else
+         zScore[itemName] =  lootCount
+      end
+   else
+      cD.charScorebyName[itemZone] = { [itemName] = { id=itemID, score=lootCount } }
    end
 
    return
@@ -346,7 +377,8 @@ function cD.updateLootTable(lootOBJ, lootCount, fromHistory)
          cD.itemCache[lootOBJ]   =  { id=itemID, name=itemName, rarity=itemRarity, description=itemDesc, category=itemCategory, icon=itemIcon, value=itemValue, zone=itemZone, flavor=itemFlavor }
       end
       -- Update personal Char Score
-      updateCharScore(itemID, itemZone, lootCount)
+--       updateCharScore(itemID, itemZone, lootCount)
+         updateCharScore(itemID, itemZone, lootCount, itemName)
    end
 
 

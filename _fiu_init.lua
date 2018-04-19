@@ -62,7 +62,7 @@ cD.ivOBJ       =  {}
 
 -- GUI
 cD.borders     =  {  left=4, top=4, right=4, bottom=4 }
--- cD.text        =  {  base_font_size=12,   
+-- cD.text        =  {  base_font_size=12,
 cD.text        =  {  base_font_size=14,
 -- cD.text        =  {  base_font_size=16,
                      base_font_name="fonts/MonospaceTypewriter.ttf"
@@ -112,8 +112,9 @@ cD.lastZoneLootOBJs  =  {}    -- array of objs ID of last looted items indexed b
 --
 -- Logs that are permanent
 --
-cD.zoneTotalCnts  =  {}
-cD.charScore      =  {}
+cD.zoneTotalCnts     =  {}
+cD.charScore         =  {}
+cD.charScorebyName   =  {}
 
 
 function cD.fiuLoadVariables(_, addonName)
@@ -146,7 +147,45 @@ function cD.fiuLoadVariables(_, addonName)
          end
       end
       if charScore ~= nil then
+
+         -- charScore (by itemID)
          cD.charScore   =  charScore
+
+         --
+         -- End   -  build cD.charScorebyName based on cD.charScore
+         --
+         -- Item Ids aren't unique, so i need to
+         -- re-aggregate the "base" list by item
+         -- name.
+         --
+         local zoneID   =  nil
+         local tbl      =  {}
+         for zoneID, tbl in pairs(cD.charScore) do
+
+            for k, v in pairs(tbl) do
+
+               if cD.charScorebyName[zoneID] then
+
+                  local name = cD.itemCache[k].name
+--[[
+                  print("*** name=["..name.."]")
+]]
+                  if cD.charScorebyName[zoneID][name] then
+--                      print(string.format("prima %s", cD.charScorebyName[zoneID][name].score))
+                     cD.charScorebyName[zoneID][name] = { id=k, score=(cD.charScorebyName[zoneID][name].score + v) }
+--                      print(string.format("poi   %s", cD.charScorebyName[zoneID][name].score))
+                  else
+                     cD.charScorebyName[zoneID][name] = { id=k, score=v }
+                  end
+               else
+                  cD.charScorebyName[zoneID] =  { [cD.itemCache[k].name] = { id=k, score=v } }
+               end
+            end
+         end
+         --
+         -- End   -  build cD.charScorebyName based on cD.charScore
+         --
+
       end
    end
 
