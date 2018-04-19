@@ -330,17 +330,17 @@ function fetchFromStock()
          local a,b,c,d
          local eventlist =  tbl.textOBJ:EventList(Event.UI.Input.Mouse.Cursor.In)
          for a,b in pairs(eventlist) do
-            for c, d in pairs(b) do
-               print(string.format("a[%s] c[%s] d[%s]", a, c, d))
-            end
+--             for c, d in pairs(b) do
+--                print(string.format("a[%s] c[%s] d[%s]", a, c, d))
+--             end
             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.In, b.handler, b.label)
          end
 
          eventlist =  tbl.textOBJ:EventList(Event.UI.Input.Mouse.Cursor.Out)
          for a,b in pairs(eventlist) do
-            for c, d in pairs(b) do
-               print(string.format("c[%s] d[%s]", c, d))
-            end
+--             for c, d in pairs(b) do
+--                print(string.format("c[%s] d[%s]", c, d))
+--             end
             tbl.textOBJ:EventDetach(Event.UI.Input.Mouse.Cursor.Out, b.handler, b.label)
          end
 
