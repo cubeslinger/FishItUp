@@ -16,11 +16,12 @@ local function getPole()
          d = Inspect.Item.Detail(itemslot)
          if d then
             if d.name then
---                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole") then
-               if ((string.find(d.name, "Fishing Pole") and not string.find(d.name, "Recipe")) or
-                  (string.find(d.name, "Fishin' Pole") and not string.find(d.name, "Recipe"))) then
+-- --                if string.suffix(d.name, "Fishing Pole") or string.suffix(d.name, "Fishin' Pole") then
+--                if ((string.find(d.name, "Fishing Pole") and not string.find(d.name, "Recipe")) or (string.find(d.name, "Fishin' Pole") and not string.find(d.name, "Recipe"))) then
+               if string.find(d.name, "Fishing Pole")  and string.find(d.category, "misc fishing") then
                   table.insert(poles, d)
---                   for a,b in pairs(d) do print(string.format("running [%s]=[%s]", a, b)) end
+                  for a,b in pairs(d) do print(string.format("running [%s]=[%s]", a, b)) end
+                  print("-----------------------------------------------------")
                end
             end
          end
@@ -40,6 +41,41 @@ local function getPole()
 --    print(string.format("Pole [%s] rarity[%s]", bestpole.name, bestpole.rarity))
    return bestpole
 end
+
+-- local function getPole()
+--
+--    local poles =  {}
+--
+--    for bagnumber=1,10 do
+--       for bagslot=1,40 do
+--          itemslot = "si"..string.format("%2.2d",bagnumber).."."..string.format("%3.3d",bagslot)
+--          d = Inspect.Item.Detail(itemslot)
+--          if d then
+--             if d.name then
+--                if string.find(d.name, "Fishing Pole")  and d.category == "misc fishing" then
+--                      table.insert(poles, d)
+--                      for a,b in pairs(d) do print(string.format("running [%s]=[%s]", a, b)) end
+--                      print("-----------------------------------------------------")
+--                   end
+--                end
+--             end
+--          end
+--       end
+--
+--       local bestpole  =  nil
+--       for idx, tbl in pairs(poles) do
+--
+--          if bestpole == nil then
+--             bestpole = tbl
+--          else
+--             if bestpole.requiredSkillLevel < tbl.requiredSkillLevel then   bestpole  =  tbl  end
+--          end
+--       end
+--
+--       --    print(string.format("Pole [%s] rarity[%s]", bestpole.name, bestpole.rarity))
+--       return bestpole
+--    end
+
 
 
 function cD.loadLastSession()
