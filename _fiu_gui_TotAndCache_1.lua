@@ -168,8 +168,9 @@ function cD.getCharScore(zID, oID)
    if cD.charScorebyName[zID] then
       local t = cD.charScorebyName[zID]
       if t[name] then
-         retval = t[name].score
+--          print(string.format("charScore: t=[%s]", t))
 --          print(string.format("charScore: t[%s]=score[%s]", name, t[name].score))
+         retval = t[name].score
       else
 --          print("ERROR: can't find t["..name.."]")
       end

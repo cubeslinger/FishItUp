@@ -51,8 +51,12 @@ Disclaimer:
 
 Todo:
 -----
-- Bugfixes.
 - Investigate lures.
+- Add check for autoloot status.
+- Add check for ENGLISH Language (Inspect.System.Language)
+- Fishing Pole chooser.
+- avoid crash when entering combat _and_ clicking on the cast button.
+
 
 Thanks all, Snailtail@Typhiria(EU).
 email: marcob@marcob.org
