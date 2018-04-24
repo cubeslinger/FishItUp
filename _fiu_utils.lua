@@ -67,21 +67,45 @@ local function updateCharScore(itemID, itemZone, lootCount, itemName)
       cD.charScore[itemZone] = { [itemID] = lootCount }
    end
 
-   if cD.charScorebyName[itemZone] then
+--    if cD.charScorebyName[itemZone] ~= nil then
+--
+--       local zScoreByName = cD.charScorebyName[itemZone]
+--
+-- --       print(string.format("_fiu_utils: zScoreByName=[%s]", zScoreByName))
+-- --       print(string.format("_fiu_utils: zScoreByName[%s]=[%s]", itemName, zScoreByName[itemName]))
+-- --       print(string.format("_fiu_utils: zScoreByName[%s]=score[%s]", itemName, zScoreByName[itemName].score))
+--
+--       if zScoreByName[itemName] then
+--          zScoreByName[itemName] = { id=itemID, score=(zScoreByName[itemName].score + lootCount) }
+--       else
+--          zScoreByName[itemName] =  lootCount
+--       end
+--    else
+--       cD.charScorebyName[itemZone] = { [itemName] = { id=itemID, score=lootCount } }
+-- --       cD.charScorebyName[itemZone][itemName] = { id=itemID, score=lootCount }
+--    end
 
-      local zScore = cD.charScorebyName[itemZone]
+   if cD.charScorebyName[itemZone] ~= nil then
 
-      if zScore[itemName] then
-         zScore[itemName] = { id=itemID, score=(zScore[itemName].score + lootCount) }
+--       print(string.format("_fiu_utils: zScoreByName=[%s]", zScoreByName))
+--       print(string.format("_fiu_utils: zScoreByName[%s]=[%s]", itemName, zScoreByName[itemName]))
+--       print(string.format("_fiu_utils: zScoreByName[%s]=score[%s]", itemName, zScoreByName[itemName].score))
+
+   if cD.charScorebyName[itemZone][itemName] then
+      cD.charScorebyName[itemZone][itemName]    =  { id=itemID, score=(cD.charScorebyName[itemZone][itemName].score + lootCount) }
       else
-         zScore[itemName] =  lootCount
+         cD.charScorebyName[itemZone][itemName] =  lootCount
       end
    else
       cD.charScorebyName[itemZone] = { [itemName] = { id=itemID, score=lootCount } }
+--       cD.charScorebyName[itemZone][itemName] = { id=itemID, score=lootCount }
    end
+
+
 
    return
 end
+
 
 function cD.printJunkMoney(money, pad)
    local silver   =  '#c0c0c0'

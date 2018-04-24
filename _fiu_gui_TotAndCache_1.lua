@@ -166,16 +166,19 @@ function cD.getCharScore(zID, oID)
    local name     =  cD.itemCache[oID].name
 
    if cD.charScorebyName[zID] then
+
       local t = cD.charScorebyName[zID]
-      if t[name] then
---          print(string.format("charScore: t=[%s]", t))
---          print(string.format("charScore: t[%s]=score[%s]", name, t[name].score))
+
+      if t[name]  ~= nil then
+         print(string.format("charScore: t=[%s]", t))
+         print(string.format("charScore: t[%s]=[%s]", name, t[name]))
+         print(string.format("charScore: t[%s]=score[%s]", name, t[name].score))
          retval = t[name].score
       else
---          print("ERROR: can't find t["..name.."]")
+         print("ERROR: can't find t["..name.."]")
       end
    else
---       print("ERROR: can't find cD.charScorebyName["..zID.."]")
+      print("ERROR: can't find cD.charScorebyName["..zID.."]")
    end
 
    return retval
@@ -867,3 +870,25 @@ function cD.initTotalsWindow()
 
    return
 end
+
+--[[
+    Error: FishItUp/_fiu_gui_TotAndCache_1.lua:173: attempt to index a number value
+   In FishItUp / FishItUp.Loot_Echidna Fish:Event.UI.Input.Mouse.Cursor.In
+   stack traceback:
+   [C]: in function '__index'
+   FishItUp/_fiu_gui_TotAndCache_1.lua:173: in function 'getCharScore'
+   FishItUp/_fiu_gui_ItemViewer.lua:176: in function 'populateItemViewer'
+   FishItUp/_fiu_gui_ItemViewer.lua:217: in function 'selectItemtoView'
+   FishItUp/_fiu_gui_Loot2.lua:167: in function <FishItUp/_fiu_gui_Loot2.lua:167>
+    ]]
+
+--[[
+    Error: FishItUp/_fiu_utils.lua:75: attempt to index a number value
+   In FishItUp / Event.System.Update.Begin, event Event.System.Update.Begin
+   stack traceback:
+   [C]: in function '__index'
+   FishItUp/_fiu_utils.lua:75: in function 'updateCharScore'
+   FishItUp/_fiu_utils.lua:381: in function 'updateLootTable'
+   FishItUp/_fiu_utils.lua:240: in function 'processEventBuffer'
+   FishItUp/_fiu_utils.lua:205: in function <FishItUp/_fiu_utils.lua:125>
+    ]]
