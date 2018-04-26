@@ -94,7 +94,7 @@ local function updateCharScore(itemID, itemZone, lootCount, itemName)
    if cD.charScorebyName[itemZone][itemName] then
       cD.charScorebyName[itemZone][itemName]    =  { id=itemID, score=(cD.charScorebyName[itemZone][itemName].score + lootCount) }
       else
-         cD.charScorebyName[itemZone][itemName] =  lootCount
+         cD.charScorebyName[itemZone][itemName] =  { id=itemID, score=lootCount }
       end
    else
       cD.charScorebyName[itemZone] = { [itemName] = { id=itemID, score=lootCount } }
